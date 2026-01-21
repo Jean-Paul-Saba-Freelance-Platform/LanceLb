@@ -1,0 +1,302 @@
+.logo-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.freelancer-logo {
+  width: 100%;
+  height: 100%;
+  filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.3));
+}
+
+.logo-circle {
+  animation: circlePulse 3s ease-in-out infinite;
+}
+
+@keyframes circlePulse {
+  0%, 100% {
+    opacity: 0.3;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.5;
+    transform: scale(1.05);
+  }
+}
+
+/* Lance animations */
+.lance-group {
+  transform-origin: 140px 60px;
+}
+
+.lance-shaft {
+  animation: lanceThrow 2s ease-out infinite;
+}
+
+.lance-tip {
+  animation: lanceThrow 2s ease-out infinite, lanceGlow 1s ease-in-out infinite;
+}
+
+.lance-trail {
+  opacity: 0;
+  animation: lanceTrailFade 2s ease-out infinite;
+}
+
+@keyframes lanceThrow {
+  0% {
+    transform: translate(0, 0) rotate(-10deg);
+    opacity: 1;
+  }
+  50% {
+    transform: translate(30px, -20px) rotate(5deg);
+    opacity: 0.9;
+  }
+  100% {
+    transform: translate(60px, -40px) rotate(10deg);
+    opacity: 0;
+  }
+}
+
+@keyframes lanceTrailFade {
+  0% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 0.3;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes lanceGlow {
+  0%, 100% {
+    opacity: 0.9;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+/* Freelancer animations */
+.freelancer-group {
+  transform-origin: 100px 100px;
+}
+
+.head {
+  animation: headNod 3s ease-in-out infinite;
+}
+
+@keyframes headNod {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-2px);
+  }
+}
+
+.helmet {
+  animation: helmetShine 4s ease-in-out infinite;
+}
+
+@keyframes helmetShine {
+  0%, 100% {
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+.torso {
+  animation: torsoBreathe 2.5s ease-in-out infinite;
+}
+
+@keyframes torsoBreathe {
+  0%, 100% {
+    transform: scaleY(1);
+  }
+  50% {
+    transform: scaleY(1.05);
+  }
+}
+
+.throwing-arm {
+  animation: armThrow 2s ease-out infinite;
+  transform-origin: 110px 100px;
+}
+
+@keyframes armThrow {
+  0% {
+    transform: rotate(-20deg) scale(1);
+  }
+  30% {
+    transform: rotate(10deg) scale(1.1);
+  }
+  60% {
+    transform: rotate(5deg) scale(1);
+  }
+  100% {
+    transform: rotate(0deg) scale(1);
+  }
+}
+
+.other-arm {
+  animation: armBalance 2s ease-in-out infinite;
+  transform-origin: 90px 100px;
+}
+
+@keyframes armBalance {
+  0%, 100% {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(-5deg);
+  }
+}
+
+.leg-left,
+.leg-right {
+  animation: legStance 2s ease-in-out infinite;
+}
+
+.leg-left {
+  animation-delay: 0s;
+}
+
+.leg-right {
+  animation-delay: 0.1s;
+}
+
+@keyframes legStance {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-3px);
+  }
+}
+
+.cape {
+  animation: capeFlow 3s ease-in-out infinite;
+}
+
+@keyframes capeFlow {
+  0%, 100% {
+    transform: translateX(0) translateY(0);
+    opacity: 0.4;
+  }
+  25% {
+    transform: translateX(-2px) translateY(2px);
+    opacity: 0.5;
+  }
+  50% {
+    transform: translateX(0) translateY(0);
+    opacity: 0.4;
+  }
+  75% {
+    transform: translateX(2px) translateY(-2px);
+    opacity: 0.5;
+  }
+}
+
+/* Motion lines animation */
+.motion-lines {
+  opacity: 0;
+  animation: motionLinesAppear 2s ease-out infinite;
+}
+
+.motion-line-1 {
+  animation: motionLineMove1 2s ease-out infinite;
+}
+
+.motion-line-2 {
+  animation: motionLineMove2 2s ease-out infinite;
+}
+
+@keyframes motionLinesAppear {
+  0% {
+    opacity: 0;
+  }
+  20% {
+    opacity: 1;
+  }
+  80% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes motionLineMove1 {
+  0% {
+    transform: translateX(0);
+    opacity: 0;
+  }
+  20% {
+    opacity: 0.2;
+  }
+  80% {
+    opacity: 0.2;
+  }
+  100% {
+    transform: translateX(10px);
+    opacity: 0;
+  }
+}
+
+@keyframes motionLineMove2 {
+  0% {
+    transform: translateX(0);
+    opacity: 0;
+  }
+  20% {
+    opacity: 0.15;
+  }
+  80% {
+    opacity: 0.15;
+  }
+  100% {
+    transform: translateX(8px);
+    opacity: 0;
+  }
+}
+
+/* Container animations */
+.logo-container.animated {
+  animation: logoFloat 4s ease-in-out infinite;
+}
+
+@keyframes logoFloat {
+  0%, 100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  25% {
+    transform: translateY(-5px) rotate(1deg);
+  }
+  50% {
+    transform: translateY(0) rotate(0deg);
+  }
+  75% {
+    transform: translateY(-3px) rotate(-1deg);
+  }
+}
+
+/* Hover effects */
+.logo-container:hover .lance-group {
+  animation: lanceThrow 1s ease-out infinite;
+}
+
+.logo-container:hover .throwing-arm {
+  animation: armThrow 1s ease-out infinite;
+}
+
+.logo-container:hover {
+  transform: scale(1.1);
+  transition: transform 0.3s ease;
+}
+
