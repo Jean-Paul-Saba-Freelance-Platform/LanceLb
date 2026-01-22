@@ -36,4 +36,5 @@ npm run dev
 - Authentication (Login/Signup)
 - Glassmorphism UI design
 - User types: Freelancer and Client/Employer
+- Landing page + Routing to sign in/ log in
 

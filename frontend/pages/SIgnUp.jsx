@@ -1,7 +1,8 @@
 import React, { useState } from 'react'
-import './signUp.css'
+import { Link } from 'react-router-dom'
+import './Auth.css'
 
-const SignUp = ({ onSwitchToLogin }) => {
+const SignUp = () => {
     const [formData, setFormData] = useState({
         name: '',
         email: '',
@@ -62,21 +63,21 @@ const SignUp = ({ onSwitchToLogin }) => {
     }
 
     return (
-        <div className="signup-container">
-            <div className="signup-card glass-card">
-                <div className="signup-header">
+        <div className="auth-container">
+            <div className="auth-card">
+                <div className="auth-header">
                     <h1>Create Account</h1>
-                    <p className="signup-subtitle">Join us and start your freelance journey</p>
+                    <p className="auth-subtitle">Join us and start your freelance journey</p>
                 </div>
 
-                <form onSubmit={handleSubmit} className="signup-form">
+                <form onSubmit={handleSubmit} className="auth-form">
                     <div className="form-group">
                         <label htmlFor="name">Full Name</label>
                         <input
                             type="text"
                             id="name"
                             name="name"
-                            className="glass-input"
+                            className="auth-input"
                             placeholder="Enter your full name"
                             value={formData.name}
                             onChange={handleChange}
@@ -91,7 +92,7 @@ const SignUp = ({ onSwitchToLogin }) => {
                             type="email"
                             id="email"
                             name="email"
-                            className="glass-input"
+                            className="auth-input"
                             placeholder="Enter your email"
                             value={formData.email}
                             onChange={handleChange}
@@ -105,7 +106,7 @@ const SignUp = ({ onSwitchToLogin }) => {
                         <select
                             id="userType"
                             name="userType"
-                            className="glass-input"
+                            className="auth-input"
                             value={formData.userType}
                             onChange={handleChange}
                         >
@@ -120,7 +121,7 @@ const SignUp = ({ onSwitchToLogin }) => {
                             type="password"
                             id="password"
                             name="password"
-                            className="glass-input"
+                            className="auth-input"
                             placeholder="Create a password"
                             value={formData.password}
                             onChange={handleChange}
@@ -135,7 +136,7 @@ const SignUp = ({ onSwitchToLogin }) => {
                             type="password"
                             id="confirmPassword"
                             name="confirmPassword"
-                            className="glass-input"
+                            className="auth-input"
                             placeholder="Confirm your password"
                             value={formData.confirmPassword}
                             onChange={handleChange}
@@ -145,24 +146,21 @@ const SignUp = ({ onSwitchToLogin }) => {
                     </div>
 
                     <div className="form-options">
-                        <label className="terms-checkbox">
+                        <label className="checkbox-label">
                             <input type="checkbox" required />
-                            <span>I agree to the <a href="#">Terms & Conditions</a></span>
+                            <span>I agree to the <a href="#" onClick={(e) => e.preventDefault()}>Terms & Conditions</a></span>
                         </label>
                     </div>
 
-                    <button type="submit" className="glass-button signup-button">
+                    <button type="submit" className="auth-button-primary">
                         Create Account
                     </button>
                 </form>
 
-                <div className="signup-footer">
+                <div className="auth-footer">
                     <p>
                         Already have an account?{' '}
-                        <a href="#" className="login-link" onClick={(e) => {
-                            e.preventDefault()
-                            if (onSwitchToLogin) onSwitchToLogin()
-                        }}>Sign in</a>
+                        <Link to="/login" className="auth-link">Sign in</Link>
                     </p>
                 </div>
             </div>
