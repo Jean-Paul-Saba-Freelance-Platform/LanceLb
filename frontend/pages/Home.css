@@ -16,10 +16,6 @@
   --text-muted: #9ca3af;
 }
 
-html {
-  scroll-behavior: smooth;
-}
-
 .landing-container {
   min-height: 100vh;
   display: flex;
@@ -44,12 +40,6 @@ html {
   border: 1px solid var(--glass-border);
   border-radius: var(--glass-radius);
   box-shadow: var(--glass-shadow);
-  transition: all 0.3s ease;
-}
-
-.glass:hover {
-  background: var(--glass-bg-hover);
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.1);
 }
 
 .glass-header {
@@ -94,11 +84,6 @@ html {
   color: var(--text-primary);
   font-weight: 600;
   font-size: 1.25rem;
-  transition: opacity 0.2s ease;
-}
-
-.brand-link:hover {
-  opacity: 0.8;
 }
 
 .brand-logo {
@@ -122,12 +107,7 @@ html {
   font-size: 0.95rem;
   font-weight: 500;
   text-decoration: none;
-  transition: color 0.2s ease;
   outline: none;
-}
-
-.nav-link:hover {
-  color: var(--accent-color);
 }
 
 .nav-link:focus {
@@ -151,13 +131,7 @@ html {
   text-decoration: none;
   padding: 0.5rem 1rem;
   border-radius: 6px;
-  transition: all 0.2s ease;
   outline: none;
-}
-
-.nav-link-button:hover {
-  background: rgba(0, 0, 0, 0.04);
-  color: var(--accent-color);
 }
 
 .nav-link-button:focus {
@@ -173,14 +147,7 @@ html {
   text-decoration: none;
   padding: 0.5rem 1.25rem;
   border-radius: 6px;
-  transition: all 0.2s ease;
   outline: none;
-}
-
-.nav-cta-button:hover {
-  background: var(--accent-hover);
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(20, 168, 0, 0.25);
 }
 
 .nav-cta-button:focus {
@@ -210,13 +177,8 @@ html {
   text-decoration: none;
   white-space: nowrap;
   padding: 0.5rem 0;
-  transition: color 0.2s ease;
   position: relative;
   outline: none;
-}
-
-.category-link:hover {
-  color: var(--accent-color);
 }
 
 .category-link:focus {
@@ -226,21 +188,6 @@ html {
   border-radius: 4px;
 }
 
-.category-link::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 0;
-  height: 2px;
-  background: var(--accent-color);
-  transition: width 0.2s ease;
-}
-
-.category-link:hover::after,
-.category-link:focus::after {
-  width: 100%;
-}
 
 /* Mobile Menu */
 .mobile-menu-button {
@@ -258,20 +205,7 @@ html {
   width: 24px;
   height: 2px;
   background: var(--text-primary);
-  transition: all 0.3s ease;
   border-radius: 2px;
-}
-
-.menu-line.open:nth-child(1) {
-  transform: rotate(45deg) translate(7px, 7px);
-}
-
-.menu-line.open:nth-child(2) {
-  opacity: 0;
-}
-
-.menu-line.open:nth-child(3) {
-  transform: rotate(-45deg) translate(7px, -7px);
 }
 
 /* Mobile Sidebar */
@@ -298,7 +232,6 @@ html {
   background: rgba(0, 0, 0, 0.3);
   backdrop-filter: blur(4px);
   opacity: 0;
-  transition: opacity 0.3s ease;
 }
 
 .mobile-sidebar.open .sidebar-overlay {
@@ -325,7 +258,6 @@ html {
   flex-direction: column;
   gap: 1.5rem;
   transform: translateX(100%);
-  transition: transform 0.3s ease;
   overflow-y: auto;
 }
 
@@ -353,11 +285,6 @@ html {
   align-items: center;
   justify-content: center;
   border-radius: 6px;
-  transition: background 0.2s ease;
-}
-
-.sidebar-close:hover {
-  background: rgba(0, 0, 0, 0.04);
 }
 
 .sidebar-nav {
@@ -374,14 +301,9 @@ html {
   padding: 0.75rem;
   border-radius: 6px;
   text-decoration: none;
-  transition: all 0.2s ease;
   outline: none;
 }
 
-.sidebar-link:hover {
-  color: var(--accent-color);
-  background: rgba(20, 168, 0, 0.05);
-}
 
 .sidebar-link:focus {
   color: var(--accent-color);
@@ -411,7 +333,6 @@ html {
   display: block;
   border-radius: 6px;
   font-weight: 500;
-  transition: all 0.2s ease;
   outline: none;
 }
 
@@ -421,11 +342,6 @@ html {
   border: 1px solid var(--glass-border);
 }
 
-.sidebar-button:first-child:hover {
-  background: rgba(0, 0, 0, 0.04);
-  color: var(--accent-color);
-  border-color: var(--accent-color);
-}
 
 .sidebar-button:first-child:focus {
   outline: 2px solid var(--accent-color);
@@ -438,11 +354,6 @@ html {
   border: none;
 }
 
-.sidebar-button-primary:hover {
-  background: var(--accent-hover);
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(20, 168, 0, 0.25);
-}
 
 .sidebar-button-primary:focus {
   outline: 2px solid var(--accent-color);
@@ -506,16 +417,9 @@ html {
   text-decoration: none;
   padding: 1rem 2.5rem;
   border-radius: 8px;
-  transition: all 0.2s ease;
   box-shadow: 0 4px 16px rgba(20, 168, 0, 0.3);
   outline: none;
   display: inline-block;
-}
-
-.hero-cta-button:hover {
-  background: var(--accent-hover);
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(20, 168, 0, 0.4);
 }
 
 .hero-cta-button:focus {
@@ -523,9 +427,6 @@ html {
   outline-offset: 2px;
 }
 
-.hero-cta-button:active {
-  transform: translateY(0);
-}
 
 .hero-secondary-button {
   background: rgba(255, 255, 255, 0.6);
@@ -538,16 +439,8 @@ html {
   padding: 1rem 2.5rem;
   border-radius: 8px;
   border: 1px solid rgba(255, 255, 255, 0.4);
-  transition: all 0.2s ease;
   outline: none;
   display: inline-block;
-}
-
-.hero-secondary-button:hover {
-  background: rgba(255, 255, 255, 0.75);
-  border-color: rgba(255, 255, 255, 0.5);
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
 }
 
 .hero-secondary-button:focus {
@@ -578,16 +471,7 @@ html {
   align-items: center;
   gap: 0.75rem;
   box-shadow: var(--glass-shadow);
-  animation: float 6s ease-in-out infinite;
-  animation-delay: var(--delay);
   opacity: 0.9;
-  transition: all 0.3s ease;
-}
-
-.profile-card:hover {
-  opacity: 1;
-  transform: scale(1.05);
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.1);
 }
 
 /* Symmetrical placement: 2 left, 2 right */
@@ -611,17 +495,6 @@ html {
   right: 8%;
 }
 
-@keyframes float {
-  0%, 100% {
-    transform: translate(0, 0) rotate(0deg);
-  }
-  33% {
-    transform: translate(var(--offset-x), var(--offset-y)) rotate(2deg);
-  }
-  66% {
-    transform: translate(calc(var(--offset-x) * -0.5), calc(var(--offset-y) * -0.5)) rotate(-1deg);
-  }
-}
 
 .profile-avatar {
   width: 48px;
@@ -661,13 +534,6 @@ html {
   border: 1px solid var(--glass-border);
   border-radius: var(--glass-radius);
   box-shadow: var(--glass-shadow);
-  transition: all 0.3s ease;
-}
-
-.glass-card:hover {
-  background: var(--glass-bg-hover);
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.1);
-  transform: translateY(-2px);
 }
 
 /* Features Section */

@@ -8,7 +8,7 @@ import nodemailer from 'nodemailer'
 import cookieParser from 'cookie-parser'
 import path from 'path'
 import connectDB from './config/mongodb.js'
-
+import authRoutes from './routes/authRoutes.js'
 
 dotenv.config();
 
@@ -21,10 +21,14 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(cors({credentials: true}));
 
-
+//API ENDPOINTS
 app.get('/', (req, res) => {
     res.send('Working');
 });
+
+app.use('/api/auth', authRoutes);
+
+
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });

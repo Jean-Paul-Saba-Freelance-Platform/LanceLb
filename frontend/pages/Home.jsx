@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
-import './Landing.css'
+import './Home.css'
 
-const Landing = () => {
+const Home = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false)
 
   const toggleSidebar = () => {
@@ -13,32 +13,12 @@ const Landing = () => {
     setSidebarOpen(false)
   }
 
-  // Smooth scroll for anchor links
-  useEffect(() => {
-    const handleClick = (e) => {
-      const target = e.target.closest('a')
-      if (target) {
-        const href = target.getAttribute('href')
-        if (href && href.startsWith('#')) {
-          e.preventDefault()
-          const element = document.querySelector(href)
-          if (element) {
-            element.scrollIntoView({ behavior: 'smooth', block: 'start' })
-          }
-        }
-      }
-    }
-
-    document.addEventListener('click', handleClick)
-    return () => document.removeEventListener('click', handleClick)
-  }, [])
-
   // Mock freelancer profiles
   const freelancers = [
-    { name: 'Sarah Chen', role: 'UI/UX Designer', avatar: '👩‍💻' },
-    { name: 'Michael Torres', role: 'Full Stack Dev', avatar: '👨‍💻' },
-    { name: 'Emma Wilson', role: 'Marketing Expert', avatar: '👩‍💼' },
-    { name: 'David Kim', role: 'Data Analyst', avatar: '👨‍🔬' },
+    { name: 'Sarah Chen', role: 'UI/UX Designer', initials: 'SC' },
+    { name: 'Michael Torres', role: 'Full Stack Dev', initials: 'MT' },
+    { name: 'Emma Wilson', role: 'Marketing Expert', initials: 'EW' },
+    { name: 'David Kim', role: 'Data Analyst', initials: 'DK' },
   ]
 
   return (
@@ -50,7 +30,6 @@ const Landing = () => {
           <div className="header-content">
             <div className="header-brand">
               <Link to="/" className="brand-link">
-                <span className="brand-logo">💼</span>
                 <span className="brand-name">FreelanceHub</span>
               </Link>
             </div>
@@ -93,7 +72,6 @@ const Landing = () => {
         <div className="sidebar-content glass-sidebar">
           <div className="sidebar-header">
             <Link to="/" className="brand-link" onClick={closeSidebar}>
-              <span className="brand-logo">💼</span>
               <span className="brand-name">FreelanceHub</span>
             </Link>
             <button 
@@ -101,7 +79,7 @@ const Landing = () => {
               onClick={closeSidebar}
               aria-label="Close menu"
             >
-              ×
+              x
             </button>
           </div>
 
@@ -144,26 +122,6 @@ const Landing = () => {
             </div>
           </div>
 
-          {/* Floating Profile Cards - 4 cards, 2 left, 2 right */}
-          <div className="hero-profiles">
-            {freelancers.slice(0, 4).map((freelancer, index) => (
-              <div 
-                key={index} 
-                className="profile-card glass"
-                style={{
-                  '--delay': `${index * 0.2}s`,
-                  '--offset-x': index % 2 === 0 ? '-15px' : '15px',
-                  '--offset-y': `${index * 25}px`
-                }}
-              >
-                <div className="profile-avatar">{freelancer.avatar}</div>
-                <div className="profile-info">
-                  <div className="profile-name">{freelancer.name}</div>
-                  <div className="profile-role">{freelancer.role}</div>
-                </div>
-              </div>
-            ))}
-          </div>
         </section>
 
         {/* Features Section */}
@@ -215,7 +173,7 @@ const Landing = () => {
       <footer className="landing-footer">
         <div className="footer-content">
           <p className="footer-text">
-            © 2024 FreelanceHub. All rights reserved.
+            (c) 2024 FreelanceHub. All rights reserved.
           </p>
         </div>
       </footer>
@@ -223,4 +181,4 @@ const Landing = () => {
   )
 }
 
-export default Landing
+export default Home

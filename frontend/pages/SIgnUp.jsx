@@ -10,56 +10,49 @@ const SignUp = () => {
         confirmPassword: '',
         userType: 'freelancer'
     })
-
     const [errors, setErrors] = useState({})
 
     const handleChange = (e) => {
-        setFormData({
-            ...formData,
-            [e.target.name]: e.target.value
-        })
-        // Clear error when user starts typing
-        if (errors[e.target.name]) {
-            setErrors({
-                ...errors,
-                [e.target.name]: ''
-            })
+        const { name, value } = e.target
+        setFormData((prev) => ({
+            ...prev,
+            [name]: value
+        }))
+        if (errors[name]) {
+            setErrors((prev) => ({ ...prev, [name]: '' }))
         }
     }
 
     const validateForm = () => {
-        const newErrors = {}
+        const nextErrors = {}
 
-        if (!formData.name.trim()) {
-            newErrors.name = 'Name is required'
-        }
-
+        if (!formData.name.trim()) nextErrors.name = 'Name is required'
         if (!formData.email.trim()) {
-            newErrors.email = 'Email is required'
+            nextErrors.email = 'Email is required'
         } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-            newErrors.email = 'Email is invalid'
+            nextErrors.email = 'Email is invalid'
         }
-
         if (!formData.password) {
-            newErrors.password = 'Password is required'
+            nextErrors.password = 'Password is required'
         } else if (formData.password.length < 6) {
-            newErrors.password = 'Password must be at least 6 characters'
+            nextErrors.password = 'Password must be at least 6 characters'
+        }
+        if (!formData.confirmPassword) {
+            nextErrors.confirmPassword = 'Please confirm your password'
+        } else if (formData.password !== formData.confirmPassword) {
+            nextErrors.confirmPassword = 'Passwords do not match'
         }
 
-        if (formData.password !== formData.confirmPassword) {
-            newErrors.confirmPassword = 'Passwords do not match'
-        }
-
-        setErrors(newErrors)
-        return Object.keys(newErrors).length === 0
+        setErrors(nextErrors)
+        return Object.keys(nextErrors).length === 0
     }
 
     const handleSubmit = (e) => {
         e.preventDefault()
-        if (validateForm()) {
-            // TODO: Add signup logic here
-            console.log('Signup attempt:', formData)
-        }
+        if (!validateForm()) return
+
+        // TODO: Add signup logic here
+        console.log('Signup attempt:', formData)
     }
 
     return (
@@ -142,13 +135,20 @@ const SignUp = () => {
                             onChange={handleChange}
                             required
                         />
-                        {errors.confirmPassword && <span className="error-message">{errors.confirmPassword}</span>}
+                        {errors.confirmPassword && (
+                            <span className="error-message">{errors.confirmPassword}</span>
+                        )}
                     </div>
 
                     <div className="form-options">
                         <label className="checkbox-label">
                             <input type="checkbox" required />
-                            <span>I agree to the <a href="#" onClick={(e) => e.preventDefault()}>Terms & Conditions</a></span>
+                            <span>
+                                I agree to the{' '}
+                                <a href="#" onClick={(e) => e.preventDefault()}>
+                                    Terms & Conditions
+                                </a>
+                            </span>
                         </label>
                     </div>
 
@@ -169,4 +169,4 @@ const SignUp = () => {
 }
 
 export default SignUp
-
+ 
