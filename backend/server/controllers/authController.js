@@ -5,7 +5,7 @@ import User from '../models/userModels.js';
 
 //REGISTER CONTROLLER
 
-const register = async (req, res) => {
+export const register = async (req, res) => {
     const { name, email, password, userType } = req.body;
 
 
@@ -113,3 +113,4 @@ export const logout = async (req, res) => {
         }
 
 }
+

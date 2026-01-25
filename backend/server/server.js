@@ -8,7 +8,7 @@ import nodemailer from 'nodemailer'
 import cookieParser from 'cookie-parser'
 import path from 'path'
 import connectDB from './config/mongodb.js'
-import authRoutes from './routes/authRoutes.js'
+import {authRouter} from './routes/authRoutes.js'
 
 dotenv.config();
 
@@ -26,7 +26,7 @@ app.get('/', (req, res) => {
     res.send('Working');
 });
 
-app.use('/api/auth', authRoutes);
+app.use('/api/auth', authRouter);
 
 
 app.listen(PORT, () => {
