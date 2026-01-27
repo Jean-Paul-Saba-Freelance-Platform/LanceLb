@@ -17,7 +17,7 @@ const Login = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault()
-        // send login data to backend
+        login(formData)
         console.log('Login attempt:', formData)
     }
 
