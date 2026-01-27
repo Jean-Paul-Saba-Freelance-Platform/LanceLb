@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
+import Dither from './Dither'
 import './Auth.css'
 
 const SignUp = () => {
@@ -57,12 +58,19 @@ const SignUp = () => {
 
     return (
         <div className="auth-container">
+            <div className="auth-dither">
+                <Dither
+                    waveColor={[0.58, 0.3, 0.96]}
+                    disableAnimation={false}
+                    enableMouseInteraction={false}
+                    mouseRadius={0.3}
+                    colorNum={4}
+                    waveAmplitude={0.3}
+                    waveFrequency={3}
+                    waveSpeed={0.05}
+                />
+            </div>
             <div className="auth-card">
-                <div className="auth-header">
-                    <h1>Create Account</h1>
-                    <p className="auth-subtitle">Join us and start your freelance journey</p>
-                </div>
-
                 <form onSubmit={handleSubmit} className="auth-form">
                     <div className="form-group">
                         <label htmlFor="name">Full Name</label>

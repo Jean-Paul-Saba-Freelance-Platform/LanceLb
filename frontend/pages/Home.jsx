@@ -1,5 +1,7 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
+import Dither from './Dither'
+import GooeyNav from './GooeyNav'
 import './Home.css'
 
 const Home = () => {
@@ -13,55 +15,34 @@ const Home = () => {
     setSidebarOpen(false)
   }
 
-  // Mock freelancer profiles
-  const freelancers = [
-    { name: 'Sarah Chen', role: 'UI/UX Designer', initials: 'SC' },
-    { name: 'Michael Torres', role: 'Full Stack Dev', initials: 'MT' },
-    { name: 'Emma Wilson', role: 'Marketing Expert', initials: 'EW' },
-    { name: 'David Kim', role: 'Data Analyst', initials: 'DK' },
-  ]
-
   return (
     <div className="landing-container">
-      {/* Two-Level Header */}
+      <div className="landing-dither">
+        <Dither
+          waveColor={[0.58, 0.3, 0.96]}
+          disableAnimation={false}
+          enableMouseInteraction={false}
+          mouseRadius={0.3}
+          colorNum={4}
+          waveAmplitude={0.3}
+          waveFrequency={3}
+          waveSpeed={0.05}
+        />
+      </div>
+
+      {/* Simplified Header with only GooeyNav */}
       <header className="header">
-        {/* Top Row */}
-        <div className="header-top glass glass-header">
-          <div className="header-content">
-            <div className="header-brand">
-              <Link to="/" className="brand-link">
-                <span className="brand-name">FreelanceHub</span>
-              </Link>
-            </div>
-
-            <div className="header-actions">
-              <Link to="/login" className="nav-link-button">Log in</Link>
-              <Link to="/signup" className="nav-cta-button">Sign up</Link>
-            </div>
-
-            {/* Mobile Menu Button */}
-            <button 
-              className="mobile-menu-button"
-              onClick={toggleSidebar}
-              aria-label="Toggle menu"
-            >
-              <span className={`menu-line ${sidebarOpen ? 'open' : ''}`}></span>
-              <span className={`menu-line ${sidebarOpen ? 'open' : ''}`}></span>
-              <span className={`menu-line ${sidebarOpen ? 'open' : ''}`}></span>
-            </button>
-          </div>
-        </div>
-
-        {/* Second Row - Categories */}
-        <div className="header-categories glass glass-header">
-          <div className="header-content">
-            <nav className="categories-nav">
-              <a href="#development" className="category-link">Development & IT</a>
-              <a href="#design" className="category-link">Design & Creative</a>
-              <a href="#sales" className="category-link">Sales & Marketing</a>
-              <a href="#admin" className="category-link">Admin & Support</a>
-              <a href="#more" className="category-link">More</a>
-            </nav>
+        <div className="header-categories">
+          <div className="header-content header-content-center">
+            <GooeyNav
+              items={[
+                { label: 'Development & IT', href: '#development' },
+                { label: 'Design & Creative', href: '#design' },
+                { label: 'Sales & Marketing', href: '#sales' },
+                { label: 'Admin & Support', href: '#admin' },
+                { label: 'More', href: '#more' }
+              ]}
+            />
           </div>
         </div>
       </header>
@@ -72,9 +53,9 @@ const Home = () => {
         <div className="sidebar-content glass-sidebar">
           <div className="sidebar-header">
             <Link to="/" className="brand-link" onClick={closeSidebar}>
-              <span className="brand-name">FreelanceHub</span>
+              <span className="brand-name">LanceLB</span>
             </Link>
-            <button 
+            <button
               className="sidebar-close"
               onClick={closeSidebar}
               aria-label="Close menu"
@@ -106,9 +87,7 @@ const Home = () => {
         {/* Hero Section */}
         <section className="hero-section">
           <div className="hero-content">
-            <h1 className="hero-title">
-              Build your business with top freelancers
-            </h1>
+            <h1 className="hero-title">LanceLB</h1>
             <p className="hero-subtitle">
               Find the right freelancer to begin working on your project within minutes.
             </p>
@@ -121,7 +100,6 @@ const Home = () => {
               </Link>
             </div>
           </div>
-
         </section>
 
         {/* Features Section */}
@@ -173,7 +151,7 @@ const Home = () => {
       <footer className="landing-footer">
         <div className="footer-content">
           <p className="footer-text">
-            (c) 2024 FreelanceHub. All rights reserved.
+            © 2024 LanceLB. All rights reserved.
           </p>
         </div>
       </footer>
