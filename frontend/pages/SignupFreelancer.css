@@ -1,0 +1,349 @@
+/* Freelancer Signup Page Styling - Upwork Style */
+
+.signup-freelancer-container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  padding: 2rem 1rem;
+}
+
+/* Header */
+.signup-freelancer-header {
+  max-width: 1200px;
+  margin: 0 auto 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 1rem;
+}
+
+.header-brand-small {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #1f2937;
+  text-decoration: none;
+  transition: opacity 0.2s ease;
+}
+
+.header-brand-small:hover {
+  opacity: 0.8;
+}
+
+.header-login-link {
+  color: #6b7280;
+  font-size: 0.9rem;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.header-login-link:hover {
+  color: #14a800;
+}
+
+/* Main Content */
+.signup-freelancer-content {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.signup-freelancer-card {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.65);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: 18px;
+  padding: 3rem 2.5rem;
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.08),
+    0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.signup-freelancer-title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #1f2937;
+  text-align: center;
+  margin: 0 0 2rem 0;
+  line-height: 1.2;
+}
+
+/* OAuth Buttons */
+.oauth-buttons {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.oauth-button {
+  padding: 0.875rem 1rem;
+  font-size: 0.95rem;
+  font-weight: 500;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  background: white;
+  color: #1f2937;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  outline: none;
+}
+
+.oauth-button:hover {
+  background: #f9fafb;
+  border-color: rgba(0, 0, 0, 0.15);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.oauth-button:focus {
+  outline: 2px solid #14a800;
+  outline-offset: 2px;
+}
+
+/* Divider */
+.divider {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin: 1.5rem 0;
+}
+
+.divider-line {
+  flex: 1;
+  height: 1px;
+  background: rgba(0, 0, 0, 0.1);
+}
+
+.divider-text {
+  color: #6b7280;
+  font-size: 0.9rem;
+}
+
+/* Form */
+.signup-freelancer-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.form-group label {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #1f2937;
+}
+
+.form-input {
+  width: 100%;
+  padding: 0.875rem 1rem;
+  font-size: 1rem;
+  font-family: inherit;
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  color: #1f2937;
+  transition: all 0.2s ease;
+  box-sizing: border-box;
+}
+
+.form-input:focus {
+  outline: none;
+  background: rgba(255, 255, 255, 0.85);
+  border-color: #14a800;
+  box-shadow: 0 0 0 3px rgba(20, 168, 0, 0.1);
+}
+
+.form-input.error {
+  border-color: #ef4444;
+}
+
+.form-input.error:focus {
+  border-color: #ef4444;
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+}
+
+select.form-input {
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%236b7280' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  padding-right: 2.5rem;
+}
+
+.error-message {
+  color: #ef4444;
+  font-size: 0.85rem;
+  margin-top: 0.25rem;
+}
+
+.error-message-global {
+  background: #fee2e2;
+  color: #991b1b;
+  padding: 0.875rem 1rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  border: 1px solid #fecaca;
+}
+
+.success-message {
+  background: #d1fae5;
+  color: #065f46;
+  padding: 0.875rem 1rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  border: 1px solid #a7f3d0;
+}
+
+/* Checkboxes */
+.form-checkboxes {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 0.5rem;
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  cursor: pointer;
+  color: #6b7280;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.checkbox-label.error {
+  color: #ef4444;
+}
+
+.checkbox-label input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  margin-top: 2px;
+  cursor: pointer;
+  accent-color: #14a800;
+  flex-shrink: 0;
+}
+
+.checkbox-label a {
+  color: #14a800;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.checkbox-label a:hover {
+  text-decoration: underline;
+}
+
+/* Submit Button */
+.submit-button {
+  width: 100%;
+  padding: 0.875rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  background: #14a800;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(20, 168, 0, 0.2);
+  margin-top: 0.5rem;
+  outline: none;
+}
+
+.submit-button:hover:not(:disabled) {
+  background: #12a000;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(20, 168, 0, 0.3);
+}
+
+.submit-button:focus {
+  outline: 3px solid rgba(20, 168, 0, 0.3);
+  outline-offset: 2px;
+}
+
+.submit-button:disabled {
+  background: #9ca3af;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* Footer */
+.signup-freelancer-footer {
+  text-align: center;
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.signup-freelancer-footer p {
+  color: #6b7280;
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+.footer-link {
+  color: #14a800;
+  font-weight: 600;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.footer-link:hover {
+  color: #12a000;
+  text-decoration: underline;
+}
+
+/* Responsive Design */
+@media (max-width: 640px) {
+  .signup-freelancer-header {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: flex-start;
+  }
+
+  .signup-freelancer-card {
+    padding: 2rem 1.5rem;
+  }
+
+  .signup-freelancer-title {
+    font-size: 1.75rem;
+  }
+
+  .oauth-buttons {
+    grid-template-columns: 1fr;
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .signup-freelancer-card {
+    padding: 1.5rem 1.25rem;
+  }
+
+  .signup-freelancer-title {
+    font-size: 1.5rem;
+  }
+}
