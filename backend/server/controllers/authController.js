@@ -36,9 +36,7 @@ export const register = async (req, res) => {
         res.cookie('token', token, {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production', 
-            sameSite: process.env.NODE_ENV === 'production' ?
-            'None' : 'strict',
-
+            sameSite: process.env.NODE_ENV === 'production'?"none" :"lax",
             maxAge: 7 * 24 * 60 * 60 * 1000 
         });
 
@@ -53,6 +51,7 @@ export const register = async (req, res) => {
 
 
         await transporter.sendMail(mailOptions);
+        user.password = undefined;
         return res.json({success:true, message:'User created successfully', user});
 
     }
@@ -92,6 +91,7 @@ export const login = async (req, res) => {
             maxAge: 7 * 24 * 60 * 60 * 1000 });
 
         //RESPONSE SENDING
+        user.password = undefined;
         return res.json({success:true, message:'Login successful', user});
 
     }
@@ -118,59 +118,63 @@ export const logout = async (req, res) => {
 }
 //SEND VERIFICATION OTP CONTROLLER
 export const sendVerifyOtp = async (req, res) => {
-    const { email } = req.body;
-    if(!email) {
-        return res.status(400).json({success:false, message:'Email is required'});
-    }
     try {
-        const {userId} = req.body;
-        const user = await User.findById(userId);
-        if(user.isAccountVerified) {
-            return res.status(400).json({success:false, message:'Account already verified'});
-        }
-        const otp = Math.floor(100000 + Math.random() * 900000);
-        user.verifyOtp = otp;
-        user.verifyOtpExpiry = Date.now() + 3600000;
+      const user = await User.findById(req.userId);
+      if (!user) return res.status(404).json({ success: false, message: "User not found" });
+      if (user.isAccountVerified) return res.status(400).json({ success: false, message: "Account already verified" });
+  
+      const otp = String(Math.floor(100000 + Math.random() * 900000));
+      user.verifyOtp = otp;
+      user.verifyOtpExpiry = Date.now() + 60 * 60 * 1000;
+      await user.save();
+  
+      await transporter.sendMail({
+        from: process.env.SENDER_EMAIL,
+        to: user.email,
+        subject: "Verify your email for LanceDB",
+        text: `Your verification OTP is ${otp}.`,
+      });
+  
+      res.json({ success: true, message: "Verify OTP sent successfully" });
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ success: false, message: "Server error" });
+    }
+  };
+  
+  export const verifyOtp = async (req, res) => {
+    const { otp } = req.body;
+  
+    if (!otp) return res.status(400).json({ success: false, message: "OTP is required" });
+  
+    try {
+      const user = await User.findById(req.userId);
+      if (!user) return res.status(404).json({ success: false, message: "User not found" });
+  
+      if (!user.verifyOtp || !user.verifyOtpExpiry) {
+        return res.status(400).json({ success: false, message: "No OTP requested" });
+      }
+  
+      if (user.verifyOtpExpiry < Date.now()) {
+        user.verifyOtp = "";
+        user.verifyOtpExpiry = 0;
         await user.save();
-        const mailOptions = {
-            from: process.env.SENDER_EMAIL,
-            to: user.email,
-            subject: 'Verify your email for LanceDB',
-            text: `Your verification OTP is ${otp}.`
-        };
-        await transporter.sendMail(mailOptions);
-        return res.json({success:true, message:'Verify OTP sent successfully'});
+        return res.status(400).json({ success: false, message: "OTP expired" });
+      }
+  
+      if (String(user.verifyOtp) !== String(otp)) {
+        return res.status(400).json({ success: false, message: "Invalid OTP" });
+      }
+  
+      user.isAccountVerified = true;
+      user.verifyOtp = "";
+      user.verifyOtpExpiry = 0;
+      await user.save();
+  
+      res.json({ success: true, message: "Email verified successfully" });
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ success: false, message: "Server error" });
     }
-    catch (error) {
-        return res.status(500).json({success:false, message:error.message});
-    }
-
-}
-export const verifyOtp = async (req, res) => {
-    const { userId, otp } = req.body;
-    if(!userId || !otp) {
-        return res.status(400).json({success:false, message:'All fields are required'});
-    }
-    try {
-        const user = await User.findById(userId);
-        if(!user) {
-            return res.status(404).json({success:false, message:'User not found'});
-        }
-    }
-    catch (error) {
-        return res.status(500).json({success:false, message:error.message});
-    }
-    if(user.verifyOtp==='' || user.verifyOtp !== otp) {
-        return res.status(400).json({success:false, message:'Invalid OTP'});
-    }
-    if(user.verifyOtpExpiry < Date.now()) {
-        return res.status(400).json({success:false, message:'OTP expired'});
-    }
-    user.isAccountVerified = true;
-    user.verifyOtp = '';
-    user.verifyOtpExpiry = 0;
-    await user.save();
-    return res.json({success:true, message:'Email verified successfully'});
-
-
-}
+  };
+  
