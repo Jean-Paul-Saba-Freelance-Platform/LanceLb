@@ -80,19 +80,16 @@ const SignupFreelancer = () => {
     setSubmitSuccess(false)
 
     try {
-      const response = await fetch('http://localhost:5000/api/auth/register', {
+      const response = await fetch('http://127.0.0.1:4000/api/auth/register', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          firstName: formData.firstName.trim(),
-          lastName: formData.lastName.trim(),
+          name: `${formData.firstName.trim()} ${formData.lastName.trim()}`,
           email: formData.email.trim(),
           password: formData.password,
-          role: 'freelancer',
-          country: formData.country,
-          marketingOptIn: formData.marketingOptIn
+          userType: 'freelancer'
         })
       })
 

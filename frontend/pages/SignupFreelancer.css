@@ -36,7 +36,7 @@
 }
 
 .header-login-link:hover {
-  color: #14a800;
+  color: #a855f7;
 }
 
 /* Main Content */
@@ -99,7 +99,7 @@
 }
 
 .oauth-button:focus {
-  outline: 2px solid #14a800;
+  outline: 2px solid #a855f7;
   outline-offset: 2px;
 }
 
@@ -165,8 +165,8 @@
 .form-input:focus {
   outline: none;
   background: rgba(255, 255, 255, 0.85);
-  border-color: #14a800;
-  box-shadow: 0 0 0 3px rgba(20, 168, 0, 0.1);
+  border-color: #a855f7;
+  box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.1);
 }
 
 .form-input.error {
@@ -203,12 +203,12 @@ select.form-input {
 }
 
 .success-message {
-  background: #d1fae5;
-  color: #065f46;
+  background: #f3e8ff;
+  color: #6b21a8;
   padding: 0.875rem 1rem;
   border-radius: 8px;
   font-size: 0.9rem;
-  border: 1px solid #a7f3d0;
+  border: 1px solid #e9d5ff;
 }
 
 /* Checkboxes */
@@ -238,12 +238,12 @@ select.form-input {
   height: 18px;
   margin-top: 2px;
   cursor: pointer;
-  accent-color: #14a800;
+  accent-color: #a855f7;
   flex-shrink: 0;
 }
 
 .checkbox-label a {
-  color: #14a800;
+  color: #a855f7;
   text-decoration: none;
   font-weight: 500;
 }
@@ -258,25 +258,25 @@ select.form-input {
   padding: 0.875rem 1.5rem;
   font-size: 1rem;
   font-weight: 600;
-  background: #14a800;
+  background: #a855f7;
   color: white;
   border: none;
   border-radius: 8px;
   cursor: pointer;
   transition: all 0.2s ease;
-  box-shadow: 0 4px 12px rgba(20, 168, 0, 0.2);
+  box-shadow: 0 4px 12px rgba(168, 85, 247, 0.2);
   margin-top: 0.5rem;
   outline: none;
 }
 
 .submit-button:hover:not(:disabled) {
-  background: #12a000;
+  background: #9333ea;
   transform: translateY(-1px);
-  box-shadow: 0 6px 16px rgba(20, 168, 0, 0.3);
+  box-shadow: 0 6px 16px rgba(168, 85, 247, 0.3);
 }
 
 .submit-button:focus {
-  outline: 3px solid rgba(20, 168, 0, 0.3);
+  outline: 3px solid rgba(168, 85, 247, 0.3);
   outline-offset: 2px;
 }
 
@@ -302,14 +302,14 @@ select.form-input {
 }
 
 .footer-link {
-  color: #14a800;
+  color: #a855f7;
   font-weight: 600;
   text-decoration: none;
   transition: color 0.2s ease;
 }
 
 .footer-link:hover {
-  color: #12a000;
+  color: #9333ea;
   text-decoration: underline;
 }
 

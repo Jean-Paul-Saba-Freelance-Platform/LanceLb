@@ -7,9 +7,10 @@ import transporter from '../config/nodemailer.js';
 //REGISTER CONTROLLER
 export const register = async (req, res) => {
     const { name, email, password, userType } = req.body;
-
+    console.log("Register attempt:", { name, email, userType }); // DEBUG LOG
 
     if(!name || !email || !password || !userType) {
+        console.log("Register failed: Missing fields"); // DEBUG LOG
         return res.status(400).json({success:false, message:'All fields are required'});
     }
 
@@ -17,6 +18,7 @@ export const register = async (req, res) => {
     try {
         const existingUser = await User.findOne({ email });
         if(existingUser) {
+            console.log("Register failed: User exists"); // DEBUG LOG
             return res.status(409).json({success:false, message:'User already exists'});
         }
 
@@ -26,6 +28,8 @@ export const register = async (req, res) => {
         const user = new User({ name, email, password:hashedPassword, userType });
 
         await user.save();
+        const userCount = await User.countDocuments();
+        console.log("User saved to DB. Total users in collection:", userCount); // DEBUG LOG
 
         const token = jwt.sign(
             { userId: user._id },
@@ -42,28 +46,36 @@ export const register = async (req, res) => {
 
 
         //SEND VERIFICATION EMAIL
-        const mailOptions = {
-            from: process.env.SENDER_EMAIL,
-            to: email,
-            subject: 'Verify your email',
-            text: `Welcome to LanceDB, Your account has been created successfully. Please verify your email to get started.`
-        };
+        try {
+            const mailOptions = {
+                from: process.env.SENDER_EMAIL,
+                to: email,
+                subject: 'Verify your email',
+                text: `Welcome to LanceLB, Your account has been created successfully. Please verify your email to get started.`
+            };
+            await transporter.sendMail(mailOptions);
+            console.log("Verification email sent to:", email); // DEBUG LOG
+        } catch (mailError) {
+            console.error("Mail sending failed:", mailError.message);
+            // Don't fail the whole registration if mail fails
+        }
 
-
-        await transporter.sendMail(mailOptions);
         user.password = undefined;
-        return res.json({success:true, message:'User created successfully', user});
+        return res.json({success:true, message:'User created successfully', user, token});
 
     }
 
 
     catch (error) {
+        console.error("Register error:", error); // DEBUG LOG
         return res.status(500).json({success:false, message:error.message});
     }
 }
 //LOGIN CONTROLLER
 export const login = async (req, res) => {
     const { email, password } = req.body;
+    console.log("Login attempt:", { email }); // DEBUG LOG
+
     //INPUT VALIDATION
     if(!email || !password) {
         return res.status(400).json({success:false, message:'All fields are required'});
@@ -72,11 +84,13 @@ export const login = async (req, res) => {
         const user = await User.findOne({ email });
         //USER CHECK
         if(!user) {
+            console.log("Login failed: User not found"); // DEBUG LOG
             return res.status(404).json({success:false, message:'User not found'});
         }
         const isMatch = await bcrypt.compare(password, user.password);
         //PASSWORD CHECK
         if(!isMatch) {
+            console.log("Login failed: Invalid password"); // DEBUG LOG
             return res.status(401).json({success:false, message:'Invalid password'});
         }
 
@@ -92,10 +106,12 @@ export const login = async (req, res) => {
 
         //RESPONSE SENDING
         user.password = undefined;
-        return res.json({success:true, message:'Login successful', user});
+        console.log("Login successful for:", email); // DEBUG LOG
+        return res.json({success:true, message:'Login successful', user, token});
 
     }
     catch (error) {
+        console.error("Login error:", error); // DEBUG LOG
         return res.status(500).json({success:false, message:error.message});
     }
 }

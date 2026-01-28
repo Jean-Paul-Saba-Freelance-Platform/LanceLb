@@ -6,6 +6,11 @@ import './TopNav.css'
 
 const TopNav = ({ userName, userAvatar }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
+  
+  // Get user from localStorage to determine the brand link
+  const userStr = localStorage.getItem('user')
+  const user = userStr ? JSON.parse(userStr) : null
+  const brandLink = user?.userType === 'freelancer' ? '/freelancer/home' : '/'
 
   const handleAvatarClick = () => {
     setIsDropdownOpen(!isDropdownOpen)
@@ -19,7 +24,7 @@ const TopNav = ({ userName, userAvatar }) => {
     <nav className="top-nav">
       <div className="top-nav-container">
         {/* Left: Brand */}
-        <Link to="/" className="top-nav-brand">
+        <Link to={brandLink} className="top-nav-brand">
           FreelanceHub
         </Link>
 

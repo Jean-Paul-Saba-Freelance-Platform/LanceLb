@@ -23,21 +23,23 @@ const connectDB = async () => {
         });
 
         // Connect to MongoDB
-        // If MONGO_URI already includes a database name, use it as-is
-        // Otherwise, append the database name
         let connectionString = mongoUri;
         
-        // Check if the URI already has a database name (contains / after the host)
-        // MongoDB Atlas URIs typically include the database name
-        // Pattern: mongodb+srv://... or mongodb://... followed by /database
-        if (!mongoUri.match(/\/[^\/\?]+(\?|$)/)) {
-            // No database name in URI, append it
-            // Use ? if URI has query params, & if it doesn't
-            const separator = mongoUri.includes('?') ? '&' : '?';
-            connectionString = `${mongoUri.replace(/\/$/, '')}/freelance-project`;
+        // If the URI doesn't contain a database name, add one
+        // A typical URI is mongodb+srv://<user>:<pass>@<cluster>/<database>?<options>
+        // We look for the part between the last / and the first ?
+        const dbNameMatch = mongoUri.match(/\/([^\/\?]+)(\?|$)/);
+        if (!dbNameMatch || dbNameMatch[1] === 'test') {
+            const baseUrl = mongoUri.split('?')[0].replace(/\/$/, '');
+            const options = mongoUri.includes('?') ? '?' + mongoUri.split('?')[1] : '';
+            connectionString = `${baseUrl}/freelance-project${options}`;
+            console.log('No specific database found in URI, using: freelance-project');
+        } else {
+            console.log(`Connecting to database: ${dbNameMatch[1]}`);
         }
 
         await mongoose.connect(connectionString);
+        console.log(`MongoDB connected to: ${mongoose.connection.name}`);
         
     } catch (error) {
         console.error('Failed to connect to MongoDB:', error.message);

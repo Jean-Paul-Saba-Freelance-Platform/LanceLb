@@ -36,7 +36,16 @@ connectDB();
 
 app.use(express.json());
 app.use(cookieParser());
-app.use(cors({ origin: 'http://localhost:5173', credentials: true })); 
+
+// Debug middleware to log requests
+app.use((req, res, next) => {
+    console.log(`${req.method} ${req.url}`);
+    if (req.method === 'POST') {
+        console.log('Body:', req.body);
+    }
+    next();
+});
+app.use(cors({ origin: ['http://localhost:5173', 'http://127.0.0.1:5173'], credentials: true })); 
 
 //API ENDPOINTS
 app.get('/', (req, res) => {
