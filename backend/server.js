@@ -1,14 +1,22 @@
 // Backend server for Freelance Project
-// TODO: Set up Express server and database connection
 import express from "express"
 import mongoose from "mongoose"
 import cors from "cors"
 import dotenv from "dotenv"
+import authRoutes from "./server/routes/authRoutes.js"
+
 
 dotenv.config()
 
 const app = express()
-app.use(cors())
+
+// Enable CORS for frontend (allow requests from Vite dev server)
+app.use(cors({
+  origin: 'http://localhost:5173',
+  credentials: true
+}))
+
+// Enable JSON body parsing for POST requests
 app.use(express.json())
 
 console.log("Backend server starting...")
@@ -22,6 +30,9 @@ mongoose.connect(process.env.MONGO_URI)
 app.get("/", (req, res) => {
   res.send("Backend is running and connected to MongoDB!")
 })
+
+// Mount auth routes at /api/auth
+app.use("/api/auth", authRoutes)
 
 // Start server
 const PORT = process.env.PORT || 5000

@@ -13,11 +13,25 @@ import authRouter from './routes/authRoutes.js'
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+// Try to load .env from server directory, fallback to parent directory
 dotenv.config({ path: path.join(__dirname, '.env') });
+// Also try parent directory (backend root)
+if (!process.env.MONGO_URI) {
+    dotenv.config({ path: path.join(__dirname, '..', '.env') });
+}
 
 const app = express();
 
 const PORT = process.env.PORT || 4000;
+
+// Verify MONGO_URI is set before connecting
+if (!process.env.MONGO_URI) {
+    console.error('ERROR: MONGO_URI is not defined in environment variables');
+    console.error('Please create a .env file in the backend/ or backend/server/ directory with:');
+    console.error('MONGO_URI=your_mongodb_connection_string');
+    process.exit(1);
+}
+
 connectDB();
 
 app.use(express.json());
