@@ -1,0 +1,159 @@
+.freelancer-layout {
+  position: relative;
+  min-height: 100vh;
+  width: 100%;
+  background: radial-gradient(circle at top, #2a0f3b 0%, #12081b 45%, #0a0a0f 100%);
+  overflow-x: hidden;
+  color: #f3f4f6;
+}
+
+.layout-background {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  opacity: 0.45;
+  pointer-events: none;
+}
+
+.layout-content {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  min-height: 100vh;
+}
+
+/* Global overrides for freelancer pages when inside this layout */
+.freelancer-layout .freelancer-home,
+.freelancer-layout .freelancer-profile-page,
+.freelancer-layout .freelancer-stats-page,
+.freelancer-layout .freelancer-settings-page {
+  background: transparent !important;
+}
+
+.freelancer-layout .greeting-card,
+.freelancer-layout .jobs-search-input,
+.freelancer-layout .main-section-card,
+.freelancer-layout .sidebar-card,
+.freelancer-layout .stats-card,
+.freelancer-layout .settings-card,
+.freelancer-layout .right-sidebar-card,
+.freelancer-layout .profile-header {
+  background: rgba(14, 12, 20, 0.6) !important;
+  backdrop-filter: blur(18px) !important;
+  -webkit-backdrop-filter: blur(18px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  color: #f3f4f6 !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3) !important;
+  transition: all 0.3s ease !important;
+}
+
+.freelancer-layout .greeting-card:hover,
+.freelancer-layout .main-section-card:hover,
+.freelancer-layout .sidebar-card:hover,
+.freelancer-layout .stats-card:hover,
+.freelancer-layout .settings-card:hover,
+.freelancer-layout .right-sidebar-card:hover,
+.freelancer-layout .job-card:hover,
+.freelancer-layout .profile-header:hover {
+  border-color: rgba(255, 255, 255, 0.2) !important;
+  box-shadow: 0 12px 48px rgba(0, 0, 0, 0.4) !important;
+  transform: translateY(-2px);
+}
+
+.freelancer-layout h1, 
+.freelancer-layout h2, 
+.freelancer-layout h3, 
+.freelancer-layout .greeting-text,
+.freelancer-layout .section-title,
+.freelancer-layout .profile-header-name,
+.freelancer-layout .stats-page-title,
+.freelancer-layout .settings-page-title {
+  color: #f3f4f6 !important;
+}
+
+.freelancer-layout p,
+.freelancer-layout span,
+.freelancer-layout .greeting-date,
+.freelancer-layout .sidebar-text,
+.freelancer-layout .profile-header-location,
+.freelancer-layout .stats-page-subtitle,
+.freelancer-layout .settings-page-subtitle,
+.freelancer-layout .bio-text,
+.freelancer-layout .section-placeholder-text {
+  color: #cbd5f5 !important;
+}
+
+.freelancer-layout .tab-button:not(.active),
+.freelancer-layout .portfolio-tab:not(.active),
+.freelancer-layout .metric-tab:not(.active),
+.freelancer-layout .settings-nav-item:not(.active) {
+  color: #94a3b8 !important;
+}
+
+.freelancer-layout .jobs-search-input {
+  color: #f3f4f6 !important;
+  border-radius: 9999px !important;
+}
+
+.freelancer-layout .jobs-search-input:focus {
+  border-color: #a855f7 !important;
+  box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.15) !important;
+}
+
+.freelancer-layout .jobs-search-input::placeholder {
+  color: rgba(255, 255, 255, 0.4) !important;
+}
+
+/* Component specific overrides */
+.freelancer-layout .top-nav {
+  background: rgba(14, 12, 20, 0.8) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+.freelancer-layout .top-nav-search {
+  background: rgba(255, 255, 255, 0.05) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  border-radius: 9999px !important;
+}
+
+.freelancer-layout .top-nav-search-input {
+  background: transparent !important;
+  border: none !important;
+  color: #f3f4f6 !important;
+}
+
+.freelancer-layout .top-nav-search-dropdown {
+  background: rgba(255, 255, 255, 0.05) !important;
+  border-left: 1px solid rgba(255, 255, 255, 0.1) !important;
+  color: #f3f4f6 !important;
+}
+
+.freelancer-layout .job-card {
+  background: rgba(255, 255, 255, 0.03) !important;
+  backdrop-filter: blur(10px) !important;
+  -webkit-backdrop-filter: blur(10px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  border-radius: 12px !important;
+  padding: 1.5rem !important;
+  margin-bottom: 1rem !important;
+  transition: all 0.3s ease !important;
+}
+
+.freelancer-layout .job-title {
+  color: #f3f4f6 !important;
+}
+
+.freelancer-layout .job-tag,
+.freelancer-layout .skill-tag {
+  background: rgba(255, 255, 255, 0.05) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  color: #cbd5f5 !important;
+}
+
+.freelancer-layout .online-indicator {
+  border-color: rgba(14, 12, 20, 0.6) !important;
+}

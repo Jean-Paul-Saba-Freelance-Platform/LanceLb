@@ -69,29 +69,50 @@
 .top-nav-search {
   display: flex;
   align-items: center;
-  border: 1px solid rgba(0, 0, 0, 0.1);
-  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 9999px;
   overflow: hidden;
-  background: white;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   flex-shrink: 0;
+  transition: all 0.3s ease;
+}
+
+.top-nav-search:focus-within {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: #a855f7;
+  box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.15);
 }
 
 .top-nav-search-input {
-  padding: 0.5rem 0.75rem;
+  padding: 0.5rem 1rem;
   border: none;
   outline: none;
   font-size: 0.9rem;
   width: 200px;
+  background: transparent;
+  color: white;
+}
+
+.top-nav-search-input::placeholder {
+  color: rgba(255, 255, 255, 0.5);
 }
 
 .top-nav-search-dropdown {
-  padding: 0.5rem 0.75rem;
+  padding: 0.5rem 1rem;
   border: none;
-  border-left: 1px solid rgba(0, 0, 0, 0.1);
-  background: #f9fafb;
+  border-left: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.05);
+  color: white;
   cursor: pointer;
   font-size: 0.9rem;
   outline: none;
+}
+
+.top-nav-search-dropdown option {
+  background: #12081b;
+  color: white;
 }
 
 .top-nav-icon-button {
@@ -120,12 +141,12 @@
 }
 
 .top-nav-icon-button:hover {
-  background: rgba(20, 168, 0, 0.08);
-  color: #14a800;
+  background: rgba(168, 85, 247, 0.08);
+  color: #a855f7;
 }
 
 .top-nav-icon-button:focus {
-  outline: 2px solid #14a800;
+  outline: 2px solid #a855f7;
   outline-offset: 2px;
 }
 
@@ -154,7 +175,7 @@
 }
 
 .top-nav-avatar-button:focus {
-  outline: 2px solid #14a800;
+  outline: 2px solid #a855f7;
   outline-offset: 2px;
 }
 
@@ -168,7 +189,7 @@
 }
 
 .top-nav-avatar-button:hover .top-nav-avatar {
-  border-color: #14a800;
+  border-color: #a855f7;
 }
 
 .top-nav-avatar img {
@@ -180,7 +201,7 @@
 .top-nav-avatar-placeholder {
   width: 100%;
   height: 100%;
-  background: #14a800;
+  background: #a855f7;
   color: white;
   display: flex;
   align-items: center;

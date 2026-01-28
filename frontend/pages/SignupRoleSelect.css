@@ -25,7 +25,7 @@
 .role-select-container::before {
   width: 400px;
   height: 400px;
-  background: rgba(20, 168, 0, 0.1);
+  background: rgba(168, 85, 247, 0.1);
   top: -200px;
   left: -200px;
 }
@@ -95,20 +95,20 @@
 
 .role-option:hover {
   background: rgba(255, 255, 255, 0.7);
-  border-color: rgba(20, 168, 0, 0.3);
+  border-color: rgba(168, 85, 247, 0.3);
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
 }
 
 .role-option:focus {
-  outline: 2px solid #14a800;
+  outline: 2px solid #a855f7;
   outline-offset: 2px;
 }
 
 .role-option.selected {
   background: rgba(255, 255, 255, 0.8);
-  border-color: #14a800;
-  box-shadow: 0 4px 16px rgba(20, 168, 0, 0.15);
+  border-color: #a855f7;
+  box-shadow: 0 4px 16px rgba(168, 85, 247, 0.15);
 }
 
 .role-option-radio {
@@ -125,8 +125,8 @@
 }
 
 .role-option.selected .role-option-radio {
-  border-color: #14a800;
-  background: #14a800;
+  border-color: #a855f7;
+  background: #a855f7;
 }
 
 .radio-indicator {
@@ -160,25 +160,25 @@
   padding: 0.875rem 1.5rem;
   font-size: 1rem;
   font-weight: 600;
-  background: #14a800;
+  background: #a855f7;
   color: white;
   border: none;
   border-radius: 8px;
   cursor: pointer;
   transition: all 0.2s ease;
-  box-shadow: 0 4px 12px rgba(20, 168, 0, 0.2);
+  box-shadow: 0 4px 12px rgba(168, 85, 247, 0.2);
   margin-bottom: 1.5rem;
   outline: none;
 }
 
 .role-cta-button.enabled:hover {
-  background: #12a000;
+  background: #9333ea;
   transform: translateY(-1px);
-  box-shadow: 0 6px 16px rgba(20, 168, 0, 0.3);
+  box-shadow: 0 6px 16px rgba(168, 85, 247, 0.3);
 }
 
 .role-cta-button.enabled:focus {
-  outline: 3px solid rgba(20, 168, 0, 0.3);
+  outline: 3px solid rgba(168, 85, 247, 0.3);
   outline-offset: 2px;
 }
 
@@ -210,14 +210,14 @@
 }
 
 .login-link {
-  color: #14a800;
+  color: #a855f7;
   font-weight: 600;
   text-decoration: none;
   transition: color 0.2s ease;
 }
 
 .login-link:hover {
-  color: #12a000;
+  color: #9333ea;
   text-decoration: underline;
 }
 

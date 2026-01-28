@@ -245,7 +245,7 @@ const FreelancerStatsPage = () => {
               </div>
               <div className="relationship-legend">
                 <div className="legend-item">
-                  <div className="legend-color" style={{ background: '#14a800' }}></div>
+                  <div className="legend-color" style={{ background: '#a855f7' }}></div>
                   <span>90+ days</span>
                 </div>
                 <div className="legend-item">

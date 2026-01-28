@@ -1,25 +1,61 @@
 import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import Dither from './Dither'
 import './Auth.css'
 
 const Login = () => {
+    const navigate = useNavigate()
     const [formData, setFormData] = useState({
         email: '',
         password: ''
     })
+    const [error, setError] = useState('')
+    const [isSubmitting, setIsSubmitting] = useState(false)
 
     const handleChange = (e) => {
         setFormData({
             ...formData,
             [e.target.name]: e.target.value
         })
+        if (error) setError('')
     }
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault()
-        login(formData)
-        console.log('Login attempt:', formData)
+        setIsSubmitting(true)
+        setError('')
+
+        try {
+            const response = await fetch('http://127.0.0.1:4000/api/auth/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(formData)
+            })
+
+            const data = await response.json()
+
+            if (!response.ok) {
+                throw new Error(data.message || 'Login failed')
+            }
+
+            const { token, user } = data
+            localStorage.setItem('token', token)
+            localStorage.setItem('user', JSON.stringify(user))
+            
+            // Redirect based on user type
+            if (user.userType === 'freelancer') {
+                navigate('/freelancer/home')
+            } else {
+                navigate('/')
+            }
+        } catch (error) {
+            console.error('Login error:', error)
+            setError(error.message)
+        } finally {
+            setIsSubmitting(false)
+        }
     }
 
     return (
@@ -38,6 +74,7 @@ const Login = () => {
             </div>
             <div className="auth-card">
                 <form onSubmit={handleSubmit} className="auth-form">
+                    {error && <div className="error-message-global">{error}</div>}
                     <div className="form-group">
                         <label htmlFor="email">Email</label>
                         <input
@@ -76,8 +113,12 @@ const Login = () => {
                         </a>
                     </div>
 
-                    <button type="submit" className="auth-button-primary">
-                        Sign In
+                    <button 
+                        type="submit" 
+                        className="auth-button-primary"
+                        disabled={isSubmitting}
+                    >
+                        {isSubmitting ? 'Signing In...' : 'Sign In'}
                     </button>
                 </form>
 

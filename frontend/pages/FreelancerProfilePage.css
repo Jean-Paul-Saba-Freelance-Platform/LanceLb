@@ -42,7 +42,7 @@
   height: 80px;
   border-radius: 50%;
   overflow: hidden;
-  border: 3px solid #14a800;
+  border: 3px solid #a855f7;
 }
 
 .profile-header-avatar img {
@@ -54,7 +54,7 @@
 .profile-header-avatar-placeholder {
   width: 100%;
   height: 100%;
-  background: #14a800;
+  background: #a855f7;
   color: white;
   display: flex;
   align-items: center;
@@ -69,7 +69,7 @@
   right: 4px;
   width: 18px;
   height: 18px;
-  background: #14a800;
+  background: #a855f7;
   border: 3px solid white;
   border-radius: 50%;
 }
@@ -107,8 +107,8 @@
 }
 
 .verification-status.verified {
-  background: #d1fae5;
-  color: #065f46;
+  background: #f3e8ff;
+  color: #6b21a8;
 }
 
 .profile-header-location {
@@ -143,7 +143,7 @@
 
 .profile-header-button-primary {
   padding: 0.625rem 1.25rem;
-  background: #14a800;
+  background: #a855f7;
   color: white;
   border: none;
   border-radius: 8px;
@@ -155,9 +155,9 @@
 }
 
 .profile-header-button-primary:hover {
-  background: #12a000;
+  background: #9333ea;
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(20, 168, 0, 0.2);
+  box-shadow: 0 4px 12px rgba(168, 85, 247, 0.2);
 }
 
 .profile-header-share {
@@ -176,7 +176,7 @@
 
 .profile-header-share:hover {
   background: #f9fafb;
-  color: #14a800;
+  color: #a855f7;
 }
 
 /* Main Content Grid */
@@ -238,7 +238,7 @@
 }
 
 .sidebar-card-link {
-  color: #14a800;
+  color: #a855f7;
   font-size: 0.9rem;
   font-weight: 500;
   text-decoration: none;
@@ -248,7 +248,7 @@
 }
 
 .sidebar-card-link:hover {
-  color: #12a000;
+  color: #9333ea;
   text-decoration: underline;
 }
 
@@ -275,7 +275,7 @@
 
 .sidebar-edit-icon:hover {
   background: #f9fafb;
-  color: #14a800;
+  color: #a855f7;
 }
 
 /* Promote Options */
@@ -310,7 +310,7 @@
 }
 
 .promote-option-status.on {
-  color: #14a800;
+  color: #a855f7;
   font-weight: 500;
 }
 
@@ -353,7 +353,7 @@
 }
 
 .promote-toggle-switch input:checked + .promote-toggle-slider {
-  background-color: #14a800;
+  background-color: #a855f7;
 }
 
 .promote-toggle-switch input:checked + .promote-toggle-slider:before {
@@ -393,7 +393,7 @@
 }
 
 .verification-link {
-  color: #14a800;
+  color: #a855f7;
   font-size: 0.85rem;
   text-decoration: none;
   font-weight: 500;
@@ -401,7 +401,7 @@
 }
 
 .verification-link:hover {
-  color: #12a000;
+  color: #9333ea;
   text-decoration: underline;
 }
 
@@ -446,7 +446,7 @@
 .section-rate {
   font-size: 1rem;
   font-weight: 600;
-  color: #14a800;
+  color: #a855f7;
 }
 
 .section-edit-button {
@@ -465,7 +465,7 @@
 
 .section-edit-button:hover {
   background: #f9fafb;
-  color: #14a800;
+  color: #a855f7;
 }
 
 /* Bio Text */
@@ -506,8 +506,8 @@
 }
 
 .portfolio-tab.active {
-  color: #14a800;
-  border-bottom-color: #14a800;
+  color: #a855f7;
+  border-bottom-color: #a855f7;
 }
 
 /* Empty States */

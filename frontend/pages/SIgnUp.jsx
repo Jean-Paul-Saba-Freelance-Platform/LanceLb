@@ -1,9 +1,10 @@
 import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import Dither from './Dither'
 import './Auth.css'
 
 const SignUp = () => {
+    const navigate = useNavigate()
     const [formData, setFormData] = useState({
         name: '',
         email: '',
@@ -48,12 +49,47 @@ const SignUp = () => {
         return Object.keys(nextErrors).length === 0
     }
 
-    const handleSubmit = (e) => {
+    const handleSubmit =async (e) => {
         e.preventDefault()
         if (!validateForm()) return
 
-        // TODO: Add signup logic here
-        console.log('Signup attempt:', formData)
+        try{
+            const response = await fetch('http://127.0.0.1:4000/api/auth/register', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    name: formData.name,
+                    email: formData.email,
+                    password: formData.password,
+                    userType: formData.userType
+                })
+            })
+            
+            console.log("Response status:", response.status);
+            const data = await response.json()
+            console.log("Response data:", data);
+            
+            if(!response.ok){
+                throw new Error(data.message || 'Registration failed')
+            }
+            
+            const { token, user } = data
+            localStorage.setItem('token', token)
+            localStorage.setItem('user', JSON.stringify(user))
+            
+            // Redirect based on user type
+            if (user.userType === 'freelancer') {
+                navigate('/freelancer/home')
+            } else {
+                navigate('/')
+            }
+        } catch (error) {
+            console.error('Registration error:', error)
+            setErrors({ submit: error.message })
+        }
+        
     }
 
     return (

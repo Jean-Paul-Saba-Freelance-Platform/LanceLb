@@ -122,14 +122,6 @@
     filter: url('#goo');
   }
   
-.gooey-nav-container .effect.filter::before {
-  content: '';
-  position: absolute;
-  inset: -75px;
-  z-index: -2;
-  background: transparent;
-}
-  
 .gooey-nav-container .effect.filter::after {
     content: '';
     position: absolute;
