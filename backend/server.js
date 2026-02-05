@@ -4,6 +4,7 @@ import mongoose from "mongoose"
 import cors from "cors"
 import dotenv from "dotenv"
 import authRoutes from "./server/routes/authRoutes.js"
+import clientRoutes from "./server/routes/clientRoutes.js"
 
 
 dotenv.config()
@@ -33,6 +34,9 @@ app.get("/", (req, res) => {
 
 // Mount auth routes at /api/auth
 app.use("/api/auth", authRoutes)
+
+// Mount client routes at /api/client
+app.use("/api/client", clientRoutes)
 
 // Start server
 const PORT = process.env.PORT || 5000

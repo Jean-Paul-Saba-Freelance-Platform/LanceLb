@@ -1,0 +1,105 @@
+.client-layout {
+  position: relative;
+  min-height: 100vh;
+  width: 100%;
+  background: radial-gradient(circle at top, #2a0f3b 0%, #12081b 45%, #0a0a0f 100%);
+  overflow-x: hidden;
+  color: #f3f4f6;
+}
+
+.layout-background {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  opacity: 0.45;
+  pointer-events: none;
+}
+
+.layout-content {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  min-height: 100vh;
+}
+
+/* Global overrides for client pages when inside this layout */
+.client-layout .client-home {
+  background: transparent !important;
+}
+
+.client-layout .greeting-card,
+.client-layout .client-search-input,
+.client-layout .main-section-card,
+.client-layout .sidebar-card,
+.client-layout .next-steps-card,
+.client-layout .category-card,
+.client-layout .resource-card,
+.client-layout .overview-card {
+  background: rgba(14, 12, 20, 0.6) !important;
+  backdrop-filter: blur(18px) !important;
+  -webkit-backdrop-filter: blur(18px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  color: #f3f4f6 !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3) !important;
+  transition: all 0.3s ease !important;
+}
+
+.client-layout .greeting-card:hover,
+.client-layout .main-section-card:hover,
+.client-layout .sidebar-card:hover,
+.client-layout .next-steps-card:hover,
+.client-layout .category-card:hover,
+.client-layout .resource-card:hover,
+.client-layout .overview-card:hover {
+  border-color: rgba(255, 255, 255, 0.2) !important;
+  box-shadow: 0 12px 48px rgba(0, 0, 0, 0.4) !important;
+  transform: translateY(-2px);
+}
+
+.client-layout h1, 
+.client-layout h2, 
+.client-layout h3, 
+.client-layout .greeting-text,
+.client-layout .section-title {
+  color: #f3f4f6 !important;
+}
+
+.client-layout p,
+.client-layout span,
+.client-layout .greeting-date,
+.client-layout .sidebar-text,
+.client-layout .card-description {
+  color: #cbd5f5 !important;
+}
+
+.client-layout .tab-button:not(.active),
+.client-layout .segmented-control-button:not(.active) {
+  color: #94a3b8 !important;
+}
+
+.client-layout .top-nav {
+  background: rgba(14, 12, 20, 0.8) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+.client-layout .top-nav-search {
+  background: rgba(255, 255, 255, 0.05) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  border-radius: 9999px !important;
+}
+
+.client-layout .top-nav-search-input {
+  background: transparent !important;
+  border: none !important;
+  color: #f3f4f6 !important;
+}
+
+.client-layout .top-nav-search-dropdown {
+  background: rgba(255, 255, 255, 0.05) !important;
+  border-left: 1px solid rgba(255, 255, 255, 0.1) !important;
+  color: #f3f4f6 !important;
+}

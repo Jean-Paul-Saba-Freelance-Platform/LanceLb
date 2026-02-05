@@ -1,0 +1,66 @@
+.post-job-page {
+  min-height: 100vh;
+  background: #f9fafb;
+}
+
+.post-job-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 3rem 1.5rem;
+}
+
+.post-job-card {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 12px;
+  padding: 3rem;
+  text-align: center;
+}
+
+.post-job-title {
+  font-size: 2rem;
+  font-weight: 600;
+  color: #1f2937;
+  margin: 0 0 1rem 0;
+}
+
+.post-job-subtitle {
+  color: #6b7280;
+  font-size: 1rem;
+  margin: 0 0 2rem 0;
+}
+
+.post-job-back-button {
+  padding: 0.75rem 1.5rem;
+  background: #a855f7;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  outline: none;
+}
+
+.post-job-back-button:hover {
+  background: #9333ea;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(168, 85, 247, 0.3);
+}
+
+@media (max-width: 640px) {
+  .post-job-container {
+    padding: 2rem 1rem;
+  }
+
+  .post-job-card {
+    padding: 2rem 1.5rem;
+  }
+
+  .post-job-title {
+    font-size: 1.5rem;
+  }
+}
