@@ -14,9 +14,10 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    
     verifyOtp: {
         type: String,
-        default:' '
+        default: ''
     },
     verifyOtpExpiry: {
         type: Number,
@@ -34,7 +35,7 @@ const userSchema = new mongoose.Schema({
     },
     resetOtp: {
         type: String,
-        default:' ',
+        default: '',
     },
     resetOtpExpiry: {
         type: Number,

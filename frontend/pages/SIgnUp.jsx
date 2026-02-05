@@ -59,6 +59,7 @@ const SignUp = () => {
                 headers: {
                     'Content-Type': 'application/json'
                 },
+                credentials: 'include',
                 body: JSON.stringify({
                     name: formData.name,
                     email: formData.email,
@@ -79,12 +80,8 @@ const SignUp = () => {
             localStorage.setItem('token', token)
             localStorage.setItem('user', JSON.stringify(user))
             
-            // Redirect based on user type
-            if (user.userType === 'freelancer') {
-                navigate('/freelancer/home')
-            } else {
-                navigate('/')
-            }
+            // Redirect to OTP verification
+            navigate('/verify-otp')
         } catch (error) {
             console.error('Registration error:', error)
             setErrors({ submit: error.message })
