@@ -25,7 +25,17 @@ export const register = async (req, res) => {
 
         const hashedPassword = await bcrypt.hash(password, 10);
 
-        const user = new User({ name, email, password:hashedPassword, userType });
+        // Generate OTP
+        const otp = String(Math.floor(100000 + Math.random() * 900000));
+
+        const user = new User({ 
+            name, 
+            email, 
+            password: hashedPassword, 
+            userType,
+            verifyOtp: otp,
+            verifyOtpExpiry: Date.now() + 24 * 60 * 60 * 1000 // 24 hours
+        });
 
         await user.save();
         const userCount = await User.countDocuments();
@@ -45,16 +55,16 @@ export const register = async (req, res) => {
         });
 
 
-        //SEND VERIFICATION EMAIL
+        //SEND VERIFICATION OTP EMAIL
         try {
             const mailOptions = {
                 from: process.env.SENDER_EMAIL,
                 to: email,
-                subject: 'Verify your email',
-                text: `Welcome to LanceLB, Your account has been created successfully. Please verify your email to get started.`
+                subject: 'Verify your email for LanceLB',
+                text: `Welcome to LanceLB! Your account has been created. Your verification OTP is ${otp}.`
             };
             await transporter.sendMail(mailOptions);
-            console.log("Verification email sent to:", email); // DEBUG LOG
+            console.log("Verification OTP email sent to:", email, "OTP:", otp); // DEBUG LOG
         } catch (mailError) {
             console.error("Mail sending failed:", mailError.message);
             // Don't fail the whole registration if mail fails
@@ -63,10 +73,7 @@ export const register = async (req, res) => {
         user.password = undefined;
         return res.json({success:true, message:'User created successfully', user, token});
 
-    }
-
-
-    catch (error) {
+    } catch (error) {
         console.error("Register error:", error); // DEBUG LOG
         return res.status(500).json({success:false, message:error.message});
     }
@@ -158,7 +165,7 @@ export const sendVerifyOtp = async (req, res) => {
     }
   };
   
-  export const verifyOtp = async (req, res) => {
+export const verifyOtp = async (req, res) => {
     const { otp } = req.body;
   
     if (!otp) return res.status(400).json({ success: false, message: "OTP is required" });
@@ -194,3 +201,12 @@ export const sendVerifyOtp = async (req, res) => {
     }
   };
   
+export const isAuthenticated = async (req, res) => {
+  try {
+    return res.status(200).json({ success: true, message: "User is authenticated" });
+
+  }
+  catch (error) {
+    return res.status(500).json({ success: false, message: error.message });
+  }
+}
