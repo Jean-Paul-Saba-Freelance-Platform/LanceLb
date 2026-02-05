@@ -31,6 +31,7 @@ const Login = () => {
                 headers: {
                     'Content-Type': 'application/json'
                 },
+                credentials: 'include',
                 body: JSON.stringify(formData)
             })
 
@@ -44,6 +45,12 @@ const Login = () => {
             localStorage.setItem('token', token)
             localStorage.setItem('user', JSON.stringify(user))
             
+            // Redirect to verification if not verified
+            if (!user.isAccountVerified) {
+                navigate('/verify-otp')
+                return
+            }
+
             // Redirect based on user type
             if (user.userType === 'freelancer') {
                 navigate('/freelancer/home')

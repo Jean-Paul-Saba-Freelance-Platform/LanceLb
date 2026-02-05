@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import Home from '../pages/Home'
 import Login from '../pages/login'
 import SignUp from '../pages/SIgnUp'
+import OtpForm from '../pages/otp'
 import FreelancerHomePage from '../pages/FreelancerHomePage'
 import FreelancerProfilePage from '../pages/FreelancerProfilePage'
 import FreelancerStatsPage from '../pages/FreelancerStatsPage'
@@ -9,7 +10,7 @@ import FreelancerSettingsPage from '../pages/FreelancerSettingsPage'
 import FreelancerFindWorkPage from '../pages/FreelancerFindWorkPage'
 import FreelancerProposalsPage from '../pages/FreelancerProposalsPage'
 import FreelancerDeliverWorkPage from '../pages/FreelancerDeliverWorkPage'
-import ClientHomePage from '../pages/ClientHomePage'
+import ClientHomePage from '../pages/ClientHomePage' 
 import ClientProfilePage from '../pages/ClientProfilePage'
 import ClientStatsPage from '../pages/ClientStatsPage'
 import ClientSettingsPage from '../pages/ClientSettingsPage'
@@ -27,6 +28,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
+        <Route path="/verify-otp" element={<OtpForm />} />
         
         <Route element={<FreelancerLayout />}>
           <Route path="/freelancer/home" element={<FreelancerHomePage />} />
@@ -88,6 +90,7 @@ function App() {
             } 
           />
         </Route>
+        
       </Routes>
     </Router>
   )
