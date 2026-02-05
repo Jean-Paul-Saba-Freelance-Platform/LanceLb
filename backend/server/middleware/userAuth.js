@@ -2,9 +2,13 @@ import jwt from 'jsonwebtoken';
 import cookieParser from 'cookie-parser';
 
 const userAuth = async (req, res, next) => {
-    const { token } = req.cookies;
+    // Check both cookies and Authorization header
+    let token = req.cookies?.token;
+    
+    if (!token && req.headers.authorization) {
+        token = req.headers.authorization.split(' ')[1];
+    }
 
-    console.log("Cookies received:", req.cookies); // DEBUG LOG
     console.log("Token found:", !!token);          // DEBUG LOG
 
     if (!token) {
