@@ -1,0 +1,95 @@
+.client-jobs-page {
+  min-height: 100vh;
+  background: #f9fafb;
+}
+
+.client-jobs-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 3rem 1.5rem;
+}
+
+.client-jobs-card {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 12px;
+  padding: 3rem;
+  text-align: center;
+}
+
+.client-jobs-title {
+  font-size: 2rem;
+  font-weight: 600;
+  color: #1f2937;
+  margin: 0 0 1rem 0;
+}
+
+.client-jobs-subtitle {
+  color: #6b7280;
+  font-size: 1rem;
+  margin: 0 0 2rem 0;
+}
+
+.client-jobs-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.client-jobs-button {
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  outline: none;
+  border: none;
+}
+
+.client-jobs-button.primary {
+  background: #a855f7;
+  color: white;
+}
+
+.client-jobs-button.primary:hover {
+  background: #9333ea;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(168, 85, 247, 0.3);
+}
+
+.client-jobs-button.secondary {
+  background: transparent;
+  color: #a855f7;
+  border: 1px solid #a855f7;
+}
+
+.client-jobs-button.secondary:hover {
+  background: #a855f7;
+  color: white;
+}
+
+@media (max-width: 640px) {
+  .client-jobs-container {
+    padding: 2rem 1rem;
+  }
+
+  .client-jobs-card {
+    padding: 2rem 1.5rem;
+  }
+
+  .client-jobs-title {
+    font-size: 1.5rem;
+  }
+
+  .client-jobs-actions {
+    flex-direction: column;
+  }
+
+  .client-jobs-button {
+    width: 100%;
+  }
+}

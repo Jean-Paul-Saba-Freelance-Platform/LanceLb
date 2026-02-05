@@ -47,6 +47,8 @@ const Login = () => {
             // Redirect based on user type
             if (user.userType === 'freelancer') {
                 navigate('/freelancer/home')
+            } else if (user.userType === 'client') {
+                navigate('/client/home')
             } else {
                 navigate('/')
             }
