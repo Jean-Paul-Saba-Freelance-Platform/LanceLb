@@ -1,0 +1,1026 @@
+/* ==========================================================================
+   PostJobLayout — Wizard shell for the multi-step "Post a Job" flow.
+   Designed to sit inside ClientLayout (dark theme with Dither background).
+   ========================================================================== */
+
+/* ---------------------------------------------------------------------------
+   Page wrapper — full viewport, flex column so the footer sticks to bottom
+   --------------------------------------------------------------------------- */
+.wizard-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ---------------------------------------------------------------------------
+   Header — step indicator + progress bar
+   --------------------------------------------------------------------------- */
+.wizard-header {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: rgba(14, 12, 20, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.wizard-header-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1rem 2rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.wizard-step-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(168, 85, 247, 0.2);
+  color: #c084fc;
+  font-size: 0.8rem;
+  font-weight: 700;
+  padding: 0.25rem 0.65rem;
+  border-radius: 999px;
+  letter-spacing: 0.02em;
+}
+
+.wizard-step-label {
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: #e2e8f0;
+}
+
+/* Thin progress bar spanning full header width */
+.wizard-progress-track {
+  width: 100%;
+  height: 3px;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.wizard-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #a855f7, #c084fc);
+  border-radius: 0 2px 2px 0;
+  transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ---------------------------------------------------------------------------
+   Body — main scrollable content area
+   --------------------------------------------------------------------------- */
+.wizard-body {
+  flex: 1;
+  max-width: 1200px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 3rem 2rem 6rem; /* extra bottom padding for footer clearance */
+}
+
+/* ---------------------------------------------------------------------------
+   Two-column layout (used by individual steps)
+   --------------------------------------------------------------------------- */
+.wizard-two-col {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  gap: 4rem;
+  align-items: start;
+}
+
+/* Left column — heading + helper text */
+.wizard-left-col h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  line-height: 1.25;
+  color: #f3f4f6;
+  margin: 0 0 1rem 0;
+}
+
+.wizard-left-col p {
+  font-size: 1rem;
+  line-height: 1.65;
+  color: #94a3b8;
+  margin: 0;
+}
+
+/* Right column — form area */
+.wizard-right-col {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* ---------------------------------------------------------------------------
+   Input styling (matches dark glassmorphism theme)
+   --------------------------------------------------------------------------- */
+.wizard-label {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #e2e8f0;
+  margin-bottom: 0.5rem;
+  display: block;
+}
+
+.wizard-input {
+  width: 100%;
+  padding: 0.875rem 1rem;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 10px;
+  color: #f3f4f6;
+  font-size: 1rem;
+  font-family: inherit;
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.wizard-input::placeholder {
+  color: rgba(255, 255, 255, 0.35);
+}
+
+.wizard-input:focus {
+  border-color: #a855f7;
+  background: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.15);
+}
+
+.wizard-input:hover:not(:focus) {
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Character count below input */
+.wizard-char-count {
+  font-size: 0.8rem;
+  color: #64748b;
+  text-align: right;
+  margin-top: -0.75rem;
+}
+
+.wizard-char-count.near-limit {
+  color: #f59e0b;
+}
+
+.wizard-char-count.at-limit {
+  color: #ef4444;
+}
+
+/* ---------------------------------------------------------------------------
+   Example / helper card (e.g. example titles)
+   --------------------------------------------------------------------------- */
+.wizard-examples-card {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 1.25rem 1.5rem;
+}
+
+.wizard-examples-card h4 {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin: 0 0 0.75rem 0;
+}
+
+.wizard-examples-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.wizard-examples-list li {
+  position: relative;
+  padding-left: 1.1rem;
+  font-size: 0.9rem;
+  color: #cbd5e1;
+  line-height: 1.5;
+}
+
+.wizard-examples-list li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.55em;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #a855f7;
+  opacity: 0.6;
+}
+
+/* ---------------------------------------------------------------------------
+   Textarea styling (Description step)
+   --------------------------------------------------------------------------- */
+.wizard-textarea {
+  width: 100%;
+  min-height: 220px;
+  padding: 0.875rem 1rem;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 10px;
+  color: #f3f4f6;
+  font-size: 0.95rem;
+  font-family: inherit;
+  line-height: 1.65;
+  outline: none;
+  resize: vertical;
+  transition: all 0.2s ease;
+}
+
+.wizard-textarea::placeholder {
+  color: rgba(255, 255, 255, 0.3);
+  line-height: 1.65;
+}
+
+.wizard-textarea:focus {
+  border-color: #a855f7;
+  background: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.15);
+}
+
+.wizard-textarea:hover:not(:focus) {
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+/* ---------------------------------------------------------------------------
+   Skills step — input row, chips, popular skills
+   --------------------------------------------------------------------------- */
+
+/* Input + Add button side-by-side */
+.skills-input-row {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.skills-input-field {
+  flex: 1;
+  /* inherits .wizard-input styles */
+}
+
+.skills-add-btn {
+  padding: 0 1.25rem;
+  background: rgba(168, 85, 247, 0.2);
+  color: #c084fc;
+  border: 1px solid rgba(168, 85, 247, 0.3);
+  border-radius: 10px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  outline: none;
+}
+
+.skills-add-btn:hover:not(:disabled) {
+  background: rgba(168, 85, 247, 0.35);
+  border-color: #a855f7;
+}
+
+.skills-add-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+/* Helper text below the input */
+.skills-helper-text {
+  font-size: 0.8rem;
+  color: #64748b;
+  margin-top: 0.4rem;
+}
+
+/* Selected skills — chips area */
+.skills-chips-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.skills-chips-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.skills-chips-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+/* Individual chip */
+.skill-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.35rem 0.55rem 0.35rem 0.75rem;
+  background: rgba(168, 85, 247, 0.2);
+  border: 1px solid rgba(168, 85, 247, 0.3);
+  border-radius: 999px;
+  animation: chipIn 0.15s ease-out;
+}
+
+@keyframes chipIn {
+  from {
+    opacity: 0;
+    transform: scale(0.85);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.skill-chip-text {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #e0d0fa;
+  line-height: 1;
+}
+
+.skill-chip-remove {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  padding: 0;
+  background: rgba(255, 255, 255, 0.08);
+  border: none;
+  border-radius: 50%;
+  color: #c084fc;
+  font-size: 0.85rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  outline: none;
+}
+
+.skill-chip-remove:hover {
+  background: rgba(239, 68, 68, 0.35);
+  color: #fca5a5;
+}
+
+/* Popular skills — inline button group */
+.skills-popular-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.skill-popular-btn {
+  padding: 0.35rem 0.75rem;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 999px;
+  color: #cbd5e1;
+  font-size: 0.82rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  outline: none;
+}
+
+.skill-popular-btn:hover:not(:disabled) {
+  background: rgba(168, 85, 247, 0.15);
+  border-color: rgba(168, 85, 247, 0.3);
+  color: #e0d0fa;
+}
+
+.skill-popular-btn.added {
+  background: rgba(168, 85, 247, 0.12);
+  border-color: rgba(168, 85, 247, 0.25);
+  color: #a78bfa;
+  cursor: default;
+}
+
+.skill-popular-btn:disabled:not(.added) {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+/* ---------------------------------------------------------------------------
+   Budget step — payment type cards and inputs
+   --------------------------------------------------------------------------- */
+
+/* Two cards side-by-side */
+.budget-cards-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+}
+
+/* Individual selectable card */
+.budget-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0.5rem;
+  padding: 1.5rem 1.25rem;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  outline: none;
+  font-family: inherit;
+  color: inherit;
+}
+
+.budget-card:hover {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.18);
+}
+
+.budget-card.selected {
+  background: rgba(168, 85, 247, 0.1);
+  border-color: rgba(168, 85, 247, 0.5);
+  box-shadow: 0 0 0 2px rgba(168, 85, 247, 0.12);
+}
+
+/* Radio circle in top-right corner */
+.budget-card-radio {
+  position: absolute;
+  top: 0.85rem;
+  right: 0.85rem;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  transition: all 0.18s ease;
+}
+
+.budget-card.selected .budget-card-radio {
+  border-color: #a855f7;
+}
+
+.budget-card.selected .budget-card-radio::after {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #a855f7;
+}
+
+.budget-card-icon {
+  font-size: 1.75rem;
+  line-height: 1;
+}
+
+.budget-card-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #e2e8f0;
+}
+
+.budget-card.selected .budget-card-title {
+  color: #f3f4f6;
+}
+
+.budget-card-desc {
+  font-size: 0.8rem;
+  color: #64748b;
+  line-height: 1.4;
+}
+
+.budget-card.selected .budget-card-desc {
+  color: #94a3b8;
+}
+
+/* Inputs section that appears conditionally */
+.budget-input-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  animation: chipIn 0.2s ease-out;
+}
+
+/* $ prefix + input wrapper */
+.budget-field {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.budget-field-wide {
+  max-width: 280px;
+}
+
+.budget-field-prefix {
+  position: absolute;
+  left: 0.85rem;
+  color: #64748b;
+  font-size: 1rem;
+  font-weight: 600;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.budget-number-input {
+  padding-left: 2rem !important;
+}
+
+/* Remove number-input spinner in Webkit/Firefox */
+.budget-number-input::-webkit-inner-spin-button,
+.budget-number-input::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.budget-number-input {
+  -moz-appearance: textfield;
+}
+
+/* Hourly range row */
+.budget-range-row {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.budget-range-row .budget-field {
+  flex: 1;
+}
+
+.budget-range-divider {
+  color: #64748b;
+  font-size: 1.1rem;
+  font-weight: 500;
+  flex-shrink: 0;
+}
+
+.budget-range-suffix {
+  color: #94a3b8;
+  font-size: 0.9rem;
+  font-weight: 500;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* Validation error */
+.budget-error {
+  font-size: 0.8rem;
+  color: #f87171;
+  margin: 0;
+}
+
+@media (max-width: 480px) {
+  .budget-cards-row {
+    grid-template-columns: 1fr;
+  }
+
+  .budget-range-row {
+    flex-wrap: wrap;
+  }
+
+  .budget-field-wide {
+    max-width: 100%;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Scope step — radio groups
+   --------------------------------------------------------------------------- */
+
+.wizard-radio-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 0.35rem;
+}
+
+/* Each radio option is a <label> wrapping hidden input + custom circle + text */
+.wizard-radio-option {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 0.85rem 1rem;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.18s ease;
+}
+
+.wizard-radio-option:hover {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.18);
+}
+
+.wizard-radio-option.selected {
+  background: rgba(168, 85, 247, 0.1);
+  border-color: rgba(168, 85, 247, 0.5);
+  box-shadow: 0 0 0 2px rgba(168, 85, 247, 0.12);
+}
+
+/* Hide the native radio button */
+.wizard-radio-input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+
+/* Custom radio circle */
+.wizard-radio-circle {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  margin-top: 2px;
+  transition: all 0.18s ease;
+  position: relative;
+}
+
+.wizard-radio-option.selected .wizard-radio-circle {
+  border-color: #a855f7;
+}
+
+.wizard-radio-option.selected .wizard-radio-circle::after {
+  content: '';
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #a855f7;
+}
+
+/* Text content beside the circle */
+.wizard-radio-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.wizard-radio-title {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #e2e8f0;
+  line-height: 1.3;
+}
+
+.wizard-radio-option.selected .wizard-radio-title {
+  color: #f3f4f6;
+}
+
+.wizard-radio-desc {
+  font-size: 0.82rem;
+  color: #64748b;
+  line-height: 1.45;
+}
+
+.wizard-radio-option.selected .wizard-radio-desc {
+  color: #94a3b8;
+}
+
+/* ---------------------------------------------------------------------------
+   Review step — banner, cards, chips, scope grid
+   --------------------------------------------------------------------------- */
+
+/* Error banner (publish failure) */
+.review-error {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.75rem 1.25rem;
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: 10px;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+  color: #fca5a5;
+  line-height: 1.4;
+}
+
+.review-error-dismiss {
+  flex-shrink: 0;
+  background: transparent;
+  border: none;
+  color: #fca5a5;
+  font-size: 1.1rem;
+  cursor: pointer;
+  padding: 0 0.25rem;
+  opacity: 0.7;
+  transition: opacity 0.15s ease;
+  outline: none;
+}
+
+.review-error-dismiss:hover {
+  opacity: 1;
+}
+
+/* Info banner at top of review page */
+.review-banner {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.75rem 1.25rem;
+  background: rgba(168, 85, 247, 0.08);
+  border: 1px solid rgba(168, 85, 247, 0.2);
+  border-radius: 10px;
+  margin-bottom: 2rem;
+  font-size: 0.88rem;
+  color: #c4b5fd;
+  line-height: 1.45;
+}
+
+.review-banner-icon {
+  flex-shrink: 0;
+  font-size: 1rem;
+  opacity: 0.8;
+}
+
+/* Incomplete-draft empty state */
+.review-empty {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 2.5rem 2rem;
+  text-align: center;
+}
+
+.review-empty p {
+  font-size: 1rem;
+  color: #94a3b8;
+  margin: 0 0 1.25rem 0;
+}
+
+.review-empty-btn {
+  padding: 0.6rem 1.5rem;
+  background: #a855f7;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  outline: none;
+}
+
+.review-empty-btn:hover {
+  background: #9333ea;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(168, 85, 247, 0.3);
+}
+
+/* Individual review card */
+.review-card {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 1.15rem 1.35rem;
+  transition: border-color 0.15s ease;
+}
+
+.review-card:hover {
+  border-color: rgba(255, 255, 255, 0.18);
+}
+
+/* Card header: label + edit button */
+.review-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.6rem;
+}
+
+.review-card-label {
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #94a3b8;
+}
+
+.review-edit-btn {
+  padding: 0.25rem 0.75rem;
+  background: transparent;
+  color: #c084fc;
+  border: 1px solid rgba(168, 85, 247, 0.3);
+  border-radius: 6px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  outline: none;
+}
+
+.review-edit-btn:hover {
+  background: rgba(168, 85, 247, 0.15);
+  border-color: #a855f7;
+  color: #e0d0fa;
+}
+
+/* Card value text */
+.review-card-value {
+  font-size: 0.95rem;
+  color: #e2e8f0;
+  line-height: 1.5;
+  margin: 0;
+  word-break: break-word;
+}
+
+/* Description preserves line-breaks */
+.review-description {
+  white-space: pre-wrap;
+  max-height: 200px;
+  overflow-y: auto;
+  font-size: 0.9rem;
+  color: #cbd5e1;
+}
+
+/* Empty-state text inside a card */
+.review-card-empty {
+  font-size: 0.9rem;
+  color: #64748b;
+  font-style: italic;
+  margin: 0;
+}
+
+/* Read-only skill chips */
+.review-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.review-chip {
+  display: inline-block;
+  padding: 0.28rem 0.7rem;
+  background: rgba(168, 85, 247, 0.15);
+  border: 1px solid rgba(168, 85, 247, 0.25);
+  border-radius: 999px;
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: #e0d0fa;
+}
+
+/* Scope key/value grid */
+.review-scope-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem 1.5rem;
+}
+
+.review-scope-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+
+.review-scope-key {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.review-scope-val {
+  font-size: 0.92rem;
+  color: #e2e8f0;
+  font-weight: 500;
+}
+
+@media (max-width: 480px) {
+  .review-scope-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Footer — sticky bar with Back / Next buttons
+   --------------------------------------------------------------------------- */
+.wizard-footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 20;
+  background: rgba(14, 12, 20, 0.92);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.wizard-footer-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Back button — ghost style */
+.wizard-back-btn {
+  padding: 0.7rem 1.5rem;
+  background: transparent;
+  color: #cbd5e1;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  outline: none;
+}
+
+.wizard-back-btn:hover {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.25);
+  color: #f3f4f6;
+}
+
+/* Next button — primary purple */
+.wizard-next-btn {
+  padding: 0.7rem 2rem;
+  background: #a855f7;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  outline: none;
+}
+
+.wizard-next-btn:hover:not(:disabled) {
+  background: #9333ea;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px rgba(168, 85, 247, 0.35);
+}
+
+.wizard-next-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+  background: #6b7280;
+}
+
+/* ---------------------------------------------------------------------------
+   Responsive — stack columns on smaller screens
+   --------------------------------------------------------------------------- */
+@media (max-width: 860px) {
+  .wizard-two-col {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+
+  .wizard-body {
+    padding: 2rem 1.25rem 6rem;
+  }
+
+  .wizard-header-inner,
+  .wizard-footer-inner {
+    padding-left: 1.25rem;
+    padding-right: 1.25rem;
+  }
+
+  .wizard-left-col h1 {
+    font-size: 1.6rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .wizard-body {
+    padding: 1.5rem 1rem 5.5rem;
+  }
+
+  .wizard-header-inner,
+  .wizard-footer-inner {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  .wizard-left-col h1 {
+    font-size: 1.35rem;
+  }
+
+  .wizard-next-btn {
+    padding: 0.65rem 1.25rem;
+    font-size: 0.9rem;
+  }
+
+  .wizard-back-btn {
+    padding: 0.65rem 1rem;
+    font-size: 0.9rem;
+  }
+}

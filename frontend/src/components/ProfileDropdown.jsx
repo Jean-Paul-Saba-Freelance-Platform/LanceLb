@@ -100,7 +100,7 @@ const ProfileDropdown = ({ userName, userAvatar, isOpen, onClose, onToggle }) =>
       { 
         label: 'Post a job', 
         icon: Briefcase, 
-        route: '/client/jobs/new',
+        route: '/client/post-job',
         dividerAfter: false
       },
       { 
