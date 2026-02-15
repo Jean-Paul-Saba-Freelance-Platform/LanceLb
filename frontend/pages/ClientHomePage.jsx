@@ -135,9 +135,9 @@ const ClientHomePage = () => {
     })
   }
 
-  // Handle "Post a Job" action
+  // Handle "Post a Job" action — opens the multi-step wizard
   const handlePostJob = () => {
-    navigate('/client/jobs/new')
+    navigate('/client/post-job')
   }
 
   // Handle category click
