@@ -7,7 +7,6 @@ import { fileURLToPath } from "url";
 
 import connectDB from "./config/mongodb.js";
 import authRouter from "./routes/authRoutes.js";
-import gigRouter from "./routes/gigRoutes.js";
 import webhookRouter from "./routes/webhookRoutes.js";
 import clientRoutes from "./routes/clientRoutes.js";
 
@@ -52,7 +51,6 @@ if (process.env.NODE_ENV !== "production") {
 // Routes
 app.get("/", (req, res) => res.send("Working"));
 app.use("/api/auth", authRouter);
-app.use("/api/gigs", gigRouter);
 app.use("/api/webhooks", webhookRouter); // optional
 app.use("/api/client", clientRoutes);
 
