@@ -9,6 +9,7 @@ import connectDB from "./config/mongodb.js";
 import authRouter from "./routes/authRoutes.js";
 import webhookRouter from "./routes/webhookRoutes.js";
 import clientRoutes from "./routes/clientRoutes.js";
+import applicationRouter from "./routes/applicationRoutes.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -53,6 +54,7 @@ app.get("/", (req, res) => res.send("Working"));
 app.use("/api/auth", authRouter);
 app.use("/api/webhooks", webhookRouter); // optional
 app.use("/api/client", clientRoutes);
+app.use("/api/applications", applicationRouter);
 
 // Start
 connectDB();
