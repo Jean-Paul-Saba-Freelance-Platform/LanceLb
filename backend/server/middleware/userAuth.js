@@ -4,6 +4,7 @@ import cookieParser from 'cookie-parser';
 const userAuth = async (req, res, next) => {
     // Check both cookies and Authorization header
     let token = req.cookies?.token;
+    let userType = req.cookies?.userType;
     
     if (!token && req.headers.authorization) {
         token = req.headers.authorization.split(' ')[1];
