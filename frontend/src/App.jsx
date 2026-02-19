@@ -15,6 +15,7 @@ import ClientProfilePage from '../pages/ClientProfilePage'
 import ClientStatsPage from '../pages/ClientStatsPage'
 import ClientSettingsPage from '../pages/ClientSettingsPage'
 import ClientJobsPage from '../pages/ClientJobsPage'
+import EditJobPage from '../pages/EditJobPage'
 import PostJobPage from '../pages/PostJobPage'
 import PostJobStep1Title from '../pages/client/postJob/PostJobStep1Title'
 import PostJobStep2Skills from '../pages/client/postJob/PostJobStep2Skills'
@@ -94,6 +95,14 @@ function App() {
                 <PostJobPage />
               </ClientRoute>
             } 
+          />
+          <Route
+            path="/client/jobs/:jobId/edit"
+            element={
+              <ClientRoute>
+                <EditJobPage />
+              </ClientRoute>
+            }
           />
 
           {/* Post-a-Job wizard routes */}

@@ -377,22 +377,177 @@ export const getOpenJobs = async (req, res) => {
  */
 export const getClientJobs = async (req, res) => {
     try {
-        // --- 1. Read the authenticated user's ID --------------------------
         const clientId = req.userId;
 
-        // --- 2. Fetch all jobs belonging to this client -------------------
         const jobs = await Job.find({ clientId }).sort({ createdAt: -1 });
 
         return res.status(200).json({
             success: true,
-            count: jobs.length,
-            jobs,
+            data: jobs,
         });
     } catch (error) {
         console.error('Error fetching client jobs:', error);
         return res.status(500).json({
             success: false,
             message: 'Server error while fetching your jobs',
+        });
+    }
+};
+
+// ---------------------------------------------------------------------------
+// PATCH  /api/client/jobs/:jobId  —  Update a job owned by the logged-in client
+// ---------------------------------------------------------------------------
+
+const UPDATABLE_FIELDS = [
+    'title',
+    'requiredSkills',
+    'description',
+    'projectSize',
+    'duration',
+    'experienceLevel',
+    'contractToHire',
+    'paymentType',
+    'hourlyMin',
+    'hourlyMax',
+    'fixedBudget',
+];
+
+export const updateClientJob = async (req, res) => {
+    try {
+        const { jobId } = req.params;
+
+        if (!isValidObjectId(jobId)) {
+            return res.status(400).json({
+                success: false,
+                message: 'Invalid job ID format',
+            });
+        }
+
+        const job = await Job.findById(jobId);
+
+        if (!job) {
+            return res.status(404).json({
+                success: false,
+                message: 'Job not found',
+            });
+        }
+
+        if (job.clientId.toString() !== req.userId) {
+            return res.status(403).json({
+                success: false,
+                message: 'You do not have permission to edit this job',
+            });
+        }
+
+        const updates = {};
+        for (const field of UPDATABLE_FIELDS) {
+            if (req.body[field] !== undefined) {
+                updates[field] = req.body[field];
+            }
+        }
+
+        if (Object.keys(updates).length === 0) {
+            return res.status(400).json({
+                success: false,
+                message: 'No valid fields provided for update',
+            });
+        }
+
+        Object.assign(job, updates);
+
+        const paymentType = job.paymentType;
+        if (paymentType === 'fixed') {
+            job.budget = Number(job.fixedBudget) || job.budget;
+            job.hourlyMin = undefined;
+            job.hourlyMax = undefined;
+        } else if (paymentType === 'hourly') {
+            job.budget = Number(job.hourlyMin) || job.budget;
+            job.fixedBudget = undefined;
+        }
+
+        await job.validate();
+        const updatedJob = await job.save();
+
+        return res.status(200).json({
+            success: true,
+            data: updatedJob,
+        });
+    } catch (error) {
+        console.error('Error updating job:', error);
+
+        if (error.name === 'ValidationError') {
+            const firstMessage = Object.values(error.errors)
+                .map((e) => e.message)
+                .join('. ');
+            return res.status(400).json({
+                success: false,
+                message: firstMessage,
+            });
+        }
+
+        if (error.message && !error.errors) {
+            return res.status(400).json({
+                success: false,
+                message: error.message,
+            });
+        }
+
+        return res.status(500).json({
+            success: false,
+            message: 'Server error while updating job',
+        });
+    }
+};
+
+// ---------------------------------------------------------------------------
+// DELETE  /api/client/jobs/:jobId  —  Delete a job owned by the logged-in client
+// ---------------------------------------------------------------------------
+
+export const deleteClientJob = async (req, res) => {
+    try {
+        const { jobId } = req.params;
+
+        if (!isValidObjectId(jobId)) {
+            return res.status(400).json({
+                success: false,
+                message: 'Invalid job ID format',
+            });
+        }
+
+        const job = await Job.findById(jobId);
+
+        if (!job) {
+            return res.status(404).json({
+                success: false,
+                message: 'Job not found',
+            });
+        }
+
+        if (job.clientId.toString() !== req.userId) {
+            return res.status(403).json({
+                success: false,
+                message: 'Not allowed',
+            });
+        }
+
+        if (job.status === 'in_progress') {
+            return res.status(400).json({
+                success: false,
+                message: 'You cannot delete a job that is in progress',
+            });
+        }
+
+        await job.deleteOne();
+
+        return res.status(200).json({
+            success: true,
+            message: 'Job deleted successfully',
+        });
+    } catch (error) {
+        console.error('Error deleting job:', error);
+        return res.status(500).json({
+            success: false,
+            message: 'Server error while deleting job',
         });
     }
 };

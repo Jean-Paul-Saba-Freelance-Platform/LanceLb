@@ -103,3 +103,479 @@
   border-left: 1px solid rgba(255, 255, 255, 0.1) !important;
   color: #f3f4f6 !important;
 }
+
+/* =========================================================================
+   Job Management Pages — Dark wizard-glass overrides
+   ========================================================================= */
+
+/* Page backgrounds → transparent so ClientLayout dark bg shows through */
+.client-layout .client-jobs-page,
+.client-layout .edit-job-page {
+  background: transparent !important;
+}
+
+/* ---------------------------------------------------------------------------
+   Overview job cards (ClientHomePage Active Jobs tab)
+   --------------------------------------------------------------------------- */
+.client-layout .overview-job-card {
+  background: rgba(255, 255, 255, 0.04) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  border-radius: 12px !important;
+}
+
+.client-layout .overview-job-card:hover {
+  border-color: rgba(255, 255, 255, 0.18) !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25) !important;
+}
+
+.client-layout .overview-job-title {
+  color: #f3f4f6 !important;
+}
+
+.client-layout .overview-job-date {
+  color: #94a3b8 !important;
+}
+
+.client-layout .overview-job-budget {
+  color: #e2e8f0 !important;
+}
+
+.client-layout .overview-job-badge.status-open {
+  background: rgba(34, 197, 94, 0.15) !important;
+  color: #4ade80 !important;
+  border-color: rgba(34, 197, 94, 0.3) !important;
+}
+
+.client-layout .overview-job-badge.status-in_progress {
+  background: rgba(59, 130, 246, 0.15) !important;
+  color: #60a5fa !important;
+  border-color: rgba(59, 130, 246, 0.3) !important;
+}
+
+.client-layout .overview-job-badge.status-closed {
+  background: rgba(148, 163, 184, 0.15) !important;
+  color: #94a3b8 !important;
+  border-color: rgba(148, 163, 184, 0.3) !important;
+}
+
+.client-layout .overview-skill-chip {
+  background: rgba(168, 85, 247, 0.2) !important;
+  border-color: rgba(168, 85, 247, 0.3) !important;
+  color: #e0d0fa !important;
+}
+
+.client-layout .overview-skill-chip.more {
+  background: rgba(255, 255, 255, 0.06) !important;
+  border-color: rgba(255, 255, 255, 0.12) !important;
+  color: #94a3b8 !important;
+}
+
+.client-layout .overview-job-btn.manage {
+  background: #a855f7 !important;
+  color: white !important;
+}
+
+.client-layout .overview-job-btn.edit {
+  background: transparent !important;
+  color: #c084fc !important;
+  border: 1px solid rgba(168, 85, 247, 0.3) !important;
+}
+
+.client-layout .overview-job-btn.edit:hover {
+  background: rgba(168, 85, 247, 0.15) !important;
+}
+
+.client-layout .overview-job-btn.delete {
+  background: transparent !important;
+  color: #fca5a5 !important;
+  border: 1px solid rgba(239, 68, 68, 0.3) !important;
+}
+
+.client-layout .overview-job-btn.delete:hover {
+  background: rgba(239, 68, 68, 0.12) !important;
+}
+
+.client-layout .skeleton-card {
+  background: linear-gradient(90deg, rgba(255,255,255,0.03) 25%, rgba(255,255,255,0.06) 50%, rgba(255,255,255,0.03) 75%) !important;
+  background-size: 200% 100% !important;
+}
+
+.client-layout .overview-error-banner {
+  background: rgba(239, 68, 68, 0.12) !important;
+  border-color: rgba(239, 68, 68, 0.3) !important;
+  color: #fca5a5 !important;
+}
+
+.client-layout .overview-error-retry {
+  color: #fca5a5 !important;
+  border-color: rgba(252, 165, 165, 0.4) !important;
+}
+
+.client-layout .overview-error-retry:hover {
+  background: rgba(239, 68, 68, 0.2) !important;
+  color: #fee2e2 !important;
+}
+
+.client-layout .overview-success-banner {
+  background: rgba(34, 197, 94, 0.12) !important;
+  border-color: rgba(34, 197, 94, 0.3) !important;
+  color: #4ade80 !important;
+}
+
+.client-layout .overview-success-dismiss {
+  color: #4ade80 !important;
+}
+
+/* ---------------------------------------------------------------------------
+   Manage Jobs page (ClientJobsPage)
+   --------------------------------------------------------------------------- */
+.client-layout .manage-job-card,
+.client-layout .manage-empty {
+  background: rgba(14, 12, 20, 0.6) !important;
+  backdrop-filter: blur(18px) !important;
+  -webkit-backdrop-filter: blur(18px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3) !important;
+}
+
+.client-layout .manage-job-card:hover {
+  border-color: rgba(255, 255, 255, 0.2) !important;
+  box-shadow: 0 12px 48px rgba(0, 0, 0, 0.4) !important;
+}
+
+.client-layout .manage-job-title {
+  color: #f3f4f6 !important;
+}
+
+.client-layout .manage-job-meta,
+.client-layout .manage-job-meta span {
+  color: #94a3b8 !important;
+}
+
+.client-layout .manage-meta-dot {
+  color: rgba(255, 255, 255, 0.2) !important;
+}
+
+.client-layout .manage-job-budget {
+  color: #e2e8f0 !important;
+}
+
+.client-layout .manage-job-desc {
+  color: #94a3b8 !important;
+}
+
+.client-layout .manage-subtitle {
+  color: #94a3b8 !important;
+}
+
+.client-layout .manage-job-badge.status-open {
+  background: rgba(34, 197, 94, 0.15) !important;
+  color: #4ade80 !important;
+  border-color: rgba(34, 197, 94, 0.3) !important;
+}
+
+.client-layout .manage-job-badge.status-in_progress {
+  background: rgba(59, 130, 246, 0.15) !important;
+  color: #60a5fa !important;
+  border-color: rgba(59, 130, 246, 0.3) !important;
+}
+
+.client-layout .manage-job-badge.status-closed {
+  background: rgba(148, 163, 184, 0.15) !important;
+  color: #94a3b8 !important;
+  border-color: rgba(148, 163, 184, 0.3) !important;
+}
+
+.client-layout .manage-skill-chip {
+  background: rgba(168, 85, 247, 0.2) !important;
+  border-color: rgba(168, 85, 247, 0.3) !important;
+  color: #e0d0fa !important;
+}
+
+.client-layout .manage-skill-chip.more {
+  background: rgba(255, 255, 255, 0.06) !important;
+  border-color: rgba(255, 255, 255, 0.12) !important;
+  color: #94a3b8 !important;
+}
+
+.client-layout .manage-search-input {
+  background: rgba(255, 255, 255, 0.06) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  color: #f3f4f6 !important;
+}
+
+.client-layout .manage-search-input::placeholder {
+  color: rgba(255, 255, 255, 0.35) !important;
+}
+
+.client-layout .manage-search-input:focus {
+  border-color: #a855f7 !important;
+  box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.15) !important;
+}
+
+.client-layout .manage-search-icon {
+  color: #64748b !important;
+}
+
+.client-layout .manage-status-filter {
+  background: rgba(255, 255, 255, 0.04) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+.client-layout .manage-status-btn {
+  color: #94a3b8 !important;
+}
+
+.client-layout .manage-status-btn:hover {
+  color: #e2e8f0 !important;
+}
+
+.client-layout .manage-status-btn.active {
+  background: #a855f7 !important;
+  color: white !important;
+}
+
+.client-layout .manage-action-btn.primary {
+  background: #a855f7 !important;
+  color: white !important;
+}
+
+.client-layout .manage-action-btn.secondary {
+  background: transparent !important;
+  color: #c084fc !important;
+  border: 1px solid rgba(168, 85, 247, 0.3) !important;
+}
+
+.client-layout .manage-action-btn.secondary:hover {
+  background: rgba(168, 85, 247, 0.15) !important;
+}
+
+.client-layout .manage-action-btn.danger {
+  background: transparent !important;
+  color: #fca5a5 !important;
+  border: 1px solid rgba(239, 68, 68, 0.3) !important;
+}
+
+.client-layout .manage-action-btn.danger:hover {
+  background: rgba(239, 68, 68, 0.12) !important;
+}
+
+.client-layout .manage-skeleton {
+  background: linear-gradient(90deg, rgba(255,255,255,0.03) 25%, rgba(255,255,255,0.06) 50%, rgba(255,255,255,0.03) 75%) !important;
+  background-size: 200% 100% !important;
+}
+
+.client-layout .manage-error {
+  background: rgba(239, 68, 68, 0.12) !important;
+  border-color: rgba(239, 68, 68, 0.3) !important;
+  color: #fca5a5 !important;
+}
+
+.client-layout .manage-error-retry {
+  color: #fca5a5 !important;
+  border-color: rgba(252, 165, 165, 0.4) !important;
+}
+
+.client-layout .manage-error-retry:hover {
+  background: rgba(239, 68, 68, 0.2) !important;
+  color: #fee2e2 !important;
+}
+
+.client-layout .manage-success {
+  background: rgba(34, 197, 94, 0.12) !important;
+  border-color: rgba(34, 197, 94, 0.3) !important;
+  color: #4ade80 !important;
+}
+
+.client-layout .manage-success-dismiss {
+  color: #4ade80 !important;
+}
+
+.client-layout .manage-empty h3 {
+  color: #f3f4f6 !important;
+}
+
+.client-layout .manage-empty p {
+  color: #94a3b8 !important;
+}
+
+/* ---------------------------------------------------------------------------
+   Edit Job page (EditJobPage)
+   --------------------------------------------------------------------------- */
+.client-layout .edit-form {
+  background: rgba(14, 12, 20, 0.6) !important;
+  backdrop-filter: blur(18px) !important;
+  -webkit-backdrop-filter: blur(18px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3) !important;
+}
+
+.client-layout .edit-label {
+  color: #e2e8f0 !important;
+}
+
+.client-layout .edit-input,
+.client-layout .edit-textarea {
+  background: rgba(255, 255, 255, 0.06) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  color: #f3f4f6 !important;
+}
+
+.client-layout .edit-input::placeholder,
+.client-layout .edit-textarea::placeholder {
+  color: rgba(255, 255, 255, 0.35) !important;
+}
+
+.client-layout .edit-input:focus,
+.client-layout .edit-textarea:focus {
+  border-color: #a855f7 !important;
+  background: rgba(255, 255, 255, 0.08) !important;
+  box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.15) !important;
+}
+
+.client-layout .edit-char-count {
+  color: #64748b !important;
+}
+
+.client-layout .edit-field-error {
+  color: #fca5a5 !important;
+}
+
+.client-layout .edit-option-btn {
+  background: rgba(255, 255, 255, 0.04) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  color: #e2e8f0 !important;
+}
+
+.client-layout .edit-option-btn:hover {
+  background: rgba(255, 255, 255, 0.06) !important;
+  border-color: rgba(255, 255, 255, 0.18) !important;
+}
+
+.client-layout .edit-option-btn.selected {
+  background: rgba(168, 85, 247, 0.1) !important;
+  border-color: rgba(168, 85, 247, 0.5) !important;
+  color: #e0d0fa !important;
+  box-shadow: 0 0 0 2px rgba(168, 85, 247, 0.12) !important;
+}
+
+.client-layout .edit-skill-chip {
+  background: rgba(168, 85, 247, 0.2) !important;
+  border-color: rgba(168, 85, 247, 0.3) !important;
+  color: #e0d0fa !important;
+}
+
+.client-layout .edit-skill-chip span {
+  color: #e0d0fa !important;
+}
+
+.client-layout .edit-skill-remove {
+  background: rgba(255, 255, 255, 0.08) !important;
+  color: #c084fc !important;
+}
+
+.client-layout .edit-skill-remove:hover {
+  background: rgba(239, 68, 68, 0.35) !important;
+  color: #fca5a5 !important;
+}
+
+.client-layout .edit-skills-add-btn {
+  background: rgba(168, 85, 247, 0.2) !important;
+  color: #c084fc !important;
+  border-color: rgba(168, 85, 247, 0.3) !important;
+}
+
+.client-layout .edit-skills-add-btn:hover:not(:disabled) {
+  background: rgba(168, 85, 247, 0.35) !important;
+}
+
+.client-layout .edit-budget-prefix {
+  color: #64748b !important;
+}
+
+.client-layout .edit-budget-divider,
+.client-layout .edit-budget-suffix {
+  color: #94a3b8 !important;
+}
+
+.client-layout .edit-cancel-btn {
+  background: transparent !important;
+  color: #cbd5e1 !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+}
+
+.client-layout .edit-cancel-btn:hover {
+  background: rgba(255, 255, 255, 0.06) !important;
+  border-color: rgba(255, 255, 255, 0.25) !important;
+  color: #f3f4f6 !important;
+}
+
+.client-layout .edit-save-btn {
+  background: #a855f7 !important;
+  color: white !important;
+}
+
+.client-layout .edit-save-btn:hover:not(:disabled) {
+  background: #9333ea !important;
+  box-shadow: 0 4px 16px rgba(168, 85, 247, 0.35) !important;
+}
+
+.client-layout .edit-actions {
+  border-top-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+.client-layout .edit-back-link {
+  color: #c084fc !important;
+}
+
+.client-layout .edit-back-link:hover {
+  color: #e0d0fa !important;
+}
+
+.client-layout .edit-banner.error {
+  background: rgba(239, 68, 68, 0.12) !important;
+  border-color: rgba(239, 68, 68, 0.3) !important;
+  color: #fca5a5 !important;
+}
+
+.client-layout .edit-banner.success {
+  background: rgba(34, 197, 94, 0.12) !important;
+  border-color: rgba(34, 197, 94, 0.3) !important;
+  color: #4ade80 !important;
+}
+
+.client-layout .edit-banner-dismiss {
+  color: inherit !important;
+}
+
+.client-layout .edit-skeleton {
+  background: linear-gradient(90deg, rgba(255,255,255,0.03) 25%, rgba(255,255,255,0.06) 50%, rgba(255,255,255,0.03) 75%) !important;
+  background-size: 200% 100% !important;
+}
+
+/* ---------------------------------------------------------------------------
+   Segmented control — ensure dark variant on non-active items
+   --------------------------------------------------------------------------- */
+.client-layout .segmented-control {
+  background: rgba(255, 255, 255, 0.04) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+/* ---------------------------------------------------------------------------
+   Empty state buttons (ClientHomePage)
+   --------------------------------------------------------------------------- */
+.client-layout .empty-state-button.primary {
+  background: #a855f7 !important;
+  color: white !important;
+}
+
+.client-layout .empty-state-button.secondary {
+  background: transparent !important;
+  color: #c084fc !important;
+  border: 1px solid rgba(168, 85, 247, 0.3) !important;
+}
+
+.client-layout .empty-state-button.secondary:hover {
+  background: rgba(168, 85, 247, 0.15) !important;
+  color: #e0d0fa !important;
+}

@@ -1,67 +1,37 @@
-/**
- * CLIENT HOME PAGE - Implementation Checklist
- * 
- * WHAT WAS ADDED:
- * - ClientHome page component with all required sections
- * - Role-based route protection (ClientRoute)
- * - Mock data layer for dashboard content
- * - Responsive design matching existing design system
- * 
- * HOW TO TEST:
- * 1. Login as client:
- *    - Sign up with userType="client" or use existing client account
- *    - Login will redirect to /client/home automatically
- * 
- * 2. Access /client/home:
- *    - Direct navigation: http://localhost:5173/client/home
- *    - Should show client dashboard with all sections
- * 
- * 3. Expected redirects:
- *    - Not logged in -> redirects to /login
- *    - Logged in as freelancer -> redirects to /freelancer/home
- *    - Logged in as client -> shows client dashboard
- * 
- * WHAT IS PLACEHOLDER VS REAL:
- * - PLACEHOLDER: All data (nextSteps, categories, resources) uses mock data
- * - PLACEHOLDER: Overview section shows empty state (no real jobs/contracts)
- * - PLACEHOLDER: "Post a Job" button routes to placeholder page
- * - PLACEHOLDER: Category cards route to /talent?category=... (page may not exist yet)
- * - REAL: User authentication and role checking
- * - REAL: User name from localStorage
- * - REAL: Route protection logic
- * 
- * TODO FOR BACKEND INTEGRATION:
- * - Replace mockClientDashboardData with API call to GET /api/client/dashboard/summary
- * - Fetch real jobs/contracts for Overview section
- * - Update nextSteps completion status from user profile
- * - Connect "Post a Job" to real job creation flow
- */
-
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import TopNav from '../src/components/TopNav.jsx'
 import RightSidebarCard from '../src/components/RightSidebarCard.jsx'
+import ConfirmDeleteModal from '../src/components/ConfirmDeleteModal.jsx'
 import { nextStepsData, categoriesData, resourcesData, defaultDashboardSummary } from './client/mockClientDashboardData.js'
 import './ClientHomePage.css'
+
+const API_BASE = 'http://127.0.0.1:4000'
 
 const ClientHomePage = () => {
   const navigate = useNavigate()
   const [user, setUser] = useState(null)
-  const [activeView, setActiveView] = useState('activeJobs') // 'activeJobs' or 'contracts'
+  const [activeView, setActiveView] = useState('activeJobs')
   const [dashboardSummary, setDashboardSummary] = useState(defaultDashboardSummary)
 
-  // Fetch dashboard summary from API (optional - falls back to mock data if API fails)
+  const [jobs, setJobs] = useState([])
+  const [jobsLoading, setJobsLoading] = useState(false)
+  const [jobsError, setJobsError] = useState('')
+  const [jobsSuccess, setJobsSuccess] = useState('')
+
+  const [deleteTarget, setDeleteTarget] = useState(null)
+  const [deleting, setDeleting] = useState(false)
+  const [deleteError, setDeleteError] = useState('')
+
   const fetchDashboardSummary = async () => {
     try {
       const token = localStorage.getItem('token')
       if (!token) return
 
-      const response = await fetch('http://127.0.0.1:4000/api/client/dashboard/summary', {
+      const response = await fetch(`${API_BASE}/api/client/dashboard/summary`, {
         method: 'GET',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        credentials: 'include' // Include cookies for auth
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include'
       })
 
       if (response.ok) {
@@ -77,20 +47,78 @@ const ClientHomePage = () => {
         }
       }
     } catch (error) {
-      // API not available or error - use default/mock data
       console.log('Dashboard API not available, using mock data:', error.message)
     }
   }
 
+  const fetchClientJobs = async () => {
+    setJobsLoading(true)
+    setJobsError('')
+    try {
+      const token = localStorage.getItem('token')
+      const res = await fetch(`${API_BASE}/api/client/jobs`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(token && { Authorization: `Bearer ${token}` }),
+        },
+        credentials: 'include',
+      })
+      const data = await res.json()
+      if (res.ok && data.success) {
+        setJobs(data.data || [])
+      } else {
+        setJobsError(data.message || 'Failed to load jobs')
+      }
+    } catch {
+      setJobsError('Network error — make sure the backend is running.')
+    } finally {
+      setJobsLoading(false)
+    }
+  }
+
+  const handleDeleteConfirm = useCallback(async () => {
+    if (!deleteTarget || deleting) return
+    setDeleting(true)
+    setDeleteError('')
+    try {
+      const token = localStorage.getItem('token')
+      const res = await fetch(`${API_BASE}/api/client/jobs/${deleteTarget.id || deleteTarget._id}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(token && { Authorization: `Bearer ${token}` }),
+        },
+        credentials: 'include',
+      })
+      const data = await res.json()
+      if (res.ok && data.success) {
+        setJobs(prev => prev.filter(j => (j.id || j._id) !== (deleteTarget.id || deleteTarget._id)))
+        setDeleteTarget(null)
+        setJobsSuccess('Job deleted successfully.')
+        setTimeout(() => setJobsSuccess(''), 4000)
+      } else {
+        setDeleteError(data.message || 'Failed to delete job')
+      }
+    } catch {
+      setDeleteError('Network error — make sure the backend is running.')
+    } finally {
+      setDeleting(false)
+    }
+  }, [deleteTarget, deleting])
+
+  const handleDeleteCancel = useCallback(() => {
+    if (deleting) return
+    setDeleteTarget(null)
+    setDeleteError('')
+  }, [deleting])
+
   useEffect(() => {
-    // Get user from localStorage
     try {
       const userStr = localStorage.getItem('user')
       if (userStr) {
         const userData = JSON.parse(userStr)
         setUser(userData)
-        
-        // Update email verification status from user data
         if (userData.isAccountVerified !== undefined) {
           setDashboardSummary(prev => ({
             ...prev,
@@ -102,8 +130,8 @@ const ClientHomePage = () => {
       console.error('Error loading user:', error)
     }
 
-    // Try to fetch dashboard summary from API (optional)
     fetchDashboardSummary()
+    fetchClientJobs()
   }, [])
 
   // Get greeting based on time of day
@@ -218,30 +246,112 @@ const ClientHomePage = () => {
 
             <div className="overview-card">
               {activeView === 'activeJobs' && (
-                <div className="empty-state">
-                  <div className="empty-state-illustration">
-                    <svg width="120" height="120" viewBox="0 0 100 100" fill="none">
-                      <circle cx="50" cy="50" r="40" fill="#a855f7" opacity="0.2"/>
-                      <path d="M30 50 L45 65 L70 35" stroke="#a855f7" strokeWidth="4" strokeLinecap="round" opacity="0.6"/>
-                      <circle cx="50" cy="50" r="35" stroke="#a855f7" strokeWidth="2" opacity="0.3"/>
-                    </svg>
-                  </div>
-                  <h3 className="empty-state-title">No active jobs yet</h3>
-                  <p className="empty-state-description">
-                    Start by posting your first job to find talented freelancers.
-                  </p>
-                  <div className="empty-state-actions">
-                    <button className="empty-state-button primary" onClick={handlePostJob}>
-                      Post a job
-                    </button>
-                    <button 
-                      className="empty-state-button secondary"
-                      onClick={() => navigate('/talent')}
-                    >
-                      Find talent
-                    </button>
-                  </div>
-                </div>
+                <>
+                  {jobsSuccess && (
+                    <div className="overview-success-banner">
+                      <span>{jobsSuccess}</span>
+                      <button className="overview-success-dismiss" onClick={() => setJobsSuccess('')}>×</button>
+                    </div>
+                  )}
+
+                  {jobsLoading && (
+                    <div className="overview-loading">
+                      <div className="skeleton-card" />
+                      <div className="skeleton-card" />
+                    </div>
+                  )}
+
+                  {jobsError && !jobsLoading && (
+                    <div className="overview-error-banner">
+                      <span>{jobsError}</span>
+                      <button className="overview-error-retry" onClick={fetchClientJobs}>Retry</button>
+                    </div>
+                  )}
+
+                  {!jobsLoading && !jobsError && jobs.length === 0 && (
+                    <div className="empty-state">
+                      <div className="empty-state-illustration">
+                        <svg width="120" height="120" viewBox="0 0 100 100" fill="none">
+                          <circle cx="50" cy="50" r="40" fill="#a855f7" opacity="0.2"/>
+                          <path d="M30 50 L45 65 L70 35" stroke="#a855f7" strokeWidth="4" strokeLinecap="round" opacity="0.6"/>
+                          <circle cx="50" cy="50" r="35" stroke="#a855f7" strokeWidth="2" opacity="0.3"/>
+                        </svg>
+                      </div>
+                      <h3 className="empty-state-title">No active jobs yet</h3>
+                      <p className="empty-state-description">
+                        Start by posting your first job to find talented freelancers.
+                      </p>
+                      <div className="empty-state-actions">
+                        <button className="empty-state-button primary" onClick={handlePostJob}>
+                          Post a job
+                        </button>
+                        <button 
+                          className="empty-state-button secondary"
+                          onClick={() => navigate('/talent')}
+                        >
+                          Find talent
+                        </button>
+                      </div>
+                    </div>
+                  )}
+
+                  {!jobsLoading && !jobsError && jobs.length > 0 && (
+                    <div className="overview-jobs-list">
+                      {jobs.map(job => (
+                        <div key={job.id || job._id} className="overview-job-card">
+                          <div className="overview-job-top">
+                            <h3 className="overview-job-title">{job.title}</h3>
+                            {job.status && (
+                              <span className={`overview-job-badge status-${job.status}`}>
+                                {job.status === 'open' ? 'Open' : job.status === 'in_progress' ? 'In Progress' : 'Closed'}
+                              </span>
+                            )}
+                          </div>
+                          <div className="overview-job-meta">
+                            <span className="overview-job-date">
+                              Posted {new Date(job.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                            </span>
+                            <span className="overview-job-budget">
+                              {job.paymentType === 'hourly'
+                                ? `$${job.hourlyMin} – $${job.hourlyMax}/hr`
+                                : `$${job.fixedBudget} fixed`}
+                            </span>
+                          </div>
+                          {job.requiredSkills?.length > 0 && (
+                            <div className="overview-job-skills">
+                              {job.requiredSkills.slice(0, 5).map((skill, i) => (
+                                <span key={i} className="overview-skill-chip">{skill}</span>
+                              ))}
+                              {job.requiredSkills.length > 5 && (
+                                <span className="overview-skill-chip more">+{job.requiredSkills.length - 5}</span>
+                              )}
+                            </div>
+                          )}
+                          <div className="overview-job-actions">
+                            <button
+                              className="overview-job-btn manage"
+                              onClick={() => navigate('/client/jobs')}
+                            >
+                              Manage
+                            </button>
+                            <button
+                              className="overview-job-btn edit"
+                              onClick={() => navigate(`/client/jobs/${job.id || job._id}/edit`)}
+                            >
+                              Edit
+                            </button>
+                            <button
+                              className="overview-job-btn delete"
+                              onClick={() => setDeleteTarget(job)}
+                            >
+                              Delete
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </>
               )}
 
               {activeView === 'contracts' && (
@@ -270,16 +380,6 @@ const ClientHomePage = () => {
                   </div>
                 </div>
               )}
-
-              {/* TODO: When backend is ready, replace empty state with:
-              <div className="overview-list">
-                {activeView === 'activeJobs' ? (
-                  jobs.map(job => <JobListItem key={job.id} job={job} />)
-                ) : (
-                  contracts.map(contract => <ContractListItem key={contract.id} contract={contract} />)
-                )}
-              </div>
-              */}
             </div>
           </div>
 
@@ -321,6 +421,16 @@ const ClientHomePage = () => {
           </div>
         </div>
       </div>
+
+      <ConfirmDeleteModal
+        open={!!deleteTarget}
+        title="Delete job?"
+        body={`This will permanently remove "${deleteTarget?.title || 'this job'}". This action cannot be undone.`}
+        loading={deleting}
+        error={deleteError}
+        onConfirm={handleDeleteConfirm}
+        onCancel={handleDeleteCancel}
+      />
     </div>
   )
 }

@@ -275,6 +275,245 @@
   color: white;
 }
 
+/* Overview Loading Skeleton */
+.overview-loading {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 0.5rem 0;
+}
+
+.skeleton-card {
+  height: 100px;
+  background: linear-gradient(90deg, rgba(0,0,0,0.04) 25%, rgba(0,0,0,0.08) 50%, rgba(0,0,0,0.04) 75%);
+  background-size: 200% 100%;
+  border-radius: 10px;
+  animation: shimmer 1.5s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* Overview Error Banner */
+.overview-error-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.85rem 1.25rem;
+  background: rgba(239, 68, 68, 0.08);
+  border: 1px solid rgba(239, 68, 68, 0.25);
+  border-radius: 10px;
+  font-size: 0.9rem;
+  color: #dc2626;
+}
+
+.overview-error-retry {
+  padding: 0.4rem 1rem;
+  background: transparent;
+  color: #dc2626;
+  border: 1px solid #dc2626;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  outline: none;
+  white-space: nowrap;
+}
+
+.overview-error-retry:hover {
+  background: #dc2626;
+  color: white;
+}
+
+/* Overview Job Cards */
+.overview-jobs-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.overview-job-card {
+  background: rgba(255, 255, 255, 0.5);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: 10px;
+  padding: 1.25rem 1.5rem;
+  transition: all 0.2s ease;
+}
+
+.overview-job-card:hover {
+  border-color: rgba(168, 85, 247, 0.25);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.overview-job-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.overview-job-title {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: #1f2937;
+  margin: 0;
+  line-height: 1.35;
+}
+
+.overview-job-badge {
+  display: inline-block;
+  padding: 0.2rem 0.65rem;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  white-space: nowrap;
+  text-transform: capitalize;
+  flex-shrink: 0;
+}
+
+.overview-job-badge.status-open {
+  background: rgba(34, 197, 94, 0.1);
+  color: #16a34a;
+  border: 1px solid rgba(34, 197, 94, 0.25);
+}
+
+.overview-job-badge.status-in_progress {
+  background: rgba(59, 130, 246, 0.1);
+  color: #2563eb;
+  border: 1px solid rgba(59, 130, 246, 0.25);
+}
+
+.overview-job-badge.status-closed {
+  background: rgba(107, 114, 128, 0.1);
+  color: #6b7280;
+  border: 1px solid rgba(107, 114, 128, 0.25);
+}
+
+.overview-job-meta {
+  display: flex;
+  gap: 1.25rem;
+  margin-bottom: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.overview-job-date,
+.overview-job-budget {
+  font-size: 0.85rem;
+  color: #6b7280;
+}
+
+.overview-job-budget {
+  font-weight: 600;
+  color: #374151;
+}
+
+.overview-job-skills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-bottom: 0.85rem;
+}
+
+.overview-skill-chip {
+  display: inline-block;
+  padding: 0.2rem 0.55rem;
+  background: rgba(168, 85, 247, 0.08);
+  border: 1px solid rgba(168, 85, 247, 0.18);
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #7c3aed;
+}
+
+.overview-skill-chip.more {
+  background: rgba(0, 0, 0, 0.04);
+  border-color: rgba(0, 0, 0, 0.1);
+  color: #6b7280;
+}
+
+.overview-job-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.overview-job-btn {
+  padding: 0.4rem 0.85rem;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  outline: none;
+  border: none;
+}
+
+.overview-job-btn.manage {
+  background: #a855f7;
+  color: white;
+}
+
+.overview-job-btn.manage:hover {
+  background: #9333ea;
+}
+
+.overview-job-btn.edit {
+  background: transparent;
+  color: #a855f7;
+  border: 1px solid rgba(168, 85, 247, 0.35);
+}
+
+.overview-job-btn.edit:hover {
+  background: rgba(168, 85, 247, 0.08);
+}
+
+.overview-job-btn.delete {
+  background: transparent;
+  color: #ef4444;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.overview-job-btn.delete:hover {
+  background: rgba(239, 68, 68, 0.08);
+  border-color: rgba(239, 68, 68, 0.5);
+}
+
+/* Overview Success Banner */
+.overview-success-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.85rem 1.25rem;
+  background: rgba(34, 197, 94, 0.1);
+  border: 1px solid rgba(34, 197, 94, 0.25);
+  border-radius: 10px;
+  font-size: 0.9rem;
+  color: #16a34a;
+  margin-bottom: 1rem;
+}
+
+.overview-success-dismiss {
+  flex-shrink: 0;
+  background: transparent;
+  border: none;
+  color: #16a34a;
+  font-size: 1.1rem;
+  cursor: pointer;
+  padding: 0 0.25rem;
+  opacity: 0.6;
+  transition: opacity 0.15s ease;
+  outline: none;
+}
+
+.overview-success-dismiss:hover {
+  opacity: 1;
+}
+
 /* Categories Section */
 .categories-section {
   margin-bottom: 1rem;
