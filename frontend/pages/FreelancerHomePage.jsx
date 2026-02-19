@@ -1,8 +1,10 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import TopNav from '../src/components/TopNav.jsx'
 import JobCard from '../src/components/JobCard.jsx'
 import RightSidebarCard from '../src/components/RightSidebarCard.jsx'
 import './FreelancerHomePage.css'
+
+const API_BASE = 'http://127.0.0.1:4000'
 
 const FreelancerHomePage = () => {
   const [user, setUser] = useState(null)
@@ -10,119 +12,38 @@ const FreelancerHomePage = () => {
   const [searchQuery, setSearchQuery] = useState('')
   const [profileProgress, setProfileProgress] = useState(40)
 
-  // Mock jobs data
-  const mockJobs = [
-    {
-      id: 1,
-      postedTime: 'Posted yesterday',
-      title: 'Arabic Proofreader & Transcriber',
-      type: 'Hourly',
-      experience: 'Intermediate',
-      duration: 'Ongoing',
-      description: 'We are looking for an experienced Arabic proofreader and transcriber to work on various projects. Must have excellent attention to detail and native-level Arabic proficiency.',
-      tags: ['Proofreading', 'Arabic', 'General Transcription'],
-      paymentVerified: true,
-      rating: 4.8,
-      spent: '$5k+ spent',
-      location: 'Lebanon',
-      proposals: '5-10',
-      category: 'bestMatches'
-    },
-    {
-      id: 2,
-      postedTime: 'Posted 2 days ago',
-      title: 'React Developer for E-commerce Platform',
-      type: 'Fixed-price',
-      experience: 'Expert',
-      duration: '1-3 months',
-      description: 'Looking for an experienced React developer to build a modern e-commerce platform. Must have experience with React, TypeScript, and payment integrations.',
-      tags: ['React', 'TypeScript', 'E-commerce', 'Payment Integration'],
-      paymentVerified: true,
-      rating: 4.9,
-      spent: '$10k+ spent',
-      location: 'United States',
-      proposals: '10-15',
-      category: 'bestMatches'
-    },
-    {
-      id: 3,
-      postedTime: 'Posted 3 days ago',
-      title: 'UI/UX Designer for Mobile App',
-      type: 'Hourly',
-      experience: 'Intermediate',
-      duration: '1-2 months',
-      description: 'We need a talented UI/UX designer to create beautiful and intuitive designs for our mobile application. Experience with Figma and design systems required.',
-      tags: ['UI/UX Design', 'Figma', 'Mobile App', 'Design Systems'],
-      paymentVerified: false,
-      rating: 4.5,
-      spent: '$2k+ spent',
-      location: 'United Kingdom',
-      proposals: 'Less than 5',
-      category: 'recent'
-    },
-    {
-      id: 4,
-      postedTime: 'Posted 4 days ago',
-      title: 'Content Writer for Tech Blog',
-      type: 'Fixed-price',
-      experience: 'Entry level',
-      duration: 'Ongoing',
-      description: 'Seeking a skilled content writer to create engaging articles for our technology blog. Topics include web development, AI, and software engineering.',
-      tags: ['Content Writing', 'Blogging', 'Technology', 'SEO'],
-      paymentVerified: true,
-      rating: 4.7,
-      spent: '$3k+ spent',
-      location: 'Canada',
-      proposals: '5-10',
-      category: 'bestMatches'
-    },
-    {
-      id: 5,
-      postedTime: 'Posted 5 days ago',
-      title: 'Full Stack Developer - Node.js & React',
-      type: 'Hourly',
-      experience: 'Expert',
-      duration: '3-6 months',
-      description: 'Join our team as a full stack developer working on cutting-edge web applications. Must be proficient in Node.js, React, and database design.',
-      tags: ['Node.js', 'React', 'Full Stack', 'Database Design'],
-      paymentVerified: true,
-      rating: 5.0,
-      spent: '$20k+ spent',
-      location: 'Australia',
-      proposals: '15-20',
-      category: 'recent'
-    },
-    {
-      id: 6,
-      postedTime: 'Posted 1 week ago',
-      title: 'Social Media Manager',
-      type: 'Hourly',
-      experience: 'Intermediate',
-      duration: 'Ongoing',
-      description: 'We are looking for an experienced social media manager to handle our brand presence across multiple platforms. Experience with analytics and content creation required.',
-      tags: ['Social Media', 'Content Creation', 'Analytics', 'Marketing'],
-      paymentVerified: true,
-      rating: 4.6,
-      spent: '$8k+ spent',
-      location: 'Germany',
-      proposals: '10-15',
-      category: 'saved'
-    }
-  ]
+  const [jobs, setJobs] = useState([])
+  const [jobsLoading, setJobsLoading] = useState(true)
+  const [jobsError, setJobsError] = useState('')
 
   useEffect(() => {
-    // Get user from localStorage
     try {
       const userStr = localStorage.getItem('user')
-      if (userStr) {
-        setUser(JSON.parse(userStr))
-      }
+      if (userStr) setUser(JSON.parse(userStr))
     } catch (error) {
       console.error('Error loading user:', error)
     }
   }, [])
 
-  // Get current date and greeting
+  const fetchJobs = useCallback(async () => {
+    setJobsLoading(true)
+    setJobsError('')
+    try {
+      const res = await fetch(`${API_BASE}/api/jobs`)
+      const data = await res.json()
+      if (!res.ok || !data.success) {
+        throw new Error(data.message || 'Failed to load jobs')
+      }
+      setJobs(data.data || [])
+    } catch (err) {
+      setJobsError(err.message || 'Failed to load jobs')
+    } finally {
+      setJobsLoading(false)
+    }
+  }, [])
+
+  useEffect(() => { fetchJobs() }, [fetchJobs])
+
   const getGreeting = () => {
     const hour = new Date().getHours()
     if (hour < 12) return 'Good Morning'
@@ -139,25 +60,23 @@ const FreelancerHomePage = () => {
     })
   }
 
-  // Filter jobs based on active tab and search query
   const getFilteredJobs = () => {
-    let filtered = mockJobs
+    let filtered = jobs
 
-    // Filter by tab
-    if (activeTab === 'bestMatches') {
-      filtered = mockJobs.filter(job => job.category === 'bestMatches')
-    } else if (activeTab === 'recent') {
-      filtered = mockJobs.filter(job => job.category === 'recent')
-    } else if (activeTab === 'saved') {
-      filtered = mockJobs.filter(job => job.category === 'saved')
+    if (activeTab === 'saved') return []
+
+    if (activeTab === 'recent') {
+      filtered = [...jobs].sort(
+        (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+      )
     }
 
-    // Filter by search query
     if (searchQuery.trim()) {
+      const q = searchQuery.toLowerCase()
       filtered = filtered.filter(job =>
-        job.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        job.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        job.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()))
+        (job.title || '').toLowerCase().includes(q) ||
+        (job.description || '').toLowerCase().includes(q) ||
+        (job.requiredSkills || []).some(s => s.toLowerCase().includes(q))
       )
     }
 
@@ -165,8 +84,26 @@ const FreelancerHomePage = () => {
   }
 
   const filteredJobs = getFilteredJobs()
-  // Use fallback name if no user in localStorage (for preview/testing)
   const userName = user?.name || user?.firstName || 'Freelancer'
+
+  const renderSkeletonCards = () => (
+    <>
+      {[1, 2, 3].map(i => (
+        <div key={i} className="job-card skeleton-job-card">
+          <div className="skeleton-line skeleton-short" />
+          <div className="skeleton-line skeleton-title" />
+          <div className="skeleton-line skeleton-medium" />
+          <div className="skeleton-line skeleton-long" />
+          <div className="skeleton-line skeleton-long" />
+          <div className="skeleton-tags-row">
+            <div className="skeleton-tag" />
+            <div className="skeleton-tag" />
+            <div className="skeleton-tag" />
+          </div>
+        </div>
+      ))}
+    </>
+  )
 
   return (
     <div className="freelancer-home">
@@ -229,13 +166,28 @@ const FreelancerHomePage = () => {
 
           {/* Jobs Feed */}
           <div className="jobs-feed">
-            {filteredJobs.length > 0 ? (
+            {jobsLoading ? (
+              renderSkeletonCards()
+            ) : jobsError ? (
+              <div className="jobs-error-banner">
+                <span>{jobsError}</span>
+                <button className="jobs-retry-btn" onClick={fetchJobs}>Retry</button>
+              </div>
+            ) : activeTab === 'saved' ? (
+              <div className="no-jobs-message">
+                <p>No saved jobs yet.</p>
+              </div>
+            ) : filteredJobs.length > 0 ? (
               filteredJobs.map(job => (
-                <JobCard key={job.id} job={job} />
+                <JobCard key={job._id || job.id} job={job} />
               ))
             ) : (
               <div className="no-jobs-message">
-                <p>No jobs found. Try adjusting your search or filters.</p>
+                {searchQuery.trim() ? (
+                  <p>No jobs found. Try adjusting your search or filters.</p>
+                ) : (
+                  <p>No jobs available right now.</p>
+                )}
               </div>
             )}
           </div>

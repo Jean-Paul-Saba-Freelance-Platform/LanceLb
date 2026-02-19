@@ -363,6 +363,29 @@ export const getOpenJobs = async (req, res) => {
 };
 
 // ---------------------------------------------------------------------------
+// GET  /api/jobs  —  Public endpoint: open jobs for the freelancer feed
+// ---------------------------------------------------------------------------
+
+export const getPublicJobs = async (req, res) => {
+    try {
+        const jobs = await Job.find({ status: 'open' })
+            .sort({ createdAt: -1 })
+            .select('title description requiredSkills paymentType hourlyMin hourlyMax fixedBudget budget experienceLevel duration projectSize createdAt status');
+
+        return res.status(200).json({
+            success: true,
+            data: jobs,
+        });
+    } catch (error) {
+        console.error('Error fetching public jobs:', error);
+        return res.status(500).json({
+            success: false,
+            message: 'Server error while fetching jobs',
+        });
+    }
+};
+
+// ---------------------------------------------------------------------------
 // GET  /api/jobs/client  —  List jobs for the authenticated client
 // ---------------------------------------------------------------------------
 

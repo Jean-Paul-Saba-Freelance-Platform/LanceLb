@@ -2,8 +2,64 @@ import React, { useState } from 'react'
 import { createPortal } from 'react-dom'
 import './JobCard.css'
 
+const EXPERIENCE_LABELS = {
+  entry: 'Entry',
+  intermediate: 'Intermediate',
+  expert: 'Expert',
+}
+
+const DURATION_LABELS = {
+  '1_to_3_months': '1–3 months',
+  '3_to_6_months': '3–6 months',
+  'more_than_6_months': 'More than 6 months',
+}
+
+function timeAgo(dateStr) {
+  if (!dateStr) return ''
+  const now = new Date()
+  const posted = new Date(dateStr)
+  const diffMs = now - posted
+  const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24))
+  if (diffDays === 0) return 'Posted today'
+  if (diffDays === 1) return 'Posted yesterday'
+  if (diffDays < 7) return `Posted ${diffDays} days ago`
+  if (diffDays < 30) return `Posted ${Math.floor(diffDays / 7)} week${Math.floor(diffDays / 7) > 1 ? 's' : ''} ago`
+  return `Posted ${Math.floor(diffDays / 30)} month${Math.floor(diffDays / 30) > 1 ? 's' : ''} ago`
+}
+
+function budgetLine(job) {
+  if (job.paymentType === 'hourly' && job.hourlyMin != null && job.hourlyMax != null) {
+    return `Hourly · $${job.hourlyMin}–$${job.hourlyMax}`
+  }
+  if (job.paymentType === 'fixed' && job.fixedBudget != null) {
+    return `Fixed-price · $${job.fixedBudget}`
+  }
+  if (job.type) return job.type
+  return ''
+}
+
 const JobCard = ({ job }) => {
   const [isApplyOpen, setIsApplyOpen] = useState(false)
+  const [applyBanner, setApplyBanner] = useState(false)
+
+  const postedTime = job.postedTime || timeAgo(job.createdAt)
+  const title = job.title || ''
+  const typeLine = budgetLine(job)
+  const experience = job.experience || EXPERIENCE_LABELS[job.experienceLevel] || ''
+  const duration = job.duration ? (DURATION_LABELS[job.duration] || job.duration) : ''
+  const description = job.description
+    ? (job.description.length > 180 ? job.description.slice(0, 180) + '…' : job.description)
+    : ''
+  const tags = job.tags || (job.requiredSkills ? job.requiredSkills.slice(0, 6) : [])
+
+  const handleApplyClick = () => {
+    if (job.createdAt) {
+      setApplyBanner(true)
+      setTimeout(() => setApplyBanner(false), 3000)
+    } else {
+      setIsApplyOpen(true)
+    }
+  }
 
   const handleApplySubmit = (event) => {
     event.preventDefault()
@@ -13,24 +69,30 @@ const JobCard = ({ job }) => {
   return (
     <div className="job-card">
       <div className="job-card-header">
-        <span className="job-posted-time">{job.postedTime}</span>
+        <span className="job-posted-time">{postedTime}</span>
       </div>
 
-      <h3 className="job-title">{job.title}</h3>
-      
+      <h3 className="job-title">{title}</h3>
+
       <div className="job-meta-line">
-        <span>{job.type}</span>
-        {job.experience && <span>• {job.experience}</span>}
-        {job.duration && <span>• {job.duration}</span>}
+        {typeLine && <span>{typeLine}</span>}
+        {experience && <span>• {experience}</span>}
+        {duration && <span>• {duration}</span>}
       </div>
 
-      <p className="job-description">{job.description}</p>
+      <p className="job-description">{description}</p>
 
       <div className="job-tags">
-        {job.tags.map((tag, index) => (
+        {tags.map((tag, index) => (
           <span key={index} className="job-tag">{tag}</span>
         ))}
       </div>
+
+      {applyBanner && (
+        <div className="job-apply-banner">
+          Apply feature coming soon
+        </div>
+      )}
 
       <div className="job-card-footer">
         <div className="job-footer-left">
@@ -48,12 +110,17 @@ const JobCard = ({ job }) => {
           {job.proposals && (
             <span className="job-proposals">{job.proposals} proposals</span>
           )}
+          {job.projectSize && !job.spent && (
+            <span className="job-spent">
+              {job.projectSize === 'small' ? 'Small project' : job.projectSize === 'medium' ? 'Medium project' : 'Large project'}
+            </span>
+          )}
         </div>
 
         <div className="job-footer-right">
           <button
             className="job-apply-button gooey-button"
-            onClick={() => setIsApplyOpen(true)}
+            onClick={handleApplyClick}
           >
             Apply now
           </button>
@@ -74,7 +141,7 @@ const JobCard = ({ job }) => {
         <div className="apply-modal-overlay" onClick={() => setIsApplyOpen(false)}>
           <div className="apply-modal" onClick={(event) => event.stopPropagation()}>
             <div className="apply-modal-header">
-              <h3>Apply to {job.title}</h3>
+              <h3>Apply to {title}</h3>
               <button className="apply-modal-close" onClick={() => setIsApplyOpen(false)}>
                 ×
               </button>

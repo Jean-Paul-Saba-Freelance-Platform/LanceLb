@@ -5,6 +5,7 @@ import cors from "cors"
 import dotenv from "dotenv"
 import authRoutes from "./server/routes/authRoutes.js"
 import clientRoutes from "./server/routes/clientRoutes.js"
+import publicJobRoutes from "./server/routes/publicJobRoutes.js"
 
 
 dotenv.config()
@@ -37,6 +38,9 @@ app.use("/api/auth", authRoutes)
 
 // Mount client routes at /api/client
 app.use("/api/client", clientRoutes)
+
+// Mount public job routes at /api/jobs
+app.use("/api/jobs", publicJobRoutes)
 
 // Start server
 const PORT = process.env.PORT || 5000

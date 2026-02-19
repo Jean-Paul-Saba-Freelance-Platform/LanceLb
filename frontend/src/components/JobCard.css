@@ -66,6 +66,18 @@
   font-weight: 500;
 }
 
+.job-apply-banner {
+  padding: 0.5rem 1rem;
+  margin-bottom: 0.75rem;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #a855f7;
+  background: rgba(168, 85, 247, 0.08);
+  border: 1px solid rgba(168, 85, 247, 0.25);
+  border-radius: 8px;
+  text-align: center;
+}
+
 .job-card-footer {
   display: flex;
   justify-content: space-between;
