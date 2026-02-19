@@ -192,6 +192,34 @@ const jobSchema = new mongoose.Schema(
         },
 
         /**
+         * screeningQuestions — Optional list of questions the client wants
+         * freelancers to answer when applying. Each question gets an
+         * auto-generated _id that the application's answers reference.
+         */
+        screeningQuestions: [
+            {
+                questionText: {
+                    type: String,
+                    required: [true, 'Question text is required'],
+                    trim: true,
+                    maxlength: [500, 'Question text must be at most 500 characters'],
+                },
+                questionType: {
+                    type: String,
+                    enum: {
+                        values: ['text', 'yesno', 'number'],
+                        message: '{VALUE} is not a valid question type',
+                    },
+                    default: 'text',
+                },
+                required: {
+                    type: Boolean,
+                    default: false,
+                },
+            },
+        ],
+
+        /**
          * status — Tracks the lifecycle of a job posting:
          *   "open"        → accepting proposals
          *   "in_progress" → a freelancer has been hired, work is underway

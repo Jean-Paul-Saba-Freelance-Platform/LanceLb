@@ -4,114 +4,17 @@ import JobCard from '../src/components/JobCard.jsx'
 import RightSidebarCard from '../src/components/RightSidebarCard.jsx'
 import './FreelancerHomePage.css'
 
+const API_BASE = 'http://127.0.0.1:4000'
+
 const FreelancerHomePage = () => {
   const [user, setUser] = useState(null)
+  const [jobs, setJobs] = useState([])
+  const [loadingJobs, setLoadingJobs] = useState(true)
   const [activeTab, setActiveTab] = useState('bestMatches')
   const [searchQuery, setSearchQuery] = useState('')
   const [profileProgress, setProfileProgress] = useState(40)
 
-  // Mock jobs data
-  const mockJobs = [
-    {
-      id: 1,
-      postedTime: 'Posted yesterday',
-      title: 'Arabic Proofreader & Transcriber',
-      type: 'Hourly',
-      experience: 'Intermediate',
-      duration: 'Ongoing',
-      description: 'We are looking for an experienced Arabic proofreader and transcriber to work on various projects. Must have excellent attention to detail and native-level Arabic proficiency.',
-      tags: ['Proofreading', 'Arabic', 'General Transcription'],
-      paymentVerified: true,
-      rating: 4.8,
-      spent: '$5k+ spent',
-      location: 'Lebanon',
-      proposals: '5-10',
-      category: 'bestMatches'
-    },
-    {
-      id: 2,
-      postedTime: 'Posted 2 days ago',
-      title: 'React Developer for E-commerce Platform',
-      type: 'Fixed-price',
-      experience: 'Expert',
-      duration: '1-3 months',
-      description: 'Looking for an experienced React developer to build a modern e-commerce platform. Must have experience with React, TypeScript, and payment integrations.',
-      tags: ['React', 'TypeScript', 'E-commerce', 'Payment Integration'],
-      paymentVerified: true,
-      rating: 4.9,
-      spent: '$10k+ spent',
-      location: 'United States',
-      proposals: '10-15',
-      category: 'bestMatches'
-    },
-    {
-      id: 3,
-      postedTime: 'Posted 3 days ago',
-      title: 'UI/UX Designer for Mobile App',
-      type: 'Hourly',
-      experience: 'Intermediate',
-      duration: '1-2 months',
-      description: 'We need a talented UI/UX designer to create beautiful and intuitive designs for our mobile application. Experience with Figma and design systems required.',
-      tags: ['UI/UX Design', 'Figma', 'Mobile App', 'Design Systems'],
-      paymentVerified: false,
-      rating: 4.5,
-      spent: '$2k+ spent',
-      location: 'United Kingdom',
-      proposals: 'Less than 5',
-      category: 'recent'
-    },
-    {
-      id: 4,
-      postedTime: 'Posted 4 days ago',
-      title: 'Content Writer for Tech Blog',
-      type: 'Fixed-price',
-      experience: 'Entry level',
-      duration: 'Ongoing',
-      description: 'Seeking a skilled content writer to create engaging articles for our technology blog. Topics include web development, AI, and software engineering.',
-      tags: ['Content Writing', 'Blogging', 'Technology', 'SEO'],
-      paymentVerified: true,
-      rating: 4.7,
-      spent: '$3k+ spent',
-      location: 'Canada',
-      proposals: '5-10',
-      category: 'bestMatches'
-    },
-    {
-      id: 5,
-      postedTime: 'Posted 5 days ago',
-      title: 'Full Stack Developer - Node.js & React',
-      type: 'Hourly',
-      experience: 'Expert',
-      duration: '3-6 months',
-      description: 'Join our team as a full stack developer working on cutting-edge web applications. Must be proficient in Node.js, React, and database design.',
-      tags: ['Node.js', 'React', 'Full Stack', 'Database Design'],
-      paymentVerified: true,
-      rating: 5.0,
-      spent: '$20k+ spent',
-      location: 'Australia',
-      proposals: '15-20',
-      category: 'recent'
-    },
-    {
-      id: 6,
-      postedTime: 'Posted 1 week ago',
-      title: 'Social Media Manager',
-      type: 'Hourly',
-      experience: 'Intermediate',
-      duration: 'Ongoing',
-      description: 'We are looking for an experienced social media manager to handle our brand presence across multiple platforms. Experience with analytics and content creation required.',
-      tags: ['Social Media', 'Content Creation', 'Analytics', 'Marketing'],
-      paymentVerified: true,
-      rating: 4.6,
-      spent: '$8k+ spent',
-      location: 'Germany',
-      proposals: '10-15',
-      category: 'saved'
-    }
-  ]
-
   useEffect(() => {
-    // Get user from localStorage
     try {
       const userStr = localStorage.getItem('user')
       if (userStr) {
@@ -120,6 +23,23 @@ const FreelancerHomePage = () => {
     } catch (error) {
       console.error('Error loading user:', error)
     }
+  }, [])
+
+  useEffect(() => {
+    const fetchJobs = async () => {
+      try {
+        const res = await fetch(`${API_BASE}/api/client/jobs/open`)
+        const data = await res.json()
+        if (data.success) {
+          setJobs(data.jobs)
+        }
+      } catch (err) {
+        console.error('Error fetching jobs:', err)
+      } finally {
+        setLoadingJobs(false)
+      }
+    }
+    fetchJobs()
   }, [])
 
   // Get current date and greeting
@@ -139,25 +59,31 @@ const FreelancerHomePage = () => {
     })
   }
 
-  // Filter jobs based on active tab and search query
+  const timeAgo = (dateStr) => {
+    const diff = Date.now() - new Date(dateStr).getTime()
+    const days = Math.floor(diff / 86400000)
+    if (days === 0) return 'Posted today'
+    if (days === 1) return 'Posted yesterday'
+    return `Posted ${days} days ago`
+  }
+
+  const formatJob = (job) => ({
+    ...job,
+    postedTime: timeAgo(job.createdAt),
+    type: job.paymentType === 'hourly' ? 'Hourly' : 'Fixed-price',
+    experience: job.experienceLevel,
+    tags: job.requiredSkills || [],
+  })
+
   const getFilteredJobs = () => {
-    let filtered = mockJobs
+    let filtered = jobs.map(formatJob)
 
-    // Filter by tab
-    if (activeTab === 'bestMatches') {
-      filtered = mockJobs.filter(job => job.category === 'bestMatches')
-    } else if (activeTab === 'recent') {
-      filtered = mockJobs.filter(job => job.category === 'recent')
-    } else if (activeTab === 'saved') {
-      filtered = mockJobs.filter(job => job.category === 'saved')
-    }
-
-    // Filter by search query
     if (searchQuery.trim()) {
+      const q = searchQuery.toLowerCase()
       filtered = filtered.filter(job =>
-        job.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        job.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        job.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()))
+        job.title.toLowerCase().includes(q) ||
+        job.description.toLowerCase().includes(q) ||
+        job.tags.some(tag => tag.toLowerCase().includes(q))
       )
     }
 
@@ -229,7 +155,9 @@ const FreelancerHomePage = () => {
 
           {/* Jobs Feed */}
           <div className="jobs-feed">
-            {filteredJobs.length > 0 ? (
+            {loadingJobs ? (
+              <div className="no-jobs-message"><p>Loading jobs...</p></div>
+            ) : filteredJobs.length > 0 ? (
               filteredJobs.map(job => (
                 <JobCard key={job.id} job={job} />
               ))
