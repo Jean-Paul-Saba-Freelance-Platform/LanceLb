@@ -7,6 +7,13 @@ import './Home.css'
 const Home = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false)
 
+  const userStr = localStorage.getItem('user')
+  const user = userStr ? JSON.parse(userStr) : null
+  const brandLink = user?.userType === 'freelancer'
+    ? '/freelancer/home'
+    :  '/client/home'
+      
+
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen)
   }
@@ -66,7 +73,7 @@ const Home = () => {
         <div className="sidebar-overlay" onClick={closeSidebar}></div>
         <div className="sidebar-content glass-sidebar">
           <div className="sidebar-header">
-            <Link to="/" className="brand-link" onClick={closeSidebar}>
+            <Link to={brandLink} className="brand-link" onClick={closeSidebar}>
               <span className="brand-name">LanceLB</span>
             </Link>
             <button
