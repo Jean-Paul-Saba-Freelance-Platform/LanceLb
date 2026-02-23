@@ -87,6 +87,7 @@ const PostJobStep1Title = () => {
       onNext={handleNext}
       nextDisabled={!isValid}
       onBack={handleBack}
+      onClose={() => navigate('/client/home')}
     >
       <div className="wizard-two-col">
         {/* Left column — motivational heading + helper copy */}

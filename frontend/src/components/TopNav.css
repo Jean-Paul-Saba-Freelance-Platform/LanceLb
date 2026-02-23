@@ -1,10 +1,13 @@
 .top-nav {
-  background: white;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  background: rgba(14, 12, 20, 0.55);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
   position: sticky;
-  top: 0;
+  top: 0.75rem;
   z-index: 100;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  margin: 0.75rem 1.5rem 0;
 }
 
 .top-nav-container {
@@ -21,7 +24,7 @@
 .top-nav-brand {
   font-size: 1.25rem;
   font-weight: 700;
-  color: #1f2937;
+  color: #f3f4f6;
   text-decoration: none;
   flex-shrink: 0;
   transition: opacity 0.2s ease;
@@ -40,7 +43,7 @@
 }
 
 .top-nav-link {
-  color: #6b7280;
+  color: rgba(255, 255, 255, 0.5);
   font-size: 0.95rem;
   font-weight: 500;
   text-decoration: none;
@@ -49,7 +52,7 @@
 }
 
 .top-nav-link:hover {
-  color: #1f2937;
+  color: #f3f4f6;
 }
 
 .top-nav-right {
@@ -118,7 +121,7 @@
 .top-nav-icon-button {
   background: transparent;
   border: none;
-  color: #6b7280;
+  color: rgba(255, 255, 255, 0.5);
   cursor: pointer;
   padding: 0;
   border-radius: 9999px;
@@ -184,7 +187,7 @@
   height: 36px;
   border-radius: 50%;
   overflow: hidden;
-  border: 2px solid rgba(0, 0, 0, 0.08);
+  border: 2px solid rgba(255, 255, 255, 0.12);
   transition: border-color 0.15s ease;
 }
 

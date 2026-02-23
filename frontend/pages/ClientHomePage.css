@@ -1,6 +1,6 @@
 .client-home {
   min-height: 100vh;
-  background: #f9fafb;
+  background: transparent;
 }
 
 .client-home-container {
@@ -17,7 +17,7 @@
 
 /* Greeting Card */
 .greeting-card {
-  background: rgba(255, 255, 255, 0.7);
+  background: rgba(14, 12, 20, 0.6);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border: 1px solid rgba(0, 0, 0, 0.08);
@@ -36,12 +36,12 @@
 .greeting-text {
   font-size: 1.75rem;
   font-weight: 600;
-  color: #1f2937;
+  color: #f3f4f6;
   margin: 0 0 0.5rem 0;
 }
 
 .greeting-subtitle {
-  color: #6b7280;
+  color: #94a3b8;
   font-size: 1rem;
   margin: 0;
 }
@@ -70,7 +70,7 @@
 .section-title {
   font-size: 1.5rem;
   font-weight: 600;
-  color: #1f2937;
+  color: #f3f4f6;
   margin: 0 0 1.5rem 0;
 }
 
@@ -86,7 +86,7 @@
 }
 
 .next-steps-card {
-  background: rgba(255, 255, 255, 0.7);
+  background: rgba(14, 12, 20, 0.6);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border: 1px solid rgba(0, 0, 0, 0.08);
@@ -114,12 +114,12 @@
 .next-steps-title {
   font-size: 1.1rem;
   font-weight: 600;
-  color: #1f2937;
+  color: #f3f4f6;
   margin: 0 0 0.5rem 0;
 }
 
 .next-steps-description {
-  color: #6b7280;
+  color: #94a3b8;
   font-size: 0.9rem;
   line-height: 1.5;
   margin: 0 0 1rem 0;
@@ -165,7 +165,7 @@
 
 .segmented-control {
   display: flex;
-  background: rgba(255, 255, 255, 0.7);
+  background: rgba(14, 12, 20, 0.6);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border: 1px solid rgba(0, 0, 0, 0.08);
@@ -181,14 +181,14 @@
   border-radius: 6px;
   font-size: 0.9rem;
   font-weight: 500;
-  color: #6b7280;
+  color: #94a3b8;
   cursor: pointer;
   transition: all 0.2s ease;
   outline: none;
 }
 
 .segmented-control-button:hover {
-  color: #1f2937;
+  color: #f3f4f6;
 }
 
 .segmented-control-button.active {
@@ -197,7 +197,7 @@
 }
 
 .overview-card {
-  background: rgba(255, 255, 255, 0.7);
+  background: rgba(14, 12, 20, 0.6);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border: 1px solid rgba(0, 0, 0, 0.08);
@@ -224,12 +224,12 @@
 .empty-state-title {
   font-size: 1.25rem;
   font-weight: 600;
-  color: #1f2937;
+  color: #f3f4f6;
   margin: 0 0 0.5rem 0;
 }
 
 .empty-state-description {
-  color: #6b7280;
+  color: #94a3b8;
   font-size: 0.95rem;
   margin: 0 0 2rem 0;
   max-width: 400px;
@@ -287,7 +287,7 @@
 }
 
 .category-card {
-  background: rgba(255, 255, 255, 0.7);
+  background: rgba(14, 12, 20, 0.6);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border: 1px solid rgba(0, 0, 0, 0.08);
@@ -312,12 +312,12 @@
 .category-title {
   font-size: 1.1rem;
   font-weight: 600;
-  color: #1f2937;
+  color: #f3f4f6;
   margin: 0 0 0.5rem 0;
 }
 
 .category-description {
-  color: #6b7280;
+  color: #94a3b8;
   font-size: 0.85rem;
   margin: 0;
   line-height: 1.4;
@@ -335,7 +335,7 @@
 }
 
 .resource-card {
-  background: rgba(255, 255, 255, 0.7);
+  background: rgba(14, 12, 20, 0.6);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border: 1px solid rgba(0, 0, 0, 0.08);
@@ -353,12 +353,12 @@
 .resource-title {
   font-size: 1.1rem;
   font-weight: 600;
-  color: #1f2937;
+  color: #f3f4f6;
   margin: 0 0 0.75rem 0;
 }
 
 .resource-description {
-  color: #6b7280;
+  color: #94a3b8;
   font-size: 0.9rem;
   line-height: 1.5;
   margin: 0 0 1rem 0;

@@ -135,6 +135,7 @@ const PostJobStep2Skills = () => {
       onNext={handleNext}
       nextDisabled={!isValid}
       onBack={handleBack}
+      onClose={() => navigate('/client/home')}
     >
       <div className="wizard-two-col">
         {/* ── Left column ── */}

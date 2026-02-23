@@ -1,6 +1,6 @@
 .freelancer-profile-page {
   min-height: 100vh;
-  background: #f9fafb;
+  background: transparent;
 }
 
 .profile-page-container {
@@ -11,10 +11,10 @@
 
 /* Profile Header */
 .profile-header {
-  background: rgba(255, 255, 255, 0.75);
+  background: rgba(14, 12, 20, 0.6);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 16px;
   padding: 1.5rem 2rem;
   margin-bottom: 2rem;
@@ -22,7 +22,7 @@
   justify-content: space-between;
   align-items: center;
   gap: 2rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
 .profile-header-left {
@@ -70,7 +70,7 @@
   width: 18px;
   height: 18px;
   background: #a855f7;
-  border: 3px solid white;
+  border: 3px solid rgba(14, 12, 20, 0.8);
   border-radius: 50%;
 }
 
@@ -90,7 +90,7 @@
 .profile-header-name {
   font-size: 1.75rem;
   font-weight: 700;
-  color: #1f2937;
+  color: #f3f4f6;
   margin: 0;
 }
 
@@ -102,17 +102,17 @@
 }
 
 .verification-status.unverified {
-  background: #fee2e2;
+  background: rgba(220, 38, 38, 0.15);
   color: #991b1b;
 }
 
 .verification-status.verified {
-  background: #f3e8ff;
+  background: rgba(168, 85, 247, 0.15);
   color: #6b21a8;
 }
 
 .profile-header-location {
-  color: #6b7280;
+  color: #94a3b8;
   font-size: 0.9rem;
 }
 
@@ -126,8 +126,8 @@
 .profile-header-button-secondary {
   padding: 0.625rem 1.25rem;
   background: transparent;
-  color: #1f2937;
-  border: 1px solid rgba(0, 0, 0, 0.1);
+  color: #f3f4f6;
+  border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 8px;
   font-size: 0.9rem;
   font-weight: 500;
@@ -137,8 +137,8 @@
 }
 
 .profile-header-button-secondary:hover {
-  background: #f9fafb;
-  border-color: rgba(0, 0, 0, 0.15);
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.2);
 }
 
 .profile-header-button-primary {
@@ -163,7 +163,7 @@
 .profile-header-share {
   background: transparent;
   border: none;
-  color: #6b7280;
+  color: #94a3b8;
   cursor: pointer;
   padding: 0.5rem;
   border-radius: 6px;
@@ -175,7 +175,7 @@
 }
 
 .profile-header-share:hover {
-  background: #f9fafb;
+  background: rgba(255, 255, 255, 0.04);
   color: #a855f7;
 }
 
@@ -194,13 +194,13 @@
 }
 
 .sidebar-card {
-  background: rgba(255, 255, 255, 0.75);
+  background: rgba(14, 12, 20, 0.6);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 12px;
   padding: 1.25rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
 .sidebar-card-header-row {
@@ -213,7 +213,7 @@
 .sidebar-card-title {
   font-size: 1rem;
   font-weight: 600;
-  color: #1f2937;
+  color: #f3f4f6;
   margin: 0 0 0.75rem 0;
 }
 
@@ -223,15 +223,15 @@
   gap: 0.5rem;
   font-size: 1rem;
   font-weight: 600;
-  color: #1f2937;
+  color: #f3f4f6;
 }
 
 .sidebar-card-title-with-icon svg {
-  color: #6b7280;
+  color: #94a3b8;
 }
 
 .sidebar-card-text {
-  color: #6b7280;
+  color: #94a3b8;
   font-size: 0.9rem;
   margin: 0;
   line-height: 1.5;
@@ -262,7 +262,7 @@
 .sidebar-edit-icon {
   background: transparent;
   border: none;
-  color: #6b7280;
+  color: #94a3b8;
   cursor: pointer;
   padding: 0.25rem;
   border-radius: 4px;
@@ -274,7 +274,7 @@
 }
 
 .sidebar-edit-icon:hover {
-  background: #f9fafb;
+  background: rgba(255, 255, 255, 0.04);
   color: #a855f7;
 }
 
@@ -301,12 +301,12 @@
 .promote-option-label {
   font-size: 0.9rem;
   font-weight: 500;
-  color: #1f2937;
+  color: #f3f4f6;
 }
 
 .promote-option-status {
   font-size: 0.8rem;
-  color: #6b7280;
+  color: #94a3b8;
 }
 
 .promote-option-status.on {
@@ -335,7 +335,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: #cbd5e1;
+  background-color: rgba(255, 255, 255, 0.2);
   transition: 0.2s;
   border-radius: 24px;
 }
@@ -364,7 +364,7 @@
 .credits-display {
   font-size: 1.1rem;
   font-weight: 600;
-  color: #1f2937;
+  color: #f3f4f6;
   margin-bottom: 0.5rem;
 }
 
@@ -388,7 +388,7 @@
 }
 
 .verification-badge.unverified {
-  background: #fee2e2;
+  background: rgba(220, 38, 38, 0.15);
   color: #991b1b;
 }
 
@@ -413,13 +413,13 @@
 }
 
 .main-section-card {
-  background: rgba(255, 255, 255, 0.75);
+  background: rgba(14, 12, 20, 0.6);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 12px;
   padding: 1.5rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
 .section-header-row {
@@ -439,7 +439,7 @@
 .section-title {
   font-size: 1.25rem;
   font-weight: 600;
-  color: #1f2937;
+  color: #f3f4f6;
   margin: 0;
 }
 
@@ -452,7 +452,7 @@
 .section-edit-button {
   background: transparent;
   border: none;
-  color: #6b7280;
+  color: #94a3b8;
   cursor: pointer;
   padding: 0.5rem;
   border-radius: 6px;
@@ -464,13 +464,13 @@
 }
 
 .section-edit-button:hover {
-  background: #f9fafb;
+  background: rgba(255, 255, 255, 0.04);
   color: #a855f7;
 }
 
 /* Bio Text */
 .bio-text {
-  color: #4b5563;
+  color: #cbd5e1;
   font-size: 0.95rem;
   line-height: 1.7;
   margin: 0;
@@ -484,7 +484,7 @@
   display: flex;
   gap: 0.5rem;
   margin-bottom: 1.5rem;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
 }
 
 .portfolio-tab {
@@ -493,7 +493,7 @@
   padding: 0.75rem 1rem;
   font-size: 0.9rem;
   font-weight: 500;
-  color: #6b7280;
+  color: #94a3b8;
   cursor: pointer;
   border-bottom: 2px solid transparent;
   margin-bottom: -1px;
@@ -502,7 +502,7 @@
 }
 
 .portfolio-tab:hover {
-  color: #1f2937;
+  color: #f3f4f6;
 }
 
 .portfolio-tab.active {
@@ -532,7 +532,7 @@
 }
 
 .empty-state-text {
-  color: #6b7280;
+  color: #94a3b8;
   font-size: 0.9rem;
   margin: 0;
 }
@@ -545,8 +545,8 @@
 }
 
 .skill-tag {
-  background: #f3f4f6;
-  color: #4b5563;
+  background: rgba(255, 255, 255, 0.06);
+  color: #cbd5e1;
   font-size: 0.9rem;
   padding: 0.5rem 1rem;
   border-radius: 20px;
@@ -555,7 +555,7 @@
 
 /* Placeholder Text */
 .section-placeholder-text {
-  color: #6b7280;
+  color: #94a3b8;
   font-size: 0.9rem;
   line-height: 1.6;
   margin: 0;
