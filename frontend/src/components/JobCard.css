@@ -1,8 +1,8 @@
 .job-card {
-  background: rgba(14, 12, 20, 0.6);
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(10, 8, 16, 0.88);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.16);
   border-radius: 12px;
   padding: 1.5rem;
   margin-bottom: 1rem;

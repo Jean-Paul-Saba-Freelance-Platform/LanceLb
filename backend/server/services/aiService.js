@@ -1,11 +1,6 @@
-// We use the OpenAI SDK because Groq's API is OpenAI-compatible.
-// This lets us call Groq's hosted LLMs (like Llama 3.3) using the
-// same interface as OpenAI — just with a different base URL.
+
 import OpenAI from 'openai';
 
-// Initialize the OpenAI client pointed at Groq's API endpoint.
-// The API key is loaded from the GROQ_API_KEY environment variable
-// defined in our .env file.
 const client = new OpenAI({
   baseURL: 'https://api.groq.com/openai/v1',
   apiKey: process.env.GROQ_API_KEY || '',

@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
 import TopNav from '../src/components/TopNav'
 import { 
-  Edit2, Plus, Share2, CheckCircle, XCircle, X,
+  Edit2, Plus, Share2, X,
   Video, Clock, Globe, Shield, Award, GraduationCap,
-  Briefcase, FolderOpen, History, Tag, Package, Save
+  FolderOpen, History, Save
 } from 'lucide-react'
 import './FreelancerProfilePage.css'
 
@@ -116,7 +115,7 @@ const FreelancerProfilePage = () => {
 
       <div className="profile-page-container">
         {/* Top Profile Header */}
-        <div className="profile-header">
+        <div className="profile-header fh-glass-card">
           <div className="profile-header-left">
             <div className="profile-header-avatar-wrapper">
               <div className="profile-header-avatar">
@@ -141,13 +140,13 @@ const FreelancerProfilePage = () => {
             </div>
           </div>
           <div className="profile-header-right">
-            <button className="profile-header-button-secondary">
+            <button className="fh-btn fh-btn-secondary">
               See public view
             </button>
-            <button className="profile-header-button-primary">
+            <button className="fh-btn fh-btn-primary">
               Profile settings
             </button>
-            <button className="profile-header-share" aria-label="Share profile">
+            <button className="fh-btn fh-btn-icon profile-header-share" aria-label="Share profile">
               <Share2 size={18} />
             </button>
           </div>
@@ -158,7 +157,7 @@ const FreelancerProfilePage = () => {
           {/* Left Sidebar */}
           <div className="profile-sidebar">
             {/* Pro Offer Card */}
-            <div className="sidebar-card">
+            <div className="sidebar-card fh-glass-card">
               <h3 className="sidebar-card-title">Pro Offer</h3>
               <p className="sidebar-card-text">
                 Unlock premium features and boost your visibility on FreelanceHub.
@@ -167,10 +166,10 @@ const FreelancerProfilePage = () => {
             </div>
 
             {/* Promote Profile Card */}
-            <div className="sidebar-card">
+            <div className="sidebar-card fh-glass-card">
               <div className="sidebar-card-header-row">
                 <h3 className="sidebar-card-title">Promote your profile</h3>
-                <button className="sidebar-edit-icon" aria-label="Edit">
+                <button className="sidebar-edit-icon fh-icon-button" aria-label="Edit promote profile">
                   <Edit2 size={16} />
                 </button>
               </div>
@@ -211,7 +210,7 @@ const FreelancerProfilePage = () => {
             </div>
 
             {/* Credits Card */}
-            <div className="sidebar-card">
+            <div className="sidebar-card fh-glass-card">
               <h3 className="sidebar-card-title">Credits</h3>
               <div className="credits-display">Credits: 0</div>
               <div className="sidebar-card-links">
@@ -221,26 +220,26 @@ const FreelancerProfilePage = () => {
             </div>
 
             {/* Video Introduction */}
-            <div className="sidebar-card sidebar-card-collapsed">
+            <div className="sidebar-card sidebar-card-collapsed fh-glass-card">
               <div className="sidebar-card-header-row">
                 <div className="sidebar-card-title-with-icon">
                   <Video size={18} />
                   <span>Video introduction</span>
                 </div>
-                <button className="sidebar-edit-icon" aria-label="Edit">
+                <button className="sidebar-edit-icon fh-icon-button" aria-label="Add video introduction">
                   <Plus size={16} />
                 </button>
               </div>
             </div>
 
             {/* Hours per Week */}
-            <div className="sidebar-card">
+            <div className="sidebar-card fh-glass-card">
               <div className="sidebar-card-header-row">
                 <div className="sidebar-card-title-with-icon">
                   <Clock size={18} />
                   <span>Hours per week</span>
                 </div>
-                <button className="sidebar-edit-icon" aria-label="Edit">
+                <button className="sidebar-edit-icon fh-icon-button" aria-label="Edit hours per week">
                   <Edit2 size={16} />
                 </button>
               </div>
@@ -248,13 +247,13 @@ const FreelancerProfilePage = () => {
             </div>
 
             {/* Languages */}
-            <div className="sidebar-card">
+            <div className="sidebar-card fh-glass-card">
               <div className="sidebar-card-header-row">
                 <div className="sidebar-card-title-with-icon">
                   <Globe size={18} />
                   <span>Languages</span>
                 </div>
-                <button className="sidebar-edit-icon" aria-label="Edit">
+                <button className="sidebar-edit-icon fh-icon-button" aria-label="Add language">
                   <Plus size={16} />
                 </button>
               </div>
@@ -262,7 +261,7 @@ const FreelancerProfilePage = () => {
             </div>
 
             {/* Verifications */}
-            <div className="sidebar-card">
+            <div className="sidebar-card fh-glass-card">
               <div className="sidebar-card-header-row">
                 <div className="sidebar-card-title-with-icon">
                   <Shield size={18} />
@@ -279,13 +278,13 @@ const FreelancerProfilePage = () => {
             </div>
 
             {/* Licenses */}
-            <div className="sidebar-card">
+            <div className="sidebar-card fh-glass-card">
               <div className="sidebar-card-header-row">
                 <div className="sidebar-card-title-with-icon">
                   <Award size={18} />
                   <span>Licenses</span>
                 </div>
-                <button className="sidebar-edit-icon" aria-label="Edit">
+                <button className="sidebar-edit-icon fh-icon-button" aria-label="Add license">
                   <Plus size={16} />
                 </button>
               </div>
@@ -293,13 +292,13 @@ const FreelancerProfilePage = () => {
             </div>
 
             {/* Education */}
-            <div className="sidebar-card">
+            <div className="sidebar-card fh-glass-card">
               <div className="sidebar-card-header-row">
                 <div className="sidebar-card-title-with-icon">
                   <GraduationCap size={18} />
                   <span>Education</span>
                 </div>
-                <button className="sidebar-edit-icon" aria-label="Edit">
+                <button className="sidebar-edit-icon fh-icon-button" aria-label="Add education">
                   <Plus size={16} />
                 </button>
               </div>
@@ -315,14 +314,14 @@ const FreelancerProfilePage = () => {
 
             {editingProfile ? (
               /* ─── Editing Mode ─── */
-              <div className="main-section-card profile-edit-card">
+              <div className="main-section-card profile-edit-card fh-glass-card">
                 <div className="section-header-row">
                   <h2 className="section-title">Edit Profile</h2>
                   <div className="profile-edit-actions">
-                    <button className="profile-cancel-btn" onClick={() => setEditingProfile(false)} disabled={savingProfile}>
+                    <button className="profile-cancel-btn fh-btn fh-btn-secondary" onClick={() => setEditingProfile(false)} disabled={savingProfile}>
                       Cancel
                     </button>
-                    <button className="profile-save-btn" onClick={handleSaveProfile} disabled={savingProfile}>
+                    <button className="profile-save-btn fh-btn fh-btn-primary" onClick={handleSaveProfile} disabled={savingProfile}>
                       <Save size={16} />
                       {savingProfile ? 'Saving...' : 'Save'}
                     </button>
@@ -375,7 +374,7 @@ const FreelancerProfilePage = () => {
                         {profileSkills.map((skill, i) => (
                           <span key={i} className="profile-skill-tag-editable">
                             {skill}
-                            <button className="profile-skill-remove" onClick={() => removeSkill(skill)}>
+                            <button className="profile-skill-remove fh-icon-button" onClick={() => removeSkill(skill)} aria-label={`Remove ${skill}`}>
                               <X size={12} />
                             </button>
                           </span>
@@ -390,7 +389,7 @@ const FreelancerProfilePage = () => {
                           onChange={(e) => setNewSkill(e.target.value)}
                           onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); addSkill() } }}
                         />
-                        <button className="profile-skill-add-btn" onClick={addSkill} type="button">Add</button>
+                        <button className="profile-skill-add-btn fh-btn fh-btn-secondary" onClick={addSkill} type="button">Add</button>
                       </div>
                     </div>
                   </div>
@@ -400,7 +399,7 @@ const FreelancerProfilePage = () => {
               /* ─── View Mode ─── */
               <>
                 {/* Title + Rate */}
-                <div className="main-section-card">
+                <div className="main-section-card fh-glass-card">
                   <div className="section-header-row">
                     <div className="section-title-group">
                       <h2 className="section-title">{user?.title || 'No title set'}</h2>
@@ -410,17 +409,17 @@ const FreelancerProfilePage = () => {
                         </span>
                       )}
                     </div>
-                    <button className="section-edit-button" onClick={() => setEditingProfile(true)} aria-label="Edit">
+                    <button className="section-edit-button fh-icon-button" onClick={() => setEditingProfile(true)} aria-label="Edit profile title">
                       <Edit2 size={18} />
                     </button>
                   </div>
                 </div>
 
                 {/* Overview / Bio */}
-                <div className="main-section-card">
+                <div className="main-section-card fh-glass-card">
                   <div className="section-header-row">
                     <h2 className="section-title">Overview</h2>
-                    <button className="section-edit-button" onClick={() => setEditingProfile(true)} aria-label="Edit">
+                    <button className="section-edit-button fh-icon-button" onClick={() => setEditingProfile(true)} aria-label="Edit overview">
                       <Edit2 size={18} />
                     </button>
                   </div>
@@ -430,10 +429,10 @@ const FreelancerProfilePage = () => {
                 </div>
 
                 {/* Skills */}
-                <div className="main-section-card">
+                <div className="main-section-card fh-glass-card">
                   <div className="section-header-row">
                     <h2 className="section-title">Skills</h2>
-                    <button className="section-edit-button" onClick={() => setEditingProfile(true)} aria-label="Edit">
+                    <button className="section-edit-button fh-icon-button" onClick={() => setEditingProfile(true)} aria-label="Edit skills">
                       <Edit2 size={18} />
                     </button>
                   </div>
@@ -451,10 +450,10 @@ const FreelancerProfilePage = () => {
             )}
 
             {/* Portfolio */}
-            <div className="main-section-card">
+            <div className="main-section-card fh-glass-card">
               <div className="section-header-row">
                 <h2 className="section-title">Portfolio</h2>
-                <button className="section-edit-button" aria-label="Edit">
+                <button className="section-edit-button fh-icon-button" aria-label="Edit portfolio">
                   <Edit2 size={18} />
                 </button>
               </div>
@@ -479,10 +478,10 @@ const FreelancerProfilePage = () => {
             </div>
 
             {/* Work History */}
-            <div className="main-section-card">
+            <div className="main-section-card fh-glass-card">
               <div className="section-header-row">
                 <h2 className="section-title">Work history</h2>
-                <button className="section-edit-button" aria-label="Edit">
+                <button className="section-edit-button fh-icon-button" aria-label="Edit work history">
                   <Edit2 size={18} />
                 </button>
               </div>
@@ -493,10 +492,10 @@ const FreelancerProfilePage = () => {
             </div>
 
             {/* Project Catalog */}
-            <div className="main-section-card">
+            <div className="main-section-card fh-glass-card">
               <div className="section-header-row">
                 <h2 className="section-title">Project catalog</h2>
-                <button className="section-edit-button" aria-label="Edit">
+                <button className="section-edit-button fh-icon-button" aria-label="Edit project catalog">
                   <Edit2 size={18} />
                 </button>
               </div>
