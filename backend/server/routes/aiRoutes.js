@@ -2,7 +2,7 @@ import express from 'express';
 import userAuth from '../middleware/userAuth.js';
 import User from '../models/userModels.js';
 import Job from '../models/jobModel.js';
-import { analyzeProfileFit } from '../services/aiService.js';
+import { analyzeProfileFit, generateApplicationTips } from '../services/aiService.js';
 
 const aiRouter = express.Router();
 
@@ -46,6 +46,46 @@ aiRouter.get('/fit-score/:jobId', userAuth, async (req, res) => {
   } catch (error) {
     console.error('AI fit-score error:', error);
     return res.status(500).json({ success: false, message: 'Error generating fit score' });
+  }
+});
+
+aiRouter.get('/application-tips/:jobId', userAuth, async (req, res) => {
+  try {
+    const { jobId } = req.params;
+
+    const [user, job] = await Promise.all([
+      User.findById(req.userId).select('skills bio experienceLevel title'),
+      Job.findById(jobId),
+    ]);
+
+    if (!job) {
+      return res.status(404).json({ success: false, message: 'Job not found' });
+    }
+
+    const profileComplete = !!(user.skills?.length || user.bio || user.title);
+    if (!profileComplete) {
+      return res.json({
+        success: true,
+        profileComplete: false,
+        summary: 'Complete your profile first to get detailed AI coaching tips.',
+        tips: [],
+      });
+    }
+
+    const result = await generateApplicationTips(
+      { title: user.title, bio: user.bio, skills: user.skills, experienceLevel: user.experienceLevel },
+      job,
+    );
+
+    return res.json({
+      success: true,
+      profileComplete: true,
+      summary: result.summary || '',
+      tips: result.tips || [],
+    });
+  } catch (error) {
+    console.error('AI application-tips error:', error);
+    return res.status(500).json({ success: false, message: 'Error generating application tips' });
   }
 });
 

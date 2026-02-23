@@ -83,6 +83,10 @@ const JobCard = ({ job }) => {
   const [fitImprovements, setFitImprovements] = useState([])
   const [fitLoading, setFitLoading] = useState(false)
   const [fitProfileComplete, setFitProfileComplete] = useState(true)
+  const [tipsLoading, setTipsLoading] = useState(false)
+  const [tipsError, setTipsError] = useState('')
+  const [tipsSummary, setTipsSummary] = useState('')
+  const [detailedTips, setDetailedTips] = useState([])
 
   const openApplyModal = async () => {
     setIsApplyOpen(true)
@@ -129,6 +133,35 @@ const JobCard = ({ job }) => {
 
   const handleAnswerChange = (questionId, value) => {
     setAnswers(prev => ({ ...prev, [questionId]: value }))
+  }
+
+  const fetchDetailedTips = async () => {
+    const token = localStorage.getItem('token')
+    if (!token || tipsLoading || detailedTips.length > 0 || !fitProfileComplete) return
+
+    setTipsLoading(true)
+    setTipsError('')
+
+    try {
+      const res = await fetch(`${API_BASE}/api/ai/application-tips/${job.id || job._id}`, {
+        headers: { Authorization: `Bearer ${token}` },
+        credentials: 'include',
+      })
+      const data = await res.json()
+
+      if (!res.ok || !data.success) {
+        setTipsError(data.message || 'Could not load AI tips right now.')
+        return
+      }
+
+      setTipsSummary(data.summary || '')
+      setDetailedTips(Array.isArray(data.tips) ? data.tips : [])
+    } catch (err) {
+      console.error('Error fetching detailed AI tips:', err)
+      setTipsError('Could not load AI tips right now.')
+    } finally {
+      setTipsLoading(false)
+    }
   }
 
   const handleSubmit = async () => {
@@ -197,6 +230,10 @@ const JobCard = ({ job }) => {
     setFitStrengths([])
     setFitImprovements([])
     setFitProfileComplete(true)
+    setTipsLoading(false)
+    setTipsError('')
+    setTipsSummary('')
+    setDetailedTips([])
   }
 
   const hasQuestions = questions.length > 0
@@ -323,9 +360,39 @@ const JobCard = ({ job }) => {
                           ))}
                         </div>
                       )}
+                      <button
+                        type="button"
+                        className="fit-tips-button"
+                        onClick={fetchDetailedTips}
+                        disabled={tipsLoading}
+                      >
+                        {tipsLoading ? 'Getting detailed tips...' : 'Get detailed AI tips'}
+                      </button>
                     </div>
                   </div>
                 ) : null}
+                {!fitLoading && fitProfileComplete && (tipsSummary || detailedTips.length > 0 || tipsError) && (
+                  <div className="fit-tips-panel">
+                    {tipsError ? (
+                      <p className="fit-tips-error">{tipsError}</p>
+                    ) : (
+                      <>
+                        {tipsSummary && <p className="fit-tips-summary">{tipsSummary}</p>}
+                        {detailedTips.length > 0 && (
+                          <div className="fit-tips-list">
+                            {detailedTips.map((tip, index) => (
+                              <div className="fit-tip-item" key={`${tip.title || 'tip'}-${index}`}>
+                                <h5>{tip.title || `Tip ${index + 1}`}</h5>
+                                <p>{tip.details}</p>
+                                {tip.example && <p className="fit-tip-example">Example: {tip.example}</p>}
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                      </>
+                    )}
+                  </div>
+                )}
               </div>
             )}
 

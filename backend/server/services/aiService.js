@@ -205,3 +205,60 @@ Respond with JSON in this exact format:
     return { score: null, strengths: [], weaknesses: ['AI scoring unavailable'] };
   }
 }
+
+// ─────────────────────────────────────────────────────────
+//  FUNCTION 3: Detailed Application Tips (on-demand)
+// ─────────────────────────────────────────────────────────
+//
+// Called only when the freelancer clicks the "Get AI Tips" button
+// in the apply modal. This keeps default loading fast and only
+// spends AI tokens when the user explicitly asks for coaching.
+//
+// Returns:
+// {
+//   summary: string,
+//   tips: [{ title: string, details: string, example: string }]
+// }
+export async function generateApplicationTips(freelancerProfile, jobData) {
+  const userPrompt = `You are coaching a freelancer before they apply to a job.
+
+## Job Posting
+${buildJobSummary(jobData)}
+
+## Freelancer Profile
+${buildProfileSummary(freelancerProfile)}
+
+Give practical, detailed tips to improve their application quality.
+Each tip must be specific and directly tied to this job.
+
+Respond with JSON in this exact format:
+{
+  "summary": "<1-2 sentence overall coaching summary>",
+  "tips": [
+    {
+      "title": "<short tip title>",
+      "details": "<2-4 sentence actionable guidance>",
+      "example": "<one concrete example sentence they can copy/adapt>"
+    }
+  ]
+}
+
+Rules:
+- Return exactly 3 to 5 tips.
+- Focus on cover letter, evidence of skills, screening answers, budget/timeline positioning.
+- Avoid generic advice like "be professional".`;
+
+  try {
+    const result = await chatJSON(SYSTEM_PROMPT, userPrompt);
+    return {
+      summary: result.summary || '',
+      tips: Array.isArray(result.tips) ? result.tips : [],
+    };
+  } catch (error) {
+    console.error('AI generateApplicationTips error:', error.message);
+    return {
+      summary: 'AI tips are temporarily unavailable.',
+      tips: [],
+    };
+  }
+}
