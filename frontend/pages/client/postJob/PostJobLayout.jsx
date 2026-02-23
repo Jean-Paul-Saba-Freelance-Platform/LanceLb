@@ -32,6 +32,7 @@ const PostJobLayout = ({
   onNext,
   nextDisabled = false,
   onBack,
+  onClose,
 }) => {
   /* Progress percentage drives the thin bar width */
   const progress = (stepNumber / totalSteps) * 100
@@ -41,6 +42,16 @@ const PostJobLayout = ({
       {/* ---- Header: step indicator + progress bar ---- */}
       <header className="wizard-header">
         <div className="wizard-header-inner">
+          {onClose && (
+            <button
+              type="button"
+              className="wizard-close-btn"
+              onClick={onClose}
+              aria-label="Back to dashboard"
+            >
+              ✕
+            </button>
+          )}
           <span className="wizard-step-badge">
             {stepNumber}/{totalSteps}
           </span>

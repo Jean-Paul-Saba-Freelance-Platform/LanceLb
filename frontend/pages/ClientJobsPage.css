@@ -1,6 +1,6 @@
 .client-jobs-page {
   min-height: 100vh;
-  background: #f9fafb;
+  background: transparent;
 }
 
 .client-jobs-container {
@@ -9,8 +9,30 @@
   padding: 2rem 1.5rem;
 }
 
-/* Header */
-.manage-header {
+.client-jobs-card {
+  background: rgba(14, 12, 20, 0.6);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+  padding: 3rem;
+  text-align: center;
+}
+
+.client-jobs-title {
+  font-size: 2rem;
+  font-weight: 600;
+  color: #f3f4f6;
+  margin: 0 0 1rem 0;
+}
+
+.client-jobs-subtitle {
+  color: #94a3b8;
+  font-size: 1rem;
+  margin: 0 0 2rem 0;
+}
+
+.client-jobs-actions {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;

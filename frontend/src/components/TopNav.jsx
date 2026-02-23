@@ -10,7 +10,11 @@ const TopNav = ({ userName, userAvatar }) => {
   // Get user from localStorage to determine the brand link
   const userStr = localStorage.getItem('user')
   const user = userStr ? JSON.parse(userStr) : null
-  const brandLink = user?.userType === 'freelancer' ? '/freelancer/home' : '/'
+  const brandLink = user?.userType === 'freelancer'
+    ? '/freelancer/home'
+    : user?.userType === 'client'
+      ? '/client/home'
+      : '/'
 
   const handleAvatarClick = () => {
     setIsDropdownOpen(!isDropdownOpen)

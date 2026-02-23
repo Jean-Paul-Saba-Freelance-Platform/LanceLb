@@ -1,0 +1,486 @@
+{
+	"info": {
+		"name": "FreelanceProject API",
+		"description": "Full API collection for the FreelanceProject platform.\n\n**Setup:**\n1. Register a user\n2. Login (token is saved automatically)\n3. Verify OTP\n4. Use the authenticated endpoints\n\nThe `{{baseUrl}}` and `{{token}}` variables are used throughout.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:4000/api"
+		},
+		{
+			"key": "token",
+			"value": ""
+		},
+		{
+			"key": "jobId",
+			"value": ""
+		},
+		{
+			"key": "applicationId",
+			"value": ""
+		}
+	],
+	"item": [
+		{
+			"name": "Auth",
+			"description": "User registration, login, logout, and OTP verification",
+			"item": [
+				{
+					"name": "Register",
+					"request": {
+						"method": "POST",
+						"header": [
+							{ "key": "Content-Type", "value": "application/json" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Test User\",\n  \"email\": \"test@example.com\",\n  \"password\": \"Password123!\",\n  \"userType\": \"freelancer\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/register",
+							"host": ["{{baseUrl}}"],
+							"path": ["auth", "register"]
+						}
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const res = pm.response.json();",
+									"if (res.token) pm.collectionVariables.set('token', res.token);"
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "Login",
+					"request": {
+						"method": "POST",
+						"header": [
+							{ "key": "Content-Type", "value": "application/json" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"test@example.com\",\n  \"password\": \"Password123!\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/login",
+							"host": ["{{baseUrl}}"],
+							"path": ["auth", "login"]
+						}
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const res = pm.response.json();",
+									"if (res.token) pm.collectionVariables.set('token', res.token);"
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "Logout",
+					"request": {
+						"method": "POST",
+						"header": [
+							{ "key": "Content-Type", "value": "application/json" }
+						],
+						"url": {
+							"raw": "{{baseUrl}}/auth/logout",
+							"host": ["{{baseUrl}}"],
+							"path": ["auth", "logout"]
+						}
+					}
+				},
+				{
+					"name": "Send Verify OTP",
+					"request": {
+						"method": "POST",
+						"header": [
+							{ "key": "Content-Type", "value": "application/json" },
+							{ "key": "Authorization", "value": "Bearer {{token}}" }
+						],
+						"url": {
+							"raw": "{{baseUrl}}/auth/send-verify-otp",
+							"host": ["{{baseUrl}}"],
+							"path": ["auth", "send-verify-otp"]
+						}
+					}
+				},
+				{
+					"name": "Verify Account (OTP)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{ "key": "Content-Type", "value": "application/json" },
+							{ "key": "Authorization", "value": "Bearer {{token}}" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"otp\": \"123456\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/verify-account",
+							"host": ["{{baseUrl}}"],
+							"path": ["auth", "verify-account"]
+						}
+					}
+				},
+				{
+					"name": "Is Authenticated",
+					"request": {
+						"method": "GET",
+						"header": [
+							{ "key": "Authorization", "value": "Bearer {{token}}" }
+						],
+						"url": {
+							"raw": "{{baseUrl}}/auth/is-auth",
+							"host": ["{{baseUrl}}"],
+							"path": ["auth", "is-auth"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Client Dashboard",
+			"description": "Client dashboard endpoints",
+			"item": [
+				{
+					"name": "Get Dashboard Summary",
+					"request": {
+						"method": "GET",
+						"header": [
+							{ "key": "Authorization", "value": "Bearer {{token}}" }
+						],
+						"url": {
+							"raw": "{{baseUrl}}/client/dashboard/summary",
+							"host": ["{{baseUrl}}"],
+							"path": ["client", "dashboard", "summary"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Jobs",
+			"description": "Job posting CRUD (nested under /api/client/jobs)",
+			"item": [
+				{
+					"name": "Create Job",
+					"request": {
+						"method": "POST",
+						"header": [
+							{ "key": "Content-Type", "value": "application/json" },
+							{ "key": "Authorization", "value": "Bearer {{token}}" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"title\": \"React Developer Needed\",\n  \"description\": \"We need an experienced React developer to build a dashboard application with modern UI components and state management.\",\n  \"requiredSkills\": [\"React\", \"JavaScript\", \"CSS\", \"Redux\"],\n  \"experienceLevel\": \"intermediate\",\n  \"projectSize\": \"medium\",\n  \"duration\": \"1_to_3_months\",\n  \"contractToHire\": false,\n  \"paymentType\": \"fixed\",\n  \"fixedBudget\": 3000\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/client/jobs",
+							"host": ["{{baseUrl}}"],
+							"path": ["client", "jobs"]
+						}
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const res = pm.response.json();",
+									"if (res.job && res.job._id) pm.collectionVariables.set('jobId', res.job._id);",
+									"if (res.job && res.job.id) pm.collectionVariables.set('jobId', res.job.id);"
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "Create Job (Hourly)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{ "key": "Content-Type", "value": "application/json" },
+							{ "key": "Authorization", "value": "Bearer {{token}}" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"title\": \"Node.js Backend Engineer\",\n  \"description\": \"Looking for a backend developer to build REST APIs, integrate MongoDB, and set up authentication for our platform.\",\n  \"requiredSkills\": [\"Node.js\", \"Express\", \"MongoDB\"],\n  \"experienceLevel\": \"expert\",\n  \"projectSize\": \"large\",\n  \"duration\": \"3_to_6_months\",\n  \"contractToHire\": true,\n  \"paymentType\": \"hourly\",\n  \"hourlyMin\": 40,\n  \"hourlyMax\": 75\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/client/jobs",
+							"host": ["{{baseUrl}}"],
+							"path": ["client", "jobs"]
+						}
+					}
+				},
+				{
+					"name": "Get Open Jobs (Public)",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{baseUrl}}/client/jobs/open",
+							"host": ["{{baseUrl}}"],
+							"path": ["client", "jobs", "open"]
+						}
+					}
+				},
+				{
+					"name": "Get Open Jobs (Search)",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{baseUrl}}/client/jobs/open?search=react",
+							"host": ["{{baseUrl}}"],
+							"path": ["client", "jobs", "open"],
+							"query": [
+								{ "key": "search", "value": "react" }
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Open Jobs (Filter by Skills)",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{baseUrl}}/client/jobs/open?skills=React,JavaScript",
+							"host": ["{{baseUrl}}"],
+							"path": ["client", "jobs", "open"],
+							"query": [
+								{ "key": "skills", "value": "React,JavaScript" }
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Open Jobs (Filter by Experience)",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{baseUrl}}/client/jobs/open?experienceLevel=intermediate",
+							"host": ["{{baseUrl}}"],
+							"path": ["client", "jobs", "open"],
+							"query": [
+								{ "key": "experienceLevel", "value": "intermediate" }
+							]
+						}
+					}
+				},
+				{
+					"name": "Get My Jobs (Client)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{ "key": "Authorization", "value": "Bearer {{token}}" }
+						],
+						"url": {
+							"raw": "{{baseUrl}}/client/jobs/mine",
+							"host": ["{{baseUrl}}"],
+							"path": ["client", "jobs", "mine"]
+						}
+					}
+				},
+				{
+					"name": "Get Job by ID",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{baseUrl}}/client/jobs/{{jobId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["client", "jobs", "{{jobId}}"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Applications",
+			"description": "Job application endpoints for freelancers and clients",
+			"item": [
+				{
+					"name": "Submit Application",
+					"request": {
+						"method": "POST",
+						"header": [
+							{ "key": "Content-Type", "value": "application/json" },
+							{ "key": "Authorization", "value": "Bearer {{token}}" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"jobId\": \"{{jobId}}\",\n  \"coverLetter\": \"I have 5 years of experience in React and have built several production dashboards. I am confident I can deliver this project on time.\",\n  \"proposedBudget\": 2800,\n  \"proposedTimelineDays\": 30,\n  \"answers\": []\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/applications",
+							"host": ["{{baseUrl}}"],
+							"path": ["applications"]
+						}
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const res = pm.response.json();",
+									"if (res.application && res.application._id) pm.collectionVariables.set('applicationId', res.application._id);"
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "Get My Applications (Freelancer)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{ "key": "Authorization", "value": "Bearer {{token}}" }
+						],
+						"url": {
+							"raw": "{{baseUrl}}/applications/mine",
+							"host": ["{{baseUrl}}"],
+							"path": ["applications", "mine"]
+						}
+					}
+				},
+				{
+					"name": "Get Applications for Job (Client)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{ "key": "Authorization", "value": "Bearer {{token}}" }
+						],
+						"url": {
+							"raw": "{{baseUrl}}/applications/job/{{jobId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["applications", "job", "{{jobId}}"]
+						}
+					}
+				},
+				{
+					"name": "Get Application by ID",
+					"request": {
+						"method": "GET",
+						"header": [
+							{ "key": "Authorization", "value": "Bearer {{token}}" }
+						],
+						"url": {
+							"raw": "{{baseUrl}}/applications/{{applicationId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["applications", "{{applicationId}}"]
+						}
+					}
+				},
+				{
+					"name": "Shortlist Application",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{ "key": "Content-Type", "value": "application/json" },
+							{ "key": "Authorization", "value": "Bearer {{token}}" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"status\": \"shortlisted\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/applications/{{applicationId}}/status",
+							"host": ["{{baseUrl}}"],
+							"path": ["applications", "{{applicationId}}", "status"]
+						}
+					}
+				},
+				{
+					"name": "Accept Application",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{ "key": "Content-Type", "value": "application/json" },
+							{ "key": "Authorization", "value": "Bearer {{token}}" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"status\": \"accepted\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/applications/{{applicationId}}/status",
+							"host": ["{{baseUrl}}"],
+							"path": ["applications", "{{applicationId}}", "status"]
+						}
+					}
+				},
+				{
+					"name": "Reject Application",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{ "key": "Content-Type", "value": "application/json" },
+							{ "key": "Authorization", "value": "Bearer {{token}}" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"status\": \"rejected\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/applications/{{applicationId}}/status",
+							"host": ["{{baseUrl}}"],
+							"path": ["applications", "{{applicationId}}", "status"]
+						}
+					}
+				},
+				{
+					"name": "Withdraw Application (Freelancer)",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{ "key": "Content-Type", "value": "application/json" },
+							{ "key": "Authorization", "value": "Bearer {{token}}" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"status\": \"withdrawn\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/applications/{{applicationId}}/status",
+							"host": ["{{baseUrl}}"],
+							"path": ["applications", "{{applicationId}}", "status"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Webhooks",
+			"description": "Webhook endpoints (Stripe)",
+			"item": [
+				{
+					"name": "Job Created Webhook",
+					"request": {
+						"method": "POST",
+						"header": [
+							{ "key": "Content-Type", "value": "application/json" },
+							{ "key": "stripe-signature", "value": "your-webhook-secret-here" }
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"event\": \"job.created\",\n  \"data\": {}\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/webhooks/job-created",
+							"host": ["{{baseUrl}}"],
+							"path": ["webhooks", "job-created"]
+						}
+					}
+				}
+			]
+		}
+	]
+}

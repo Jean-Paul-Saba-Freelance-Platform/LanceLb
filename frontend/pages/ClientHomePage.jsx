@@ -1,8 +1,7 @@
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import TopNav from '../src/components/TopNav.jsx'
 import RightSidebarCard from '../src/components/RightSidebarCard.jsx'
-import ConfirmDeleteModal from '../src/components/ConfirmDeleteModal.jsx'
 import { nextStepsData, categoriesData, resourcesData, defaultDashboardSummary } from './client/mockClientDashboardData.js'
 import './ClientHomePage.css'
 
@@ -13,15 +12,8 @@ const ClientHomePage = () => {
   const [user, setUser] = useState(null)
   const [activeView, setActiveView] = useState('activeJobs')
   const [dashboardSummary, setDashboardSummary] = useState(defaultDashboardSummary)
-
-  const [jobs, setJobs] = useState([])
-  const [jobsLoading, setJobsLoading] = useState(false)
-  const [jobsError, setJobsError] = useState('')
-  const [jobsSuccess, setJobsSuccess] = useState('')
-
-  const [deleteTarget, setDeleteTarget] = useState(null)
-  const [deleting, setDeleting] = useState(false)
-  const [deleteError, setDeleteError] = useState('')
+  const [clientJobs, setClientJobs] = useState([])
+  const [loadingJobs, setLoadingJobs] = useState(true)
 
   const fetchDashboardSummary = async () => {
     try {
@@ -51,68 +43,6 @@ const ClientHomePage = () => {
     }
   }
 
-  const fetchClientJobs = async () => {
-    setJobsLoading(true)
-    setJobsError('')
-    try {
-      const token = localStorage.getItem('token')
-      const res = await fetch(`${API_BASE}/api/client/jobs`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          ...(token && { Authorization: `Bearer ${token}` }),
-        },
-        credentials: 'include',
-      })
-      const data = await res.json()
-      if (res.ok && data.success) {
-        setJobs(data.data || [])
-      } else {
-        setJobsError(data.message || 'Failed to load jobs')
-      }
-    } catch {
-      setJobsError('Network error — make sure the backend is running.')
-    } finally {
-      setJobsLoading(false)
-    }
-  }
-
-  const handleDeleteConfirm = useCallback(async () => {
-    if (!deleteTarget || deleting) return
-    setDeleting(true)
-    setDeleteError('')
-    try {
-      const token = localStorage.getItem('token')
-      const res = await fetch(`${API_BASE}/api/client/jobs/${deleteTarget.id || deleteTarget._id}`, {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
-          ...(token && { Authorization: `Bearer ${token}` }),
-        },
-        credentials: 'include',
-      })
-      const data = await res.json()
-      if (res.ok && data.success) {
-        setJobs(prev => prev.filter(j => (j.id || j._id) !== (deleteTarget.id || deleteTarget._id)))
-        setDeleteTarget(null)
-        setJobsSuccess('Job deleted successfully.')
-        setTimeout(() => setJobsSuccess(''), 4000)
-      } else {
-        setDeleteError(data.message || 'Failed to delete job')
-      }
-    } catch {
-      setDeleteError('Network error — make sure the backend is running.')
-    } finally {
-      setDeleting(false)
-    }
-  }, [deleteTarget, deleting])
-
-  const handleDeleteCancel = useCallback(() => {
-    if (deleting) return
-    setDeleteTarget(null)
-    setDeleteError('')
-  }, [deleting])
-
   useEffect(() => {
     try {
       const userStr = localStorage.getItem('user')
@@ -131,6 +61,23 @@ const ClientHomePage = () => {
     }
 
     fetchDashboardSummary()
+
+    const fetchClientJobs = async () => {
+      try {
+        const token = localStorage.getItem('token')
+        if (!token) { setLoadingJobs(false); return }
+        const res = await fetch(`${API_BASE}/api/client/jobs/mine`, {
+          credentials: 'include',
+          headers: { Authorization: `Bearer ${token}` },
+        })
+        const data = await res.json()
+        if (data.success) setClientJobs(data.jobs)
+      } catch (err) {
+        console.error('Error fetching client jobs:', err)
+      } finally {
+        setLoadingJobs(false)
+      }
+    }
     fetchClientJobs()
   }, [])
 
@@ -247,36 +194,29 @@ const ClientHomePage = () => {
             <div className="overview-card">
               {activeView === 'activeJobs' && (
                 <>
-                  {jobsSuccess && (
-                    <div className="overview-success-banner">
-                      <span>{jobsSuccess}</span>
-                      <button className="overview-success-dismiss" onClick={() => setJobsSuccess('')}>×</button>
+                  {loadingJobs ? (
+                    <p className="overview-loading">Loading your jobs...</p>
+                  ) : clientJobs.filter(j => j.status === 'open').length > 0 ? (
+                    <div className="overview-job-list">
+                      {clientJobs.filter(j => j.status === 'open').map(job => (
+                        <div key={job.id || job._id} className="overview-job-item">
+                          <div className="overview-job-info">
+                            <span className="overview-job-title">{job.title}</span>
+                            <span className="overview-job-meta">
+                              {job.paymentType === 'hourly' ? 'Hourly' : 'Fixed'} · {job.experienceLevel}
+                            </span>
+                          </div>
+                          <button
+                            className="overview-job-apps-btn"
+                            onClick={() => navigate(`/client/jobs/${job.id || job._id}/applications`)}
+                          >
+                            View Applications
+                          </button>
+                        </div>
+                      ))}
                     </div>
-                  )}
-
-                  {jobsLoading && (
-                    <div className="overview-loading">
-                      <div className="skeleton-card" />
-                      <div className="skeleton-card" />
-                    </div>
-                  )}
-
-                  {jobsError && !jobsLoading && (
-                    <div className="overview-error-banner">
-                      <span>{jobsError}</span>
-                      <button className="overview-error-retry" onClick={fetchClientJobs}>Retry</button>
-                    </div>
-                  )}
-
-                  {!jobsLoading && !jobsError && jobs.length === 0 && (
+                  ) : (
                     <div className="empty-state">
-                      <div className="empty-state-illustration">
-                        <svg width="120" height="120" viewBox="0 0 100 100" fill="none">
-                          <circle cx="50" cy="50" r="40" fill="#a855f7" opacity="0.2"/>
-                          <path d="M30 50 L45 65 L70 35" stroke="#a855f7" strokeWidth="4" strokeLinecap="round" opacity="0.6"/>
-                          <circle cx="50" cy="50" r="35" stroke="#a855f7" strokeWidth="2" opacity="0.3"/>
-                        </svg>
-                      </div>
                       <h3 className="empty-state-title">No active jobs yet</h3>
                       <p className="empty-state-description">
                         Start by posting your first job to find talented freelancers.
@@ -285,70 +225,7 @@ const ClientHomePage = () => {
                         <button className="empty-state-button primary" onClick={handlePostJob}>
                           Post a job
                         </button>
-                        <button 
-                          className="empty-state-button secondary"
-                          onClick={() => navigate('/talent')}
-                        >
-                          Find talent
-                        </button>
                       </div>
-                    </div>
-                  )}
-
-                  {!jobsLoading && !jobsError && jobs.length > 0 && (
-                    <div className="overview-jobs-list">
-                      {jobs.map(job => (
-                        <div key={job.id || job._id} className="overview-job-card">
-                          <div className="overview-job-top">
-                            <h3 className="overview-job-title">{job.title}</h3>
-                            {job.status && (
-                              <span className={`overview-job-badge status-${job.status}`}>
-                                {job.status === 'open' ? 'Open' : job.status === 'in_progress' ? 'In Progress' : 'Closed'}
-                              </span>
-                            )}
-                          </div>
-                          <div className="overview-job-meta">
-                            <span className="overview-job-date">
-                              Posted {new Date(job.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
-                            </span>
-                            <span className="overview-job-budget">
-                              {job.paymentType === 'hourly'
-                                ? `$${job.hourlyMin} – $${job.hourlyMax}/hr`
-                                : `$${job.fixedBudget} fixed`}
-                            </span>
-                          </div>
-                          {job.requiredSkills?.length > 0 && (
-                            <div className="overview-job-skills">
-                              {job.requiredSkills.slice(0, 5).map((skill, i) => (
-                                <span key={i} className="overview-skill-chip">{skill}</span>
-                              ))}
-                              {job.requiredSkills.length > 5 && (
-                                <span className="overview-skill-chip more">+{job.requiredSkills.length - 5}</span>
-                              )}
-                            </div>
-                          )}
-                          <div className="overview-job-actions">
-                            <button
-                              className="overview-job-btn manage"
-                              onClick={() => navigate('/client/jobs')}
-                            >
-                              Manage
-                            </button>
-                            <button
-                              className="overview-job-btn edit"
-                              onClick={() => navigate(`/client/jobs/${job.id || job._id}/edit`)}
-                            >
-                              Edit
-                            </button>
-                            <button
-                              className="overview-job-btn delete"
-                              onClick={() => setDeleteTarget(job)}
-                            >
-                              Delete
-                            </button>
-                          </div>
-                        </div>
-                      ))}
                     </div>
                   )}
                 </>
@@ -356,13 +233,6 @@ const ClientHomePage = () => {
 
               {activeView === 'contracts' && (
                 <div className="empty-state">
-                  <div className="empty-state-illustration">
-                    <svg width="120" height="120" viewBox="0 0 100 100" fill="none">
-                      <rect x="25" y="30" width="50" height="40" rx="4" fill="#a855f7" opacity="0.2"/>
-                      <path d="M35 50 L45 60 L65 40" stroke="#a855f7" strokeWidth="3" strokeLinecap="round" opacity="0.6"/>
-                      <circle cx="50" cy="50" r="35" stroke="#a855f7" strokeWidth="2" opacity="0.3"/>
-                    </svg>
-                  </div>
                   <h3 className="empty-state-title">No contracts in progress</h3>
                   <p className="empty-state-description">
                     Once you hire a freelancer, your active contracts will appear here.
@@ -370,12 +240,6 @@ const ClientHomePage = () => {
                   <div className="empty-state-actions">
                     <button className="empty-state-button primary" onClick={handlePostJob}>
                       Post a job
-                    </button>
-                    <button 
-                      className="empty-state-button secondary"
-                      onClick={() => navigate('/talent')}
-                    >
-                      Find talent
                     </button>
                   </div>
                 </div>
@@ -422,15 +286,6 @@ const ClientHomePage = () => {
         </div>
       </div>
 
-      <ConfirmDeleteModal
-        open={!!deleteTarget}
-        title="Delete job?"
-        body={`This will permanently remove "${deleteTarget?.title || 'this job'}". This action cannot be undone.`}
-        loading={deleting}
-        error={deleteError}
-        onConfirm={handleDeleteConfirm}
-        onCancel={handleDeleteCancel}
-      />
     </div>
   )
 }

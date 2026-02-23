@@ -1,6 +1,9 @@
 import React, { useState } from 'react'
 import { createPortal } from 'react-dom'
+import Stepper, { Step } from './Stepper'
 import './JobCard.css'
+
+const API_BASE = 'http://127.0.0.1:4000'
 
 const EXPERIENCE_LABELS = {
   entry: 'Entry',
@@ -40,7 +43,14 @@ function budgetLine(job) {
 
 const JobCard = ({ job }) => {
   const [isApplyOpen, setIsApplyOpen] = useState(false)
-  const [applyBanner, setApplyBanner] = useState(false)
+  const [coverLetter, setCoverLetter] = useState('')
+  const [answers, setAnswers] = useState({})
+  const [proposedBudget, setProposedBudget] = useState('')
+  const [proposedTimeline, setProposedTimeline] = useState('')
+  const [cvFile, setCvFile] = useState(null)
+  const [submitting, setSubmitting] = useState(false)
+  const [error, setError] = useState('')
+  const [success, setSuccess] = useState(false)
 
   const postedTime = job.postedTime || timeAgo(job.createdAt)
   const title = job.title || ''
@@ -52,19 +62,99 @@ const JobCard = ({ job }) => {
     : ''
   const tags = job.tags || (job.requiredSkills ? job.requiredSkills.slice(0, 6) : [])
 
-  const handleApplyClick = () => {
-    if (job.createdAt) {
-      setApplyBanner(true)
-      setTimeout(() => setApplyBanner(false), 3000)
-    } else {
-      setIsApplyOpen(true)
+  const [questions, setQuestions] = useState([])
+  const [loadingQuestions, setLoadingQuestions] = useState(false)
+
+  const openApplyModal = async () => {
+    setIsApplyOpen(true)
+    setLoadingQuestions(true)
+    try {
+      const res = await fetch(`${API_BASE}/api/client/jobs/${job.id || job._id}`)
+      const data = await res.json()
+      if (data.success && data.job?.screeningQuestions?.length) {
+        setQuestions(data.job.screeningQuestions)
+        const initial = {}
+        data.job.screeningQuestions.forEach(q => {
+          initial[q._id || q.id] = q.questionType === 'yesno' ? '' : ''
+        })
+        setAnswers(initial)
+      }
+    } catch (err) {
+      console.error('Error fetching job details:', err)
+    } finally {
+      setLoadingQuestions(false)
     }
   }
 
-  const handleApplySubmit = (event) => {
-    event.preventDefault()
-    setIsApplyOpen(false)
+  const handleAnswerChange = (questionId, value) => {
+    setAnswers(prev => ({ ...prev, [questionId]: value }))
   }
+
+  const handleSubmit = async () => {
+    setSubmitting(true)
+    setError('')
+
+    const token = localStorage.getItem('token')
+    if (!token) {
+      setError('You must be logged in to apply.')
+      setSubmitting(false)
+      return
+    }
+
+    const formattedAnswers = questions.map(q => ({
+      questionId: q._id || q.id,
+      questionText: q.questionText,
+      value: answers[q._id || q.id] || '',
+    })).filter(a => a.value !== '')
+
+    const payload = {
+      jobId: job.id || job._id,
+      coverLetter,
+      proposedBudget: proposedBudget ? Number(proposedBudget) : undefined,
+      proposedTimelineDays: proposedTimeline ? Number(proposedTimeline) : undefined,
+      answers: formattedAnswers,
+    }
+
+    try {
+      const res = await fetch(`${API_BASE}/api/applications`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(payload),
+      })
+
+      const data = await res.json()
+
+      if (!res.ok || !data.success) {
+        setError(data.message || 'Failed to submit application.')
+        setSubmitting(false)
+        return
+      }
+
+      setSuccess(true)
+      setSubmitting(false)
+    } catch (err) {
+      console.error('Error submitting application:', err)
+      setError('Network error — make sure the backend is running.')
+      setSubmitting(false)
+    }
+  }
+
+  const closeModal = () => {
+    setIsApplyOpen(false)
+    setCoverLetter('')
+    setAnswers({})
+    setProposedBudget('')
+    setProposedTimeline('')
+    setCvFile(null)
+    setError('')
+    setSuccess(false)
+    setQuestions([])
+  }
+
+  const hasQuestions = questions.length > 0
 
   return (
     <div className="job-card">
@@ -120,7 +210,7 @@ const JobCard = ({ job }) => {
         <div className="job-footer-right">
           <button
             className="job-apply-button gooey-button"
-            onClick={handleApplyClick}
+            onClick={openApplyModal}
           >
             Apply now
           </button>
@@ -138,35 +228,158 @@ const JobCard = ({ job }) => {
       </div>
 
       {isApplyOpen && createPortal(
-        <div className="apply-modal-overlay" onClick={() => setIsApplyOpen(false)}>
-          <div className="apply-modal" onClick={(event) => event.stopPropagation()}>
+        <div className="apply-modal-overlay" onClick={closeModal}>
+          <div className="apply-modal apply-modal--wizard" onClick={(e) => e.stopPropagation()}>
             <div className="apply-modal-header">
               <h3>Apply to {title}</h3>
-              <button className="apply-modal-close" onClick={() => setIsApplyOpen(false)}>
-                ×
-              </button>
+              <button className="apply-modal-close" onClick={closeModal}>×</button>
             </div>
-            <form className="apply-form" onSubmit={handleApplySubmit}>
-              <label className="apply-field">
-                Why are you a great fit?
-                <textarea required rows="4" placeholder="Briefly explain your experience and approach." />
-              </label>
-              <label className="apply-field">
-                Relevant experience
-                <input type="text" required placeholder="e.g., 3 years React, 5 years design" />
-              </label>
-              <label className="apply-field">
-                Availability
-                <input type="text" required placeholder="e.g., 20 hrs/week, start immediately" />
-              </label>
-              <label className="apply-field">
-                Upload CV
-                <input type="file" accept=".pdf,.doc,.docx" required />
-              </label>
-              <button type="submit" className="apply-submit-button gooey-button">
-                Submit application
-              </button>
-            </form>
+
+            {success ? (
+              <div className="apply-success">
+                <div className="apply-success-icon">✓</div>
+                <p>Application submitted successfully!</p>
+                <button className="gooey-button" onClick={closeModal}>Close</button>
+              </div>
+            ) : loadingQuestions ? (
+              <div className="apply-loading">Loading...</div>
+            ) : (
+              <Stepper
+                initialStep={1}
+                onFinalStepCompleted={handleSubmit}
+                backButtonText="Back"
+                nextButtonText="Next"
+                stepCircleContainerClassName="apply-stepper-container"
+                disableStepIndicators={false}
+              >
+                {/* Step 1: Cover Letter */}
+                <Step>
+                  <div className="wizard-step">
+                    <h4 className="wizard-step-title">Why are you a great fit?</h4>
+                    <p className="wizard-step-desc">Tell the client about your experience and approach for this project.</p>
+                    <textarea
+                      className="wizard-input wizard-textarea"
+                      rows="5"
+                      placeholder="I'm a great fit because..."
+                      value={coverLetter}
+                      onChange={(e) => setCoverLetter(e.target.value)}
+                    />
+                  </div>
+                </Step>
+
+                {/* Step 2: Screening Questions (only if client defined them) */}
+                {hasQuestions && (
+                  <Step>
+                    <div className="wizard-step">
+                      <h4 className="wizard-step-title">Screening Questions</h4>
+                      <p className="wizard-step-desc">Answer the client's questions below.</p>
+                      <div className="wizard-questions">
+                        {questions.map((q) => {
+                          const qId = q._id || q.id
+                          return (
+                            <label key={qId} className="wizard-question">
+                              <span className="wizard-question-text">
+                                {q.questionText}
+                                {q.required && <span className="wizard-required">*</span>}
+                              </span>
+                              {q.questionType === 'text' && (
+                                <textarea
+                                  className="wizard-input wizard-textarea"
+                                  rows="3"
+                                  placeholder="Your answer..."
+                                  value={answers[qId] || ''}
+                                  onChange={(e) => handleAnswerChange(qId, e.target.value)}
+                                  required={q.required}
+                                />
+                              )}
+                              {q.questionType === 'number' && (
+                                <input
+                                  type="number"
+                                  className="wizard-input"
+                                  placeholder="Enter a number"
+                                  value={answers[qId] || ''}
+                                  onChange={(e) => handleAnswerChange(qId, e.target.value)}
+                                  required={q.required}
+                                />
+                              )}
+                              {q.questionType === 'yesno' && (
+                                <div className="wizard-yesno">
+                                  <button
+                                    type="button"
+                                    className={`wizard-yesno-btn ${answers[qId] === 'yes' ? 'active' : ''}`}
+                                    onClick={() => handleAnswerChange(qId, 'yes')}
+                                  >
+                                    Yes
+                                  </button>
+                                  <button
+                                    type="button"
+                                    className={`wizard-yesno-btn ${answers[qId] === 'no' ? 'active' : ''}`}
+                                    onClick={() => handleAnswerChange(qId, 'no')}
+                                  >
+                                    No
+                                  </button>
+                                </div>
+                              )}
+                            </label>
+                          )
+                        })}
+                      </div>
+                    </div>
+                  </Step>
+                )}
+
+                {/* Step 3: Budget & Timeline */}
+                <Step>
+                  <div className="wizard-step">
+                    <h4 className="wizard-step-title">Your Proposal</h4>
+                    <p className="wizard-step-desc">Set your proposed budget and timeline.</p>
+                    <label className="wizard-field">
+                      <span>Proposed budget ($)</span>
+                      <input
+                        type="number"
+                        className="wizard-input"
+                        min="0"
+                        placeholder="Your proposed price"
+                        value={proposedBudget}
+                        onChange={(e) => setProposedBudget(e.target.value)}
+                      />
+                    </label>
+                    <label className="wizard-field">
+                      <span>Estimated timeline (days)</span>
+                      <input
+                        type="number"
+                        className="wizard-input"
+                        min="1"
+                        placeholder="e.g., 30"
+                        value={proposedTimeline}
+                        onChange={(e) => setProposedTimeline(e.target.value)}
+                      />
+                    </label>
+                  </div>
+                </Step>
+
+                {/* Step 4: CV Upload & Submit */}
+                <Step>
+                  <div className="wizard-step">
+                    <h4 className="wizard-step-title">Upload Your CV</h4>
+                    <p className="wizard-step-desc">Attach your resume so the client can review your background.</p>
+                    <label className="wizard-file-upload">
+                      <input
+                        type="file"
+                        accept=".pdf,.doc,.docx"
+                        onChange={(e) => setCvFile(e.target.files[0])}
+                      />
+                      <div className="wizard-file-label">
+                        <span className="wizard-file-icon">📎</span>
+                        <span>{cvFile ? cvFile.name : 'Choose a file (PDF, DOC, DOCX)'}</span>
+                      </div>
+                    </label>
+                    {error && <p className="wizard-error">{error}</p>}
+                    {submitting && <p className="wizard-submitting">Submitting your application...</p>}
+                  </div>
+                </Step>
+              </Stepper>
+            )}
           </div>
         </div>,
         document.body

@@ -1,7 +1,9 @@
 import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import Dither from './Dither'
+import Grainient from '../src/components/Grainient'
 import './Auth.css'
+
+const EMAIL_REGEX = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
 
 const Login = () => {
     const navigate = useNavigate()
@@ -10,18 +12,50 @@ const Login = () => {
         password: ''
     })
     const [error, setError] = useState('')
+    const [fieldErrors, setFieldErrors] = useState({})
+    const [touched, setTouched] = useState({})
     const [isSubmitting, setIsSubmitting] = useState(false)
 
+    const validate = (fields = formData) => {
+        const errs = {}
+        if (!fields.email.trim()) {
+            errs.email = 'Email is required'
+        } else if (!EMAIL_REGEX.test(fields.email)) {
+            errs.email = 'Enter a valid email (e.g. user@example.com)'
+        }
+        if (!fields.password) {
+            errs.password = 'Password is required'
+        } else if (fields.password.length < 6) {
+            errs.password = 'Password must be at least 6 characters'
+        }
+        return errs
+    }
+
     const handleChange = (e) => {
-        setFormData({
-            ...formData,
-            [e.target.name]: e.target.value
-        })
+        const updated = { ...formData, [e.target.name]: e.target.value }
+        setFormData(updated)
         if (error) setError('')
+        if (touched[e.target.name]) {
+            setFieldErrors(prev => {
+                const errs = validate(updated)
+                return { ...prev, [e.target.name]: errs[e.target.name] || '' }
+            })
+        }
+    }
+
+    const handleBlur = (e) => {
+        setTouched(prev => ({ ...prev, [e.target.name]: true }))
+        const errs = validate(formData)
+        setFieldErrors(prev => ({ ...prev, [e.target.name]: errs[e.target.name] || '' }))
     }
 
     const handleSubmit = async (e) => {
         e.preventDefault()
+        const errs = validate()
+        setFieldErrors(errs)
+        setTouched({ email: true, password: true })
+        if (Object.keys(errs).length > 0) return
+
         setIsSubmitting(true)
         setError('')
 
@@ -70,15 +104,29 @@ const Login = () => {
     return (
         <div className="auth-container">
             <div className="auth-dither">
-                <Dither
-                    waveColor={[0.58, 0.3, 0.96]}
-                    disableAnimation={false}
-                    enableMouseInteraction={false}
-                    mouseRadius={0.3}
-                    colorNum={4}
-                    waveAmplitude={0.3}
-                    waveFrequency={3}
-                    waveSpeed={0.05}
+                <Grainient
+                    color1="#FF9FFC"
+                    color2="#5227FF"
+                    color3="#B19EEF"
+                    timeSpeed={0.25}
+                    colorBalance={0}
+                    warpStrength={1}
+                    warpFrequency={5}
+                    warpSpeed={2}
+                    warpAmplitude={50}
+                    blendAngle={0}
+                    blendSoftness={0.05}
+                    rotationAmount={500}
+                    noiseScale={2}
+                    grainAmount={0.1}
+                    grainScale={2}
+                    grainAnimated={false}
+                    contrast={1.5}
+                    gamma={1}
+                    saturation={1}
+                    centerX={0}
+                    centerY={0}
+                    zoom={0.9}
                 />
             </div>
             <div className="auth-card">
@@ -90,12 +138,15 @@ const Login = () => {
                             type="email"
                             id="email"
                             name="email"
-                            className="auth-input"
+                            className={`auth-input${fieldErrors.email && touched.email ? ' input-error' : ''}`}
                             placeholder="Enter your email"
                             value={formData.email}
                             onChange={handleChange}
-                            required
+                            onBlur={handleBlur}
                         />
+                        {fieldErrors.email && touched.email && (
+                            <span className="error-message">{fieldErrors.email}</span>
+                        )}
                     </div>
 
                     <div className="form-group">
@@ -104,12 +155,15 @@ const Login = () => {
                             type="password"
                             id="password"
                             name="password"
-                            className="auth-input"
+                            className={`auth-input${fieldErrors.password && touched.password ? ' input-error' : ''}`}
                             placeholder="Enter your password"
                             value={formData.password}
                             onChange={handleChange}
-                            required
+                            onBlur={handleBlur}
                         />
+                        {fieldErrors.password && touched.password && (
+                            <span className="error-message">{fieldErrors.password}</span>
+                        )}
                     </div>
 
                     <div className="form-options">

@@ -172,6 +172,7 @@ const PostJobStep6Review = () => {
       onNext={handlePublish}
       nextDisabled={!isComplete || publishing}
       onBack={() => navigate('/client/post-job/budget')}
+      onClose={() => navigate('/client/home')}
     >
       {/* Inline error message (appears when publish fails) */}
       {error && (

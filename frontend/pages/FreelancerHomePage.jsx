@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useState, useEffect } from 'react'
 import TopNav from '../src/components/TopNav.jsx'
 import JobCard from '../src/components/JobCard.jsx'
 import RightSidebarCard from '../src/components/RightSidebarCard.jsx'
@@ -8,13 +8,11 @@ const API_BASE = 'http://127.0.0.1:4000'
 
 const FreelancerHomePage = () => {
   const [user, setUser] = useState(null)
+  const [jobs, setJobs] = useState([])
+  const [loadingJobs, setLoadingJobs] = useState(true)
   const [activeTab, setActiveTab] = useState('bestMatches')
   const [searchQuery, setSearchQuery] = useState('')
   const [profileProgress, setProfileProgress] = useState(40)
-
-  const [jobs, setJobs] = useState([])
-  const [jobsLoading, setJobsLoading] = useState(true)
-  const [jobsError, setJobsError] = useState('')
 
   useEffect(() => {
     try {
@@ -25,25 +23,22 @@ const FreelancerHomePage = () => {
     }
   }, [])
 
-  const fetchJobs = useCallback(async () => {
-    setJobsLoading(true)
-    setJobsError('')
-    try {
-      const res = await fetch(`${API_BASE}/api/jobs`)
-      const data = await res.json()
-      if (!res.ok || !data.success) {
-        throw new Error(data.message || 'Failed to load jobs')
+  useEffect(() => {
+    const fetchJobs = async () => {
+      try {
+        const res = await fetch(`${API_BASE}/api/client/jobs/open`)
+        const data = await res.json()
+        if (data.success) {
+          setJobs(data.jobs)
+        }
+      } catch (err) {
+        console.error('Error fetching jobs:', err)
+      } finally {
+        setLoadingJobs(false)
       }
-      setJobs(data.data || [])
-    } catch (err) {
-      setJobsError(err.message || 'Failed to load jobs')
-    } finally {
-      setJobsLoading(false)
     }
+    fetchJobs()
   }, [])
-
-  useEffect(() => { fetchJobs() }, [fetchJobs])
-
   const getGreeting = () => {
     const hour = new Date().getHours()
     if (hour < 12) return 'Good Morning'
@@ -60,23 +55,31 @@ const FreelancerHomePage = () => {
     })
   }
 
+  const timeAgo = (dateStr) => {
+    const diff = Date.now() - new Date(dateStr).getTime()
+    const days = Math.floor(diff / 86400000)
+    if (days === 0) return 'Posted today'
+    if (days === 1) return 'Posted yesterday'
+    return `Posted ${days} days ago`
+  }
+
+  const formatJob = (job) => ({
+    ...job,
+    postedTime: timeAgo(job.createdAt),
+    type: job.paymentType === 'hourly' ? 'Hourly' : 'Fixed-price',
+    experience: job.experienceLevel,
+    tags: job.requiredSkills || [],
+  })
+
   const getFilteredJobs = () => {
-    let filtered = jobs
-
-    if (activeTab === 'saved') return []
-
-    if (activeTab === 'recent') {
-      filtered = [...jobs].sort(
-        (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
-      )
-    }
+    let filtered = jobs.map(formatJob)
 
     if (searchQuery.trim()) {
       const q = searchQuery.toLowerCase()
       filtered = filtered.filter(job =>
-        (job.title || '').toLowerCase().includes(q) ||
-        (job.description || '').toLowerCase().includes(q) ||
-        (job.requiredSkills || []).some(s => s.toLowerCase().includes(q))
+        job.title.toLowerCase().includes(q) ||
+        job.description.toLowerCase().includes(q) ||
+        job.tags.some(tag => tag.toLowerCase().includes(q))
       )
     }
 
@@ -166,17 +169,8 @@ const FreelancerHomePage = () => {
 
           {/* Jobs Feed */}
           <div className="jobs-feed">
-            {jobsLoading ? (
-              renderSkeletonCards()
-            ) : jobsError ? (
-              <div className="jobs-error-banner">
-                <span>{jobsError}</span>
-                <button className="jobs-retry-btn" onClick={fetchJobs}>Retry</button>
-              </div>
-            ) : activeTab === 'saved' ? (
-              <div className="no-jobs-message">
-                <p>No saved jobs yet.</p>
-              </div>
+            {loadingJobs ? (
+              <div className="no-jobs-message"><p>Loading jobs...</p></div>
             ) : filteredJobs.length > 0 ? (
               filteredJobs.map(job => (
                 <JobCard key={job._id || job.id} job={job} />

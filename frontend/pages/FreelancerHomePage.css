@@ -1,6 +1,6 @@
 .freelancer-home {
   min-height: 100vh;
-  background: #f9fafb;
+  background: transparent;
 }
 
 .freelancer-home-container {
@@ -14,10 +14,10 @@
 
 /* Greeting Card */
 .greeting-card {
-  background: rgba(255, 255, 255, 0.7);
+  background: rgba(14, 12, 20, 0.6);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 12px;
   padding: 1.5rem;
   margin-bottom: 1.5rem;
@@ -31,7 +31,7 @@
 }
 
 .greeting-date {
-  color: #6b7280;
+  color: #94a3b8;
   font-size: 0.9rem;
   margin-bottom: 0.5rem;
 }
@@ -39,7 +39,7 @@
 .greeting-text {
   font-size: 1.5rem;
   font-weight: 600;
-  color: #1f2937;
+  color: #f3f4f6;
   margin: 0;
 }
 
@@ -84,7 +84,7 @@
 .section-title {
   font-size: 1.5rem;
   font-weight: 600;
-  color: #1f2937;
+  color: #f3f4f6;
   margin: 0 0 1rem 0;
 }
 
@@ -93,7 +93,7 @@
   display: flex;
   gap: 0.5rem;
   margin-bottom: 1.5rem;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
 }
 
 .tab-button {
@@ -102,7 +102,7 @@
   padding: 0.75rem 1rem;
   font-size: 0.95rem;
   font-weight: 500;
-  color: #6b7280;
+  color: #94a3b8;
   cursor: pointer;
   border-bottom: 2px solid transparent;
   margin-bottom: -1px;
@@ -111,7 +111,7 @@
 }
 
 .tab-button:hover {
-  color: #1f2937;
+  color: #f3f4f6;
 }
 
 .tab-button.active {
@@ -128,81 +128,6 @@
   text-align: center;
   padding: 3rem 1rem;
   color: #94a3b8;
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 12px;
-}
-
-/* Loading skeleton cards */
-.skeleton-job-card {
-  padding: 1.5rem !important;
-  min-height: 180px;
-}
-
-.skeleton-line {
-  height: 12px;
-  border-radius: 6px;
-  background: linear-gradient(90deg, rgba(255,255,255,0.04) 25%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0.04) 75%);
-  background-size: 200% 100%;
-  animation: shimmer 1.4s ease-in-out infinite;
-  margin-bottom: 0.75rem;
-}
-
-.skeleton-short { width: 25%; }
-.skeleton-title { width: 60%; height: 16px; }
-.skeleton-medium { width: 45%; }
-.skeleton-long { width: 90%; }
-
-.skeleton-tags-row {
-  display: flex;
-  gap: 0.5rem;
-  margin-top: 0.5rem;
-}
-
-.skeleton-tag {
-  width: 70px;
-  height: 24px;
-  border-radius: 16px;
-  background: linear-gradient(90deg, rgba(255,255,255,0.04) 25%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0.04) 75%);
-  background-size: 200% 100%;
-  animation: shimmer 1.4s ease-in-out infinite;
-}
-
-@keyframes shimmer {
-  0% { background-position: 200% 0; }
-  100% { background-position: -200% 0; }
-}
-
-/* Error banner */
-.jobs-error-banner {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-  padding: 1rem 1.25rem;
-  background: rgba(239, 68, 68, 0.08);
-  border: 1px solid rgba(239, 68, 68, 0.25);
-  border-radius: 12px;
-  color: #fca5a5;
-  font-size: 0.9rem;
-}
-
-.jobs-retry-btn {
-  flex-shrink: 0;
-  padding: 0.45rem 1rem;
-  font-size: 0.85rem;
-  font-weight: 600;
-  color: #fca5a5;
-  background: rgba(239, 68, 68, 0.12);
-  border: 1px solid rgba(239, 68, 68, 0.3);
-  border-radius: 8px;
-  cursor: pointer;
-  transition: all 0.18s ease;
-}
-
-.jobs-retry-btn:hover {
-  background: rgba(239, 68, 68, 0.22);
-  border-color: rgba(239, 68, 68, 0.5);
 }
 
 /* Sidebar Styles */
@@ -249,12 +174,12 @@
 .profile-name {
   font-size: 1.1rem;
   font-weight: 600;
-  color: #1f2937;
+  color: #f3f4f6;
   margin: 0 0 0.25rem 0;
 }
 
 .profile-category {
-  color: #6b7280;
+  color: #94a3b8;
   font-size: 0.9rem;
   margin: 0 0 1.5rem 0;
 }
@@ -269,7 +194,7 @@
   align-items: center;
   margin-bottom: 0.5rem;
   font-size: 0.9rem;
-  color: #4b5563;
+  color: #94a3b8;
   font-weight: 500;
 }
 
@@ -281,7 +206,7 @@
 .progress-bar {
   width: 100%;
   height: 8px;
-  background: #e5e7eb;
+  background: rgba(255, 255, 255, 0.1);
   border-radius: 4px;
   overflow: hidden;
 }
@@ -293,7 +218,7 @@
 }
 
 .sidebar-text {
-  color: #4b5563;
+  color: #94a3b8;
   font-size: 0.9rem;
   line-height: 1.6;
   margin: 0 0 1rem 0;
@@ -356,12 +281,12 @@
 
 .promote-option-label {
   font-weight: 500;
-  color: #1f2937;
+  color: #f3f4f6;
   font-size: 0.9rem;
 }
 
 .promote-option-desc {
-  color: #6b7280;
+  color: #94a3b8;
   font-size: 0.85rem;
 }
 
@@ -386,7 +311,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: #cbd5e1;
+  background-color: rgba(255, 255, 255, 0.2);
   transition: 0.3s;
   border-radius: 24px;
 }
@@ -418,7 +343,7 @@
 .credits-amount {
   font-size: 1.25rem;
   font-weight: 600;
-  color: #1f2937;
+  color: #f3f4f6;
   margin-bottom: 1rem;
 }
 

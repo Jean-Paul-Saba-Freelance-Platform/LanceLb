@@ -65,9 +65,8 @@ export const createJob = async (req, res) => {
             hourlyMin,
             hourlyMax,
             fixedBudget,
-            // status is intentionally omitted here — new jobs should always
-            // start as "open" (the schema default). Accepting status from the
-            // body would let a client create a job that's already "closed".
+            // Screening questions (optional)
+            screeningQuestions,
         } = req.body;
 
         // --- 3. Manual pre-validation for the most common mistakes --------
@@ -180,7 +179,7 @@ export const createJob = async (req, res) => {
             hourlyMin: paymentType === 'hourly' ? Number(hourlyMin) : undefined,
             hourlyMax: paymentType === 'hourly' ? Number(hourlyMax) : undefined,
             fixedBudget: paymentType === 'fixed' ? Number(fixedBudget) : undefined,
-            // status defaults to "open" via the schema
+            screeningQuestions: Array.isArray(screeningQuestions) ? screeningQuestions : [],
         });
 
         // --- 6. Respond with the newly created job ------------------------

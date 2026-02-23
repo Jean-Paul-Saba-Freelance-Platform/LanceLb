@@ -176,11 +176,42 @@ select.auth-input {
 /* Error Messages */
 .error-message {
   color: #f87171;
+  font-size: 0.82rem;
+  margin-top: 0.35rem;
+  display: block;
+  animation: fadeSlideIn 0.25s ease;
+}
+
+.error-message-global {
+  background: rgba(239, 68, 68, 0.12);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  color: #fca5a5;
+  padding: 0.65rem 0.85rem;
+  border-radius: 8px;
   font-size: 0.85rem;
-  margin-top: 0.25rem;
-  display: flex;
-  align-items: center;
-  gap: 0.25rem;
+  margin-bottom: 0.5rem;
+  animation: fadeSlideIn 0.25s ease;
+}
+
+.auth-input.input-error {
+  border-color: rgba(239, 68, 68, 0.5);
+  box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.15);
+}
+
+.auth-input.input-error:focus {
+  border-color: #f87171;
+  box-shadow: 0 0 0 3px rgba(248, 113, 113, 0.2);
+}
+
+@keyframes fadeSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 
