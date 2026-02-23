@@ -41,7 +41,25 @@ const userSchema = new mongoose.Schema({
         type: Number,
         default:0,
     },
-    
+    skills: {
+        type: [String],
+        default: [],
+    },
+    bio: {
+        type: String,
+        default: '',
+        maxlength: 1000,
+    },
+    experienceLevel: {
+        type: String,
+        enum: ['entry', 'intermediate', 'expert'],
+        default: 'entry',
+    },
+    title: {
+        type: String,
+        default: '',
+        maxlength: 120,
+    },
 })
 
 const User = mongoose.model('User', userSchema);

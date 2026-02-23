@@ -1,9 +1,22 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { createPortal } from 'react-dom'
 import Stepper, { Step } from './Stepper'
 import './JobCard.css'
 
 const API_BASE = 'http://127.0.0.1:4000'
+
+function scoreColor(score) {
+  if (score >= 70) return '#10b981'
+  if (score >= 40) return '#fbbf24'
+  return '#f87171'
+}
+
+function scoreLabel(score) {
+  if (score >= 80) return 'Excellent Match'
+  if (score >= 60) return 'Good Match'
+  if (score >= 40) return 'Fair Match'
+  return 'Low Match'
+}
 
 const EXPERIENCE_LABELS = {
   entry: 'Entry',
@@ -65,24 +78,52 @@ const JobCard = ({ job }) => {
   const [questions, setQuestions] = useState([])
   const [loadingQuestions, setLoadingQuestions] = useState(false)
 
+  const [fitScore, setFitScore] = useState(null)
+  const [fitStrengths, setFitStrengths] = useState([])
+  const [fitImprovements, setFitImprovements] = useState([])
+  const [fitLoading, setFitLoading] = useState(false)
+  const [fitProfileComplete, setFitProfileComplete] = useState(true)
+
   const openApplyModal = async () => {
     setIsApplyOpen(true)
     setLoadingQuestions(true)
+    setFitLoading(true)
+
+    const token = localStorage.getItem('token')
+    const headers = token ? { Authorization: `Bearer ${token}` } : {}
+
     try {
-      const res = await fetch(`${API_BASE}/api/client/jobs/${job.id || job._id}`)
-      const data = await res.json()
+      const [jobRes, fitRes] = await Promise.all([
+        fetch(`${API_BASE}/api/client/jobs/${job.id || job._id}`),
+        token
+          ? fetch(`${API_BASE}/api/ai/fit-score/${job.id || job._id}`, { credentials: 'include', headers })
+          : Promise.resolve(null),
+      ])
+
+      const data = await jobRes.json()
       if (data.success && data.job?.screeningQuestions?.length) {
         setQuestions(data.job.screeningQuestions)
         const initial = {}
         data.job.screeningQuestions.forEach(q => {
-          initial[q._id || q.id] = q.questionType === 'yesno' ? '' : ''
+          initial[q._id || q.id] = ''
         })
         setAnswers(initial)
       }
+
+      if (fitRes) {
+        const fitData = await fitRes.json()
+        if (fitData.success) {
+          setFitScore(fitData.fitScore)
+          setFitStrengths(fitData.strengths || [])
+          setFitImprovements(fitData.improvements || [])
+          setFitProfileComplete(fitData.profileComplete !== false)
+        }
+      }
     } catch (err) {
-      console.error('Error fetching job details:', err)
+      console.error('Error fetching job details / fit score:', err)
     } finally {
       setLoadingQuestions(false)
+      setFitLoading(false)
     }
   }
 
@@ -152,6 +193,10 @@ const JobCard = ({ job }) => {
     setError('')
     setSuccess(false)
     setQuestions([])
+    setFitScore(null)
+    setFitStrengths([])
+    setFitImprovements([])
+    setFitProfileComplete(true)
   }
 
   const hasQuestions = questions.length > 0
@@ -177,12 +222,6 @@ const JobCard = ({ job }) => {
           <span key={index} className="job-tag">{tag}</span>
         ))}
       </div>
-
-      {applyBanner && (
-        <div className="job-apply-banner">
-          Apply feature coming soon
-        </div>
-      )}
 
       <div className="job-card-footer">
         <div className="job-footer-left">
@@ -234,6 +273,61 @@ const JobCard = ({ job }) => {
               <h3>Apply to {title}</h3>
               <button className="apply-modal-close" onClick={closeModal}>×</button>
             </div>
+
+            {/* AI Fit Score Panel */}
+            {!success && (
+              <div className="fit-score-panel">
+                {fitLoading ? (
+                  <div className="fit-score-loading">
+                    <div className="fit-score-spinner" />
+                    <span>Analyzing your fit...</span>
+                  </div>
+                ) : !fitProfileComplete ? (
+                  <div className="fit-score-incomplete">
+                    <span className="fit-incomplete-icon">!</span>
+                    <div className="fit-incomplete-text">
+                      <strong>Complete your profile</strong>
+                      <span>Add your skills, bio, and title for an accurate AI fit score.</span>
+                    </div>
+                  </div>
+                ) : fitScore != null ? (
+                  <div className="fit-score-result">
+                    <div className="fit-score-gauge" style={{ '--score-color': scoreColor(fitScore) }}>
+                      <svg viewBox="0 0 80 80" className="fit-score-ring">
+                        <circle cx="40" cy="40" r="34" fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth="6" />
+                        <circle
+                          cx="40" cy="40" r="34"
+                          fill="none"
+                          stroke={scoreColor(fitScore)}
+                          strokeWidth="6"
+                          strokeLinecap="round"
+                          strokeDasharray={`${(fitScore / 100) * 213.6} 213.6`}
+                          transform="rotate(-90 40 40)"
+                        />
+                      </svg>
+                      <span className="fit-score-number" style={{ color: scoreColor(fitScore) }}>{fitScore}</span>
+                    </div>
+                    <div className="fit-score-details">
+                      <span className="fit-score-label" style={{ color: scoreColor(fitScore) }}>{scoreLabel(fitScore)}</span>
+                      {fitStrengths.length > 0 && (
+                        <div className="fit-tags">
+                          {fitStrengths.map((s, i) => (
+                            <span key={i} className="fit-tag fit-tag--strength">{s}</span>
+                          ))}
+                        </div>
+                      )}
+                      {fitImprovements.length > 0 && (
+                        <div className="fit-tags">
+                          {fitImprovements.map((s, i) => (
+                            <span key={i} className="fit-tag fit-tag--improve">{s}</span>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                ) : null}
+              </div>
+            )}
 
             {success ? (
               <div className="apply-success">

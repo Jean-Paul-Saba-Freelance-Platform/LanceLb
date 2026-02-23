@@ -617,3 +617,193 @@
     padding: 1.25rem;
   }
 }
+
+/* ─── Profile Edit Mode ─── */
+
+.profile-save-banner {
+  padding: 0.65rem 1rem;
+  background: rgba(16, 185, 129, 0.12);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  border-radius: 10px;
+  color: #10b981;
+  font-size: 0.9rem;
+  font-weight: 500;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.profile-edit-card {
+  border-color: rgba(168, 85, 247, 0.25) !important;
+}
+
+.profile-edit-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.profile-cancel-btn {
+  padding: 0.45rem 1rem;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.profile-cancel-btn:hover {
+  color: rgba(255, 255, 255, 0.8);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.profile-save-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.45rem 1rem;
+  background: rgba(168, 85, 247, 0.3);
+  color: #fff;
+  border: 1px solid rgba(168, 85, 247, 0.6);
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.profile-save-btn:hover {
+  background: rgba(168, 85, 247, 0.5);
+}
+
+.profile-save-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.profile-edit-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  margin-top: 1rem;
+}
+
+.profile-edit-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.profile-edit-label {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.5);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.profile-edit-input {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 8px;
+  padding: 0.6rem 0.75rem;
+  color: #fff;
+  font-size: 0.95rem;
+  font-family: inherit;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.profile-edit-input:focus {
+  border-color: rgba(168, 85, 247, 0.6);
+  box-shadow: 0 0 0 2px rgba(168, 85, 247, 0.15);
+}
+
+.profile-edit-select {
+  cursor: pointer;
+  appearance: auto;
+}
+
+.profile-edit-select option {
+  background: #1a1a2e;
+  color: #fff;
+}
+
+.profile-edit-textarea {
+  resize: vertical;
+  min-height: 100px;
+  font-family: inherit;
+}
+
+.profile-edit-hint {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.3);
+  text-align: right;
+}
+
+.profile-skills-editor {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.profile-skills-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.profile-skill-tag-editable {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.25rem 0.6rem;
+  background: rgba(168, 85, 247, 0.1);
+  border: 1px solid rgba(168, 85, 247, 0.25);
+  border-radius: 999px;
+  color: #c084fc;
+  font-size: 0.82rem;
+  font-weight: 500;
+}
+
+.profile-skill-remove {
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.4);
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  transition: color 0.15s;
+}
+
+.profile-skill-remove:hover {
+  color: #f87171;
+}
+
+.profile-skill-add-row {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.profile-skill-add-row .profile-edit-input {
+  flex: 1;
+}
+
+.profile-skill-add-btn {
+  padding: 0.5rem 1rem;
+  background: rgba(168, 85, 247, 0.2);
+  color: #a855f7;
+  border: 1px solid rgba(168, 85, 247, 0.35);
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.profile-skill-add-btn:hover {
+  background: rgba(168, 85, 247, 0.35);
+}

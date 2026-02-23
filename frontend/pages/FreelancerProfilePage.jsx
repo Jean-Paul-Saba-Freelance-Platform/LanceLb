@@ -2,11 +2,13 @@ import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import TopNav from '../src/components/TopNav'
 import { 
-  Edit2, Plus, Share2, CheckCircle, XCircle, 
+  Edit2, Plus, Share2, CheckCircle, XCircle, X,
   Video, Clock, Globe, Shield, Award, GraduationCap,
-  Briefcase, FolderOpen, History, Tag, Package
+  Briefcase, FolderOpen, History, Tag, Package, Save
 } from 'lucide-react'
 import './FreelancerProfilePage.css'
+
+const API_BASE = 'http://127.0.0.1:4000'
 
 const FreelancerProfilePage = () => {
   const [user, setUser] = useState(null)
@@ -14,19 +16,91 @@ const FreelancerProfilePage = () => {
   const [availabilityBadge, setAvailabilityBadge] = useState(false)
   const [boostProfile, setBoostProfile] = useState(false)
 
+  const [editingProfile, setEditingProfile] = useState(false)
+  const [profileTitle, setProfileTitle] = useState('')
+  const [profileBio, setProfileBio] = useState('')
+  const [profileSkills, setProfileSkills] = useState([])
+  const [profileExperience, setProfileExperience] = useState('entry')
+  const [newSkill, setNewSkill] = useState('')
+  const [savingProfile, setSavingProfile] = useState(false)
+  const [saveMessage, setSaveMessage] = useState('')
+
   useEffect(() => {
-    // Get user from localStorage
-    try {
-      const userStr = localStorage.getItem('user')
-      if (userStr) {
-        setUser(JSON.parse(userStr))
+    const fetchProfile = async () => {
+      try {
+        const userStr = localStorage.getItem('user')
+        if (userStr) setUser(JSON.parse(userStr))
+
+        const token = localStorage.getItem('token')
+        if (!token) return
+
+        const res = await fetch(`${API_BASE}/api/auth/profile`, {
+          headers: { Authorization: `Bearer ${token}` },
+          credentials: 'include',
+        })
+        const data = await res.json()
+        if (data.success && data.user) {
+          setUser(data.user)
+          setProfileTitle(data.user.title || '')
+          setProfileBio(data.user.bio || '')
+          setProfileSkills(data.user.skills || [])
+          setProfileExperience(data.user.experienceLevel || 'entry')
+        }
+      } catch (error) {
+        console.error('Error loading profile:', error)
       }
-    } catch (error) {
-      console.error('Error loading user:', error)
     }
+    fetchProfile()
   }, [])
 
-  const userName = user?.name || user?.firstName || 'Saba A.'
+  const handleSaveProfile = async () => {
+    setSavingProfile(true)
+    setSaveMessage('')
+    try {
+      const token = localStorage.getItem('token')
+      const res = await fetch(`${API_BASE}/api/auth/profile`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        credentials: 'include',
+        body: JSON.stringify({
+          title: profileTitle,
+          bio: profileBio,
+          skills: profileSkills,
+          experienceLevel: profileExperience,
+        }),
+      })
+      const data = await res.json()
+      if (data.success) {
+        setUser(data.user)
+        setEditingProfile(false)
+        setSaveMessage('Profile saved!')
+        setTimeout(() => setSaveMessage(''), 3000)
+      } else {
+        setSaveMessage(data.message || 'Failed to save')
+      }
+    } catch (err) {
+      setSaveMessage('Network error')
+    } finally {
+      setSavingProfile(false)
+    }
+  }
+
+  const addSkill = () => {
+    const trimmed = newSkill.trim()
+    if (trimmed && !profileSkills.includes(trimmed)) {
+      setProfileSkills(prev => [...prev, trimmed])
+    }
+    setNewSkill('')
+  }
+
+  const removeSkill = (skillToRemove) => {
+    setProfileSkills(prev => prev.filter(s => s !== skillToRemove))
+  }
+
+  const userName = user?.name || user?.firstName || 'Freelancer'
   const userInitial = userName.charAt(0).toUpperCase()
   const currentTime = new Date().toLocaleTimeString('en-US', { 
     hour: 'numeric', 
@@ -34,7 +108,7 @@ const FreelancerProfilePage = () => {
     hour12: true 
   })
 
-  const skills = ['Digital Marketing', 'React', 'Node.js', 'TypeScript', 'UI/UX Design', 'Content Writing']
+  const skills = user?.skills?.length ? user.skills : []
 
   return (
     <div className="freelancer-profile-page">
@@ -235,35 +309,146 @@ const FreelancerProfilePage = () => {
 
           {/* Right Main Column */}
           <div className="profile-main-content">
-            {/* Title + Rate */}
-            <div className="main-section-card">
-              <div className="section-header-row">
-                <div className="section-title-group">
-                  <h2 className="section-title">Full Stack Developer</h2>
-                  <span className="section-rate">$100.00/hr</span>
-                </div>
-                <button className="section-edit-button" aria-label="Edit">
-                  <Edit2 size={18} />
-                </button>
-              </div>
-            </div>
+            {saveMessage && (
+              <div className="profile-save-banner">{saveMessage}</div>
+            )}
 
-            {/* Overview / Bio */}
-            <div className="main-section-card">
-              <div className="section-header-row">
-                <h2 className="section-title">Overview</h2>
-                <button className="section-edit-button" aria-label="Edit">
-                  <Edit2 size={18} />
-                </button>
+            {editingProfile ? (
+              /* ─── Editing Mode ─── */
+              <div className="main-section-card profile-edit-card">
+                <div className="section-header-row">
+                  <h2 className="section-title">Edit Profile</h2>
+                  <div className="profile-edit-actions">
+                    <button className="profile-cancel-btn" onClick={() => setEditingProfile(false)} disabled={savingProfile}>
+                      Cancel
+                    </button>
+                    <button className="profile-save-btn" onClick={handleSaveProfile} disabled={savingProfile}>
+                      <Save size={16} />
+                      {savingProfile ? 'Saving...' : 'Save'}
+                    </button>
+                  </div>
+                </div>
+
+                <div className="profile-edit-form">
+                  <label className="profile-edit-field">
+                    <span className="profile-edit-label">Professional Title</span>
+                    <input
+                      type="text"
+                      className="profile-edit-input"
+                      placeholder="e.g., Full Stack Developer"
+                      value={profileTitle}
+                      onChange={(e) => setProfileTitle(e.target.value)}
+                      maxLength={120}
+                    />
+                  </label>
+
+                  <label className="profile-edit-field">
+                    <span className="profile-edit-label">Experience Level</span>
+                    <select
+                      className="profile-edit-input profile-edit-select"
+                      value={profileExperience}
+                      onChange={(e) => setProfileExperience(e.target.value)}
+                    >
+                      <option value="entry">Entry Level</option>
+                      <option value="intermediate">Intermediate</option>
+                      <option value="expert">Expert</option>
+                    </select>
+                  </label>
+
+                  <label className="profile-edit-field">
+                    <span className="profile-edit-label">Bio / Overview</span>
+                    <textarea
+                      className="profile-edit-input profile-edit-textarea"
+                      placeholder="Tell clients about your experience and what you bring to the table..."
+                      value={profileBio}
+                      onChange={(e) => setProfileBio(e.target.value)}
+                      maxLength={1000}
+                      rows={5}
+                    />
+                    <span className="profile-edit-hint">{profileBio.length}/1000</span>
+                  </label>
+
+                  <div className="profile-edit-field">
+                    <span className="profile-edit-label">Skills</span>
+                    <div className="profile-skills-editor">
+                      <div className="profile-skills-tags">
+                        {profileSkills.map((skill, i) => (
+                          <span key={i} className="profile-skill-tag-editable">
+                            {skill}
+                            <button className="profile-skill-remove" onClick={() => removeSkill(skill)}>
+                              <X size={12} />
+                            </button>
+                          </span>
+                        ))}
+                      </div>
+                      <div className="profile-skill-add-row">
+                        <input
+                          type="text"
+                          className="profile-edit-input"
+                          placeholder="Add a skill..."
+                          value={newSkill}
+                          onChange={(e) => setNewSkill(e.target.value)}
+                          onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); addSkill() } }}
+                        />
+                        <button className="profile-skill-add-btn" onClick={addSkill} type="button">Add</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
-              <p className="bio-text">
-                Experienced full stack developer with a passion for building scalable web applications. 
-                I specialize in React, Node.js, and modern JavaScript frameworks. With over 5 years of 
-                experience, I've helped numerous clients bring their ideas to life through clean, 
-                maintainable code and intuitive user interfaces. I'm committed to delivering high-quality 
-                solutions that exceed expectations.
-              </p>
-            </div>
+            ) : (
+              /* ─── View Mode ─── */
+              <>
+                {/* Title + Rate */}
+                <div className="main-section-card">
+                  <div className="section-header-row">
+                    <div className="section-title-group">
+                      <h2 className="section-title">{user?.title || 'No title set'}</h2>
+                      {user?.experienceLevel && (
+                        <span className="section-rate">
+                          {user.experienceLevel === 'entry' ? 'Entry Level' : user.experienceLevel === 'intermediate' ? 'Intermediate' : 'Expert'}
+                        </span>
+                      )}
+                    </div>
+                    <button className="section-edit-button" onClick={() => setEditingProfile(true)} aria-label="Edit">
+                      <Edit2 size={18} />
+                    </button>
+                  </div>
+                </div>
+
+                {/* Overview / Bio */}
+                <div className="main-section-card">
+                  <div className="section-header-row">
+                    <h2 className="section-title">Overview</h2>
+                    <button className="section-edit-button" onClick={() => setEditingProfile(true)} aria-label="Edit">
+                      <Edit2 size={18} />
+                    </button>
+                  </div>
+                  <p className="bio-text">
+                    {user?.bio || 'No bio set. Click edit to add your overview.'}
+                  </p>
+                </div>
+
+                {/* Skills */}
+                <div className="main-section-card">
+                  <div className="section-header-row">
+                    <h2 className="section-title">Skills</h2>
+                    <button className="section-edit-button" onClick={() => setEditingProfile(true)} aria-label="Edit">
+                      <Edit2 size={18} />
+                    </button>
+                  </div>
+                  <div className="skills-list">
+                    {skills.length > 0 ? skills.map((skill, index) => (
+                      <span key={index} className="skill-tag">
+                        {skill}
+                      </span>
+                    )) : (
+                      <p className="section-placeholder-text">No skills added yet. Click edit to add your skills.</p>
+                    )}
+                  </div>
+                </div>
+              </>
+            )}
 
             {/* Portfolio */}
             <div className="main-section-card">
@@ -304,23 +489,6 @@ const FreelancerProfilePage = () => {
               <div className="empty-state-simple">
                 <History size={32} className="empty-state-icon-small" />
                 <p className="empty-state-text">No items</p>
-              </div>
-            </div>
-
-            {/* Skills */}
-            <div className="main-section-card">
-              <div className="section-header-row">
-                <h2 className="section-title">Skills</h2>
-                <button className="section-edit-button" aria-label="Edit">
-                  <Edit2 size={18} />
-                </button>
-              </div>
-              <div className="skills-list">
-                {skills.map((skill, index) => (
-                  <span key={index} className="skill-tag">
-                    {skill}
-                  </span>
-                ))}
               </div>
             </div>
 

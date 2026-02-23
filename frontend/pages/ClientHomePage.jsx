@@ -22,7 +22,10 @@ const ClientHomePage = () => {
 
       const response = await fetch(`${API_BASE}/api/client/dashboard/summary`, {
         method: 'GET',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
         credentials: 'include'
       })
 
@@ -71,7 +74,7 @@ const ClientHomePage = () => {
           headers: { Authorization: `Bearer ${token}` },
         })
         const data = await res.json()
-        if (data.success) setClientJobs(data.jobs)
+        if (data.success) setClientJobs(data.jobs || data.data || [])
       } catch (err) {
         console.error('Error fetching client jobs:', err)
       } finally {

@@ -1,5 +1,7 @@
 import Application from '../models/applicationModel.js';
 import Job from '../models/jobModel.js';
+import User from '../models/userModels.js';
+import { scoreApplication } from '../services/aiService.js';
 
 // ── POST /api/applications ── Submit a new application (freelancer only)
 export const createApplication = async (req, res) => {
@@ -71,14 +73,33 @@ export const createApplication = async (req, res) => {
             viewedByClient: false,
         });
 
-        // Return the newly created application
+        // Run AI scoring in the background (don't block the response)
+        (async () => {
+            try {
+                const freelancer = await User.findById(freelancerId).select('skills bio experienceLevel title');
+                const aiResult = await scoreApplication(
+                    application,
+                    job,
+                    { title: freelancer?.title, bio: freelancer?.bio, skills: freelancer?.skills, experienceLevel: freelancer?.experienceLevel },
+                );
+                if (aiResult.score != null) {
+                    await Application.findByIdAndUpdate(application._id, {
+                        aiScore: aiResult.score,
+                        aiStrengths: aiResult.strengths || [],
+                        aiWeaknesses: aiResult.weaknesses || [],
+                    });
+                }
+            } catch (aiErr) {
+                console.error('Background AI scoring failed:', aiErr.message);
+            }
+        })();
+
         return res.status(201).json({
             success: true,
             message: 'Application submitted successfully',
             application,
         });
     } catch (error) {
-        // Handle duplicate application error from the unique index
         if (error.code === 11000) {
             return res.status(400).json({
                 success: false,
@@ -116,10 +137,9 @@ export const getApplicationsByJobId = async (req, res) => {
             });
         }
 
-        // Fetch all applications for this job, populate freelancer info
         const applications = await Application.find({ jobId })
-            .populate('freelancerId', 'name email')
-            .sort({ createdAt: -1 });
+            .populate('freelancerId', 'name email skills title experienceLevel')
+            .sort({ aiScore: -1, createdAt: -1 });
 
         return res.status(200).json({
             success: true,

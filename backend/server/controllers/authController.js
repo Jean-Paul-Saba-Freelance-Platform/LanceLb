@@ -210,3 +210,42 @@ export const isAuthenticated = async (req, res) => {
     return res.status(500).json({ success: false, message: error.message });
   }
 }
+
+export const getProfile = async (req, res) => {
+  try {
+    const user = await User.findById(req.userId).select('-password -verifyOtp -verifyOtpExpiry -resetOtp -resetOtpExpiry');
+    if (!user) return res.status(404).json({ success: false, message: 'User not found' });
+    return res.json({ success: true, user });
+  } catch (error) {
+    return res.status(500).json({ success: false, message: error.message });
+  }
+}
+
+export const updateProfile = async (req, res) => {
+  try {
+    const { skills, bio, experienceLevel, title } = req.body;
+    const updates = {};
+
+    if (skills !== undefined) {
+      if (!Array.isArray(skills)) return res.status(400).json({ success: false, message: 'Skills must be an array' });
+      updates.skills = skills.map(s => String(s).trim()).filter(Boolean);
+    }
+    if (bio !== undefined) updates.bio = String(bio).trim().slice(0, 1000);
+    if (experienceLevel !== undefined) {
+      if (!['entry', 'intermediate', 'expert'].includes(experienceLevel)) {
+        return res.status(400).json({ success: false, message: 'Invalid experience level' });
+      }
+      updates.experienceLevel = experienceLevel;
+    }
+    if (title !== undefined) updates.title = String(title).trim().slice(0, 120);
+
+    const user = await User.findByIdAndUpdate(req.userId, updates, { new: true })
+      .select('-password -verifyOtp -verifyOtpExpiry -resetOtp -resetOtpExpiry');
+
+    if (!user) return res.status(404).json({ success: false, message: 'User not found' });
+
+    return res.json({ success: true, message: 'Profile updated', user });
+  } catch (error) {
+    return res.status(500).json({ success: false, message: error.message });
+  }
+}

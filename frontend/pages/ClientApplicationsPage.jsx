@@ -83,6 +83,19 @@ const ClientApplicationsPage = () => {
     }
   }
 
+  const aiScoreColor = (score) => {
+    if (score >= 70) return '#10b981'
+    if (score >= 40) return '#fbbf24'
+    return '#f87171'
+  }
+
+  const aiScoreLabel = (score) => {
+    if (score >= 80) return 'Excellent Match'
+    if (score >= 60) return 'Good Match'
+    if (score >= 40) return 'Fair Match'
+    return 'Low Match'
+  }
+
   const statusBadge = (status) => {
     const map = {
       pending: 'badge-pending',
@@ -158,6 +171,13 @@ const ClientApplicationsPage = () => {
                       </div>
                     </div>
                     <div className="app-card-right">
+                      {app.aiScore != null ? (
+                        <div className="ai-score-badge" style={{ '--ai-color': aiScoreColor(app.aiScore) }}>
+                          <span className="ai-score-value" style={{ color: aiScoreColor(app.aiScore) }}>{app.aiScore}</span>
+                        </div>
+                      ) : (
+                        <span className="ai-score-pending">...</span>
+                      )}
                       <span className={statusBadge(app.status)}>{app.status}</span>
                       <span className="app-date">{formatDate(app.createdAt)}</span>
                       <span className={`app-expand-icon ${isExpanded ? 'open' : ''}`}>▾</span>
@@ -201,6 +221,41 @@ const ClientApplicationsPage = () => {
                           </div>
                         )}
                       </div>
+
+                      {/* AI Analysis Section */}
+                      {app.aiScore != null && (
+                        <div className="ai-analysis-section">
+                          <h4 className="app-section-title">AI Analysis</h4>
+                          <div className="ai-analysis-header">
+                            <span className="ai-analysis-score" style={{ color: aiScoreColor(app.aiScore) }}>
+                              {app.aiScore}/100
+                            </span>
+                            <span className="ai-analysis-label" style={{ color: aiScoreColor(app.aiScore) }}>
+                              {aiScoreLabel(app.aiScore)}
+                            </span>
+                          </div>
+                          {app.aiStrengths?.length > 0 && (
+                            <div className="ai-analysis-list">
+                              {app.aiStrengths.map((s, i) => (
+                                <div key={i} className="ai-analysis-item ai-analysis-item--strength">
+                                  <span className="ai-item-icon">✓</span>
+                                  <span>{s}</span>
+                                </div>
+                              ))}
+                            </div>
+                          )}
+                          {app.aiWeaknesses?.length > 0 && (
+                            <div className="ai-analysis-list">
+                              {app.aiWeaknesses.map((w, i) => (
+                                <div key={i} className="ai-analysis-item ai-analysis-item--weakness">
+                                  <span className="ai-item-icon">!</span>
+                                  <span>{w}</span>
+                                </div>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                      )}
 
                       {app.status === 'pending' && (
                         <div className="app-actions">
