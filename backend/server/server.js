@@ -12,6 +12,7 @@ import clientRoutes from "./routes/clientRoutes.js";
 import applicationRouter from "./routes/applicationRoutes.js";
 import publicJobRoutes from "./routes/publicJobRoutes.js";
 import aiRouter from "./routes/aiRoutes.js";
+import messageRouter from './routes/messageRoutes.js'
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -59,6 +60,7 @@ app.use("/api/client", clientRoutes);
 app.use("/api/jobs", publicJobRoutes);
 app.use("/api/applications", applicationRouter);
 app.use("/api/ai", aiRouter);
+app.use("/api/message", messageRouter);
 
 // Start
 connectDB();

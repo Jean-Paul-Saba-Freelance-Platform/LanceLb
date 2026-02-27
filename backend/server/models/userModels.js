@@ -60,6 +60,11 @@ const userSchema = new mongoose.Schema({
         default: '',
         maxlength: 120,
     },
+    profilePicture:{
+        type:String,
+        default: '',
+        
+    }
 })
 
 const User = mongoose.model('User', userSchema);
