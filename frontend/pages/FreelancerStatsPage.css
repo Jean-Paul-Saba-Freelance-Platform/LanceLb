@@ -101,7 +101,7 @@
 }
 
 .stats-card-link {
-  color: #a855f7;
+  color: #00a884;
   font-size: 0.9rem;
   font-weight: 500;
   text-decoration: none;
@@ -111,14 +111,14 @@
 }
 
 .stats-card-link:hover {
-  color: #9333ea;
+  color: #008069;
   text-decoration: underline;
 }
 
 .stats-card-button {
   width: 100%;
   padding: 0.75rem 1rem;
-  background: #a855f7;
+  background: #00a884;
   color: white;
   border: none;
   border-radius: 8px;
@@ -131,9 +131,9 @@
 }
 
 .stats-card-button:hover {
-  background: #9333ea;
+  background: #008069;
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(168, 85, 247, 0.2);
+  box-shadow: 0 4px 12px rgba(0, 168, 132, 0.2);
 }
 
 /* Filter Dropdown */
@@ -161,8 +161,8 @@
 }
 
 .filter-select:focus {
-  border-color: #a855f7;
-  box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.1);
+  border-color: #00a884;
+  box-shadow: 0 0 0 3px rgba(0, 168, 132, 0.1);
 }
 
 /* Earnings */
@@ -227,8 +227,8 @@
 }
 
 .metric-tab.active {
-  color: #a855f7;
-  border-bottom-color: #a855f7;
+  color: #00a884;
+  border-bottom-color: #00a884;
 }
 
 .metric-tab svg {
@@ -264,7 +264,7 @@
 
 .chart-bar {
   flex: 1;
-  background: #a855f7;
+  background: #00a884;
   border-radius: 4px 4px 0 0;
   min-height: 10px;
   transition: height 0.3s ease;
@@ -300,14 +300,14 @@
 }
 
 .hint-link {
-  color: #a855f7;
+  color: #00a884;
   font-weight: 500;
   text-decoration: none;
   transition: color 0.2s ease;
 }
 
 .hint-link:hover {
-  color: #9333ea;
+  color: #008069;
   text-decoration: underline;
 }
 
@@ -399,7 +399,7 @@
 }
 
 .achievement-badge svg {
-  color: #a855f7;
+  color: #00a884;
   flex-shrink: 0;
 }
 

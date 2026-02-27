@@ -80,11 +80,11 @@
 }
 
 .client-layout .top-nav {
-  background: rgba(14, 12, 20, 0.55) !important;
-  backdrop-filter: blur(18px) !important;
-  -webkit-backdrop-filter: blur(18px) !important;
-  border: 1px solid rgba(255, 255, 255, 0.1) !important;
-  border-radius: 16px !important;
+  background: #202c33 !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  border-radius: 0 !important;
+  margin: 0 !important;
+  top: 0 !important;
 }
 
 .client-layout .top-nav-search {
@@ -160,9 +160,9 @@
 }
 
 .client-layout .overview-skill-chip {
-  background: rgba(168, 85, 247, 0.2) !important;
-  border-color: rgba(168, 85, 247, 0.3) !important;
-  color: #e0d0fa !important;
+  background: rgba(0, 168, 132, 0.14) !important;
+  border-color: rgba(0, 168, 132, 0.3) !important;
+  color: #9df3dc !important;
 }
 
 .client-layout .overview-skill-chip.more {
@@ -172,18 +172,18 @@
 }
 
 .client-layout .overview-job-btn.manage {
-  background: #a855f7 !important;
+  background: #00a884 !important;
   color: white !important;
 }
 
 .client-layout .overview-job-btn.edit {
   background: transparent !important;
-  color: #c084fc !important;
-  border: 1px solid rgba(168, 85, 247, 0.3) !important;
+  color: #00a884 !important;
+  border: 1px solid rgba(0, 168, 132, 0.3) !important;
 }
 
 .client-layout .overview-job-btn.edit:hover {
-  background: rgba(168, 85, 247, 0.15) !important;
+  background: rgba(0, 168, 132, 0.15) !important;
 }
 
 .client-layout .overview-job-btn.delete {
@@ -288,9 +288,9 @@
 }
 
 .client-layout .manage-skill-chip {
-  background: rgba(168, 85, 247, 0.2) !important;
-  border-color: rgba(168, 85, 247, 0.3) !important;
-  color: #e0d0fa !important;
+  background: rgba(0, 168, 132, 0.14) !important;
+  border-color: rgba(0, 168, 132, 0.3) !important;
+  color: #9df3dc !important;
 }
 
 .client-layout .manage-skill-chip.more {
@@ -310,8 +310,8 @@
 }
 
 .client-layout .manage-search-input:focus {
-  border-color: #a855f7 !important;
-  box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.15) !important;
+  border-color: #00a884 !important;
+  box-shadow: 0 0 0 3px rgba(0, 168, 132, 0.18) !important;
 }
 
 .client-layout .manage-search-icon {
@@ -332,23 +332,23 @@
 }
 
 .client-layout .manage-status-btn.active {
-  background: #a855f7 !important;
+  background: #00a884 !important;
   color: white !important;
 }
 
 .client-layout .manage-action-btn.primary {
-  background: #a855f7 !important;
+  background: #00a884 !important;
   color: white !important;
 }
 
 .client-layout .manage-action-btn.secondary {
   background: transparent !important;
-  color: #c084fc !important;
-  border: 1px solid rgba(168, 85, 247, 0.3) !important;
+  color: #00a884 !important;
+  border: 1px solid rgba(0, 168, 132, 0.3) !important;
 }
 
 .client-layout .manage-action-btn.secondary:hover {
-  background: rgba(168, 85, 247, 0.15) !important;
+  background: rgba(0, 168, 132, 0.15) !important;
 }
 
 .client-layout .manage-action-btn.danger {
@@ -429,9 +429,9 @@
 
 .client-layout .edit-input:focus,
 .client-layout .edit-textarea:focus {
-  border-color: #a855f7 !important;
+  border-color: #00a884 !important;
   background: rgba(255, 255, 255, 0.08) !important;
-  box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.15) !important;
+  box-shadow: 0 0 0 3px rgba(0, 168, 132, 0.18) !important;
 }
 
 .client-layout .edit-char-count {
@@ -454,25 +454,25 @@
 }
 
 .client-layout .edit-option-btn.selected {
-  background: rgba(168, 85, 247, 0.1) !important;
-  border-color: rgba(168, 85, 247, 0.5) !important;
-  color: #e0d0fa !important;
-  box-shadow: 0 0 0 2px rgba(168, 85, 247, 0.12) !important;
+  background: rgba(0, 168, 132, 0.1) !important;
+  border-color: rgba(0, 168, 132, 0.5) !important;
+  color: #4be2be !important;
+  box-shadow: 0 0 0 2px rgba(0, 168, 132, 0.12) !important;
 }
 
 .client-layout .edit-skill-chip {
-  background: rgba(168, 85, 247, 0.2) !important;
-  border-color: rgba(168, 85, 247, 0.3) !important;
-  color: #e0d0fa !important;
+  background: rgba(0, 168, 132, 0.2) !important;
+  border-color: rgba(0, 168, 132, 0.3) !important;
+  color: #4be2be !important;
 }
 
 .client-layout .edit-skill-chip span {
-  color: #e0d0fa !important;
+  color: #4be2be !important;
 }
 
 .client-layout .edit-skill-remove {
   background: rgba(255, 255, 255, 0.08) !important;
-  color: #c084fc !important;
+  color: #00a884 !important;
 }
 
 .client-layout .edit-skill-remove:hover {
@@ -481,13 +481,13 @@
 }
 
 .client-layout .edit-skills-add-btn {
-  background: rgba(168, 85, 247, 0.2) !important;
-  color: #c084fc !important;
-  border-color: rgba(168, 85, 247, 0.3) !important;
+  background: rgba(0, 168, 132, 0.2) !important;
+  color: #00a884 !important;
+  border-color: rgba(0, 168, 132, 0.3) !important;
 }
 
 .client-layout .edit-skills-add-btn:hover:not(:disabled) {
-  background: rgba(168, 85, 247, 0.35) !important;
+  background: rgba(0, 168, 132, 0.35) !important;
 }
 
 .client-layout .edit-budget-prefix {
@@ -512,13 +512,13 @@
 }
 
 .client-layout .edit-save-btn {
-  background: #a855f7 !important;
+  background: #00a884 !important;
   color: white !important;
 }
 
 .client-layout .edit-save-btn:hover:not(:disabled) {
-  background: #9333ea !important;
-  box-shadow: 0 4px 16px rgba(168, 85, 247, 0.35) !important;
+  background: #008069 !important;
+  box-shadow: 0 4px 16px rgba(0, 168, 132, 0.32) !important;
 }
 
 .client-layout .edit-actions {
@@ -526,11 +526,11 @@
 }
 
 .client-layout .edit-back-link {
-  color: #c084fc !important;
+  color: #00a884 !important;
 }
 
 .client-layout .edit-back-link:hover {
-  color: #e0d0fa !important;
+  color: #4be2be !important;
 }
 
 .client-layout .edit-banner.error {
@@ -566,17 +566,17 @@
    Empty state buttons (ClientHomePage)
    --------------------------------------------------------------------------- */
 .client-layout .empty-state-button.primary {
-  background: #a855f7 !important;
+  background: #00a884 !important;
   color: white !important;
 }
 
 .client-layout .empty-state-button.secondary {
   background: transparent !important;
-  color: #c084fc !important;
-  border: 1px solid rgba(168, 85, 247, 0.3) !important;
+  color: #00a884 !important;
+  border: 1px solid rgba(0, 168, 132, 0.3) !important;
 }
 
 .client-layout .empty-state-button.secondary:hover {
-  background: rgba(168, 85, 247, 0.15) !important;
-  color: #e0d0fa !important;
+  background: rgba(0, 168, 132, 0.15) !important;
+  color: #4be2be !important;
 }

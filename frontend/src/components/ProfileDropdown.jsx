@@ -27,9 +27,10 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { 
-  User, LineChart, Sun, Settings, LogOut, ChevronRight,
+  User, LineChart, Sun, Moon, Settings, LogOut, ChevronRight,
   Briefcase, FileText, Search, Send, Package
 } from 'lucide-react'
+import { getInitialTheme, toggleTheme } from '../lib/theme'
 import './ProfileDropdown.css'
 
 const ProfileDropdown = ({ userName, userAvatar, isOpen, onClose, onToggle }) => {
@@ -37,6 +38,11 @@ const ProfileDropdown = ({ userName, userAvatar, isOpen, onClose, onToggle }) =>
   const dropdownRef = useRef(null)
   const [isOnline, setIsOnline] = useState(false)
   const [userType, setUserType] = useState(null)
+  const [theme, setTheme] = useState('dark')
+
+  useEffect(() => {
+    setTheme(getInitialTheme())
+  }, [])
 
   // Get user data from localStorage (same source as greeting)
   useEffect(() => {
@@ -134,8 +140,8 @@ const ProfileDropdown = ({ userName, userAvatar, isOpen, onClose, onToggle }) =>
 
     const settingsItems = [
       { 
-        label: 'Theme: Light', 
-        icon: Sun, 
+        label: `Theme: ${theme === 'light' ? 'Light' : 'Dark'}`, 
+        icon: theme === 'light' ? Sun : Moon, 
         route: null, // Theme toggle - no navigation
         action: 'theme',
         showArrow: true,
@@ -193,8 +199,8 @@ const ProfileDropdown = ({ userName, userAvatar, isOpen, onClose, onToggle }) =>
       localStorage.removeItem('token')
       navigate('/login')
     } else if (item.action === 'theme') {
-      // TODO: Implement theme toggle
-      console.log('Theme toggle clicked')
+      const next = toggleTheme(theme)
+      setTheme(next)
     } else if (item.route) {
       navigate(item.route)
     }

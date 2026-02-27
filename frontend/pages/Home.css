@@ -1,15 +1,15 @@
 /* Dark Glassmorphism Theme */
 :root {
-  --accent-color: #a855f7;
-  --accent-hover: #9333ea;
-  --bg-gradient-start: #2a0f3b;
-  --bg-gradient-end: #0a0a0f;
+  --accent-color: #22c55e;
+  --accent-hover: #16a34a;
+  --bg-gradient-start: #201636;
+  --bg-gradient-end: #0f111a;
   /* Standardized Glass Variables */
   --glass-bg: rgba(14, 12, 20, 0.6);
   --glass-bg-hover: rgba(14, 12, 20, 0.7);
   --glass-border: rgba(255, 255, 255, 0.12);
   --glass-shadow: 0 18px 40px rgba(4, 4, 10, 0.6);
-  --glass-radius: 18px;
+  --glass-radius: 22px;
   --blur-amount: 18px;
   --text-primary: #f3f4f6;
   --text-secondary: #cbd5f5;
@@ -399,7 +399,7 @@
 }
 
 .hero-title {
-  font-size: 3.5rem;
+  font-size: 3.75rem;
   font-weight: 700;
   line-height: 1.1;
   color: var(--text-primary);
@@ -407,7 +407,7 @@
 }
 
 .hero-subtitle {
-  font-size: 1.25rem;
+  font-size: 1.1rem;
   color: var(--text-secondary);
   line-height: 1.6;
   margin-bottom: 2.5rem;
@@ -428,19 +428,19 @@
   text-decoration: none;
   padding: 1rem 2.5rem;
   border-radius: 8px;
-  box-shadow: 0 10px 20px rgba(76, 29, 149, 0.45);
+  box-shadow: 0 12px 24px rgba(34, 197, 94, 0.35);
   outline: none;
   display: inline-block;
 }
 
 .hero-cta-button:focus {
-  outline: 3px solid rgba(168, 85, 247, 0.3);
+  outline: 3px solid rgba(0, 168, 132, 0.3);
   outline-offset: 2px;
 }
 
 
 .hero-secondary-button {
-  background: rgba(18, 16, 26, 0.65);
+  background: rgba(26, 25, 35, 0.85);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   color: var(--text-primary);
@@ -583,7 +583,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--accent-color);
+  color: #86efac;
   margin-bottom: 0.25rem;
   flex-shrink: 0;
 }

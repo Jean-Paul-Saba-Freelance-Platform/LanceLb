@@ -15,6 +15,17 @@ const TopNav = ({ userName, userAvatar }) => {
     : user?.userType === 'client'
       ? '/client/home'
       : '/'
+  const menuLinks = user?.userType === 'freelancer'
+    ? [
+      { label: 'Find Work', to: '/freelancer/find-work' },
+      { label: 'My Proposals', to: '/freelancer/proposals' },
+      { label: 'Deliver Work', to: '/freelancer/deliver-work' }
+    ]
+    : [
+      { label: 'Home', to: '/client/home' },
+      { label: 'Manage Jobs', to: '/client/jobs' },
+      { label: 'Post Job', to: '/client/post-job' }
+    ]
 
   const handleAvatarClick = () => {
     setIsDropdownOpen(!isDropdownOpen)
@@ -29,15 +40,16 @@ const TopNav = ({ userName, userAvatar }) => {
       <div className="top-nav-container">
         {/* Left: Brand */}
         <Link to={brandLink} className="top-nav-brand">
-          FreelanceHub
+          LanceLB
         </Link>
 
         {/* Center: Menu Links */}
         <div className="top-nav-menu">
-          <a href="#" className="top-nav-link">Find work</a>
-          <a href="#" className="top-nav-link">Deliver work</a>
-          <a href="#" className="top-nav-link">Manage finances</a>
-          <a href="#" className="top-nav-link">Messages</a>
+          {menuLinks.map((item) => (
+            <Link key={item.to} to={item.to} className="top-nav-link">
+              {item.label}
+            </Link>
+          ))}
         </div>
 
         {/* Right: Search, Icons, Avatar */}

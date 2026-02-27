@@ -61,8 +61,8 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background: rgba(168, 85, 247, 0.2);
-  color: #c084fc;
+  background: rgba(0, 168, 132, 0.2);
+  color: #4be2be;
   font-size: 0.8rem;
   font-weight: 700;
   padding: 0.25rem 0.65rem;
@@ -85,7 +85,7 @@
 
 .wizard-progress-fill {
   height: 100%;
-  background: linear-gradient(90deg, #a855f7, #c084fc);
+  background: linear-gradient(90deg, #00a884, #4be2be);
   border-radius: 0 2px 2px 0;
   transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -163,9 +163,9 @@
 }
 
 .wizard-input:focus {
-  border-color: #a855f7;
+  border-color: #00a884;
   background: rgba(255, 255, 255, 0.08);
-  box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.15);
+  box-shadow: 0 0 0 3px rgba(0, 168, 132, 0.15);
 }
 
 .wizard-input:hover:not(:focus) {
@@ -232,7 +232,7 @@
   width: 5px;
   height: 5px;
   border-radius: 50%;
-  background: #a855f7;
+  background: #00a884;
   opacity: 0.6;
 }
 
@@ -261,9 +261,9 @@
 }
 
 .wizard-textarea:focus {
-  border-color: #a855f7;
+  border-color: #00a884;
   background: rgba(255, 255, 255, 0.08);
-  box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.15);
+  box-shadow: 0 0 0 3px rgba(0, 168, 132, 0.15);
 }
 
 .wizard-textarea:hover:not(:focus) {
@@ -287,9 +287,9 @@
 
 .skills-add-btn {
   padding: 0 1.25rem;
-  background: rgba(168, 85, 247, 0.2);
-  color: #c084fc;
-  border: 1px solid rgba(168, 85, 247, 0.3);
+  background: rgba(0, 168, 132, 0.2);
+  color: #4be2be;
+  border: 1px solid rgba(0, 168, 132, 0.3);
   border-radius: 10px;
   font-size: 0.95rem;
   font-weight: 600;
@@ -300,8 +300,8 @@
 }
 
 .skills-add-btn:hover:not(:disabled) {
-  background: rgba(168, 85, 247, 0.35);
-  border-color: #a855f7;
+  background: rgba(0, 168, 132, 0.35);
+  border-color: #00a884;
 }
 
 .skills-add-btn:disabled {
@@ -343,8 +343,8 @@
   align-items: center;
   gap: 0.35rem;
   padding: 0.35rem 0.55rem 0.35rem 0.75rem;
-  background: rgba(168, 85, 247, 0.2);
-  border: 1px solid rgba(168, 85, 247, 0.3);
+  background: rgba(0, 168, 132, 0.2);
+  border: 1px solid rgba(0, 168, 132, 0.3);
   border-radius: 999px;
   animation: chipIn 0.15s ease-out;
 }
@@ -363,7 +363,7 @@
 .skill-chip-text {
   font-size: 0.85rem;
   font-weight: 500;
-  color: #e0d0fa;
+  color: #d9fdd3;
   line-height: 1;
 }
 
@@ -377,7 +377,7 @@
   background: rgba(255, 255, 255, 0.08);
   border: none;
   border-radius: 50%;
-  color: #c084fc;
+  color: #4be2be;
   font-size: 0.85rem;
   line-height: 1;
   cursor: pointer;
@@ -411,15 +411,15 @@
 }
 
 .skill-popular-btn:hover:not(:disabled) {
-  background: rgba(168, 85, 247, 0.15);
-  border-color: rgba(168, 85, 247, 0.3);
-  color: #e0d0fa;
+  background: rgba(0, 168, 132, 0.15);
+  border-color: rgba(0, 168, 132, 0.3);
+  color: #d9fdd3;
 }
 
 .skill-popular-btn.added {
-  background: rgba(168, 85, 247, 0.12);
-  border-color: rgba(168, 85, 247, 0.25);
-  color: #a78bfa;
+  background: rgba(0, 168, 132, 0.12);
+  border-color: rgba(0, 168, 132, 0.25);
+  color: #9df3dc;
   cursor: default;
 }
 
@@ -464,9 +464,9 @@
 }
 
 .budget-card.selected {
-  background: rgba(168, 85, 247, 0.1);
-  border-color: rgba(168, 85, 247, 0.5);
-  box-shadow: 0 0 0 2px rgba(168, 85, 247, 0.12);
+  background: rgba(0, 168, 132, 0.1);
+  border-color: rgba(0, 168, 132, 0.5);
+  box-shadow: 0 0 0 2px rgba(0, 168, 132, 0.12);
 }
 
 /* Radio circle in top-right corner */
@@ -482,7 +482,7 @@
 }
 
 .budget-card.selected .budget-card-radio {
-  border-color: #a855f7;
+  border-color: #00a884;
 }
 
 .budget-card.selected .budget-card-radio::after {
@@ -493,7 +493,7 @@
   width: 10px;
   height: 10px;
   border-radius: 50%;
-  background: #a855f7;
+  background: #00a884;
 }
 
 .budget-card-icon {
@@ -642,9 +642,9 @@
 }
 
 .wizard-radio-option.selected {
-  background: rgba(168, 85, 247, 0.1);
-  border-color: rgba(168, 85, 247, 0.5);
-  box-shadow: 0 0 0 2px rgba(168, 85, 247, 0.12);
+  background: rgba(0, 168, 132, 0.1);
+  border-color: rgba(0, 168, 132, 0.5);
+  box-shadow: 0 0 0 2px rgba(0, 168, 132, 0.12);
 }
 
 /* Hide the native radio button */
@@ -669,7 +669,7 @@
 }
 
 .wizard-radio-option.selected .wizard-radio-circle {
-  border-color: #a855f7;
+  border-color: #00a884;
 }
 
 .wizard-radio-option.selected .wizard-radio-circle::after {
@@ -680,7 +680,7 @@
   width: 10px;
   height: 10px;
   border-radius: 50%;
-  background: #a855f7;
+  background: #00a884;
 }
 
 /* Text content beside the circle */
@@ -754,12 +754,12 @@
   align-items: center;
   gap: 0.6rem;
   padding: 0.75rem 1.25rem;
-  background: rgba(168, 85, 247, 0.08);
-  border: 1px solid rgba(168, 85, 247, 0.2);
+  background: rgba(0, 168, 132, 0.08);
+  border: 1px solid rgba(0, 168, 132, 0.2);
   border-radius: 10px;
   margin-bottom: 2rem;
   font-size: 0.88rem;
-  color: #c4b5fd;
+  color: #9df3dc;
   line-height: 1.45;
 }
 
@@ -786,7 +786,7 @@
 
 .review-empty-btn {
   padding: 0.6rem 1.5rem;
-  background: #a855f7;
+  background: #00a884;
   color: white;
   border: none;
   border-radius: 8px;
@@ -798,9 +798,9 @@
 }
 
 .review-empty-btn:hover {
-  background: #9333ea;
+  background: #008069;
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(168, 85, 247, 0.3);
+  box-shadow: 0 4px 12px rgba(0, 168, 132, 0.3);
 }
 
 /* Individual review card */
@@ -835,8 +835,8 @@
 .review-edit-btn {
   padding: 0.25rem 0.75rem;
   background: transparent;
-  color: #c084fc;
-  border: 1px solid rgba(168, 85, 247, 0.3);
+  color: #4be2be;
+  border: 1px solid rgba(0, 168, 132, 0.3);
   border-radius: 6px;
   font-size: 0.78rem;
   font-weight: 600;
@@ -846,9 +846,9 @@
 }
 
 .review-edit-btn:hover {
-  background: rgba(168, 85, 247, 0.15);
-  border-color: #a855f7;
-  color: #e0d0fa;
+  background: rgba(0, 168, 132, 0.15);
+  border-color: #00a884;
+  color: #d9fdd3;
 }
 
 /* Card value text */
@@ -887,12 +887,12 @@
 .review-chip {
   display: inline-block;
   padding: 0.28rem 0.7rem;
-  background: rgba(168, 85, 247, 0.15);
-  border: 1px solid rgba(168, 85, 247, 0.25);
+  background: rgba(0, 168, 132, 0.15);
+  border: 1px solid rgba(0, 168, 132, 0.25);
   border-radius: 999px;
   font-size: 0.82rem;
   font-weight: 500;
-  color: #e0d0fa;
+  color: #d9fdd3;
 }
 
 /* Scope key/value grid */
@@ -975,7 +975,7 @@
 /* Next button — primary purple */
 .wizard-next-btn {
   padding: 0.7rem 2rem;
-  background: #a855f7;
+  background: #00a884;
   color: white;
   border: none;
   border-radius: 8px;
@@ -987,9 +987,9 @@
 }
 
 .wizard-next-btn:hover:not(:disabled) {
-  background: #9333ea;
+  background: #008069;
   transform: translateY(-1px);
-  box-shadow: 0 4px 16px rgba(168, 85, 247, 0.35);
+  box-shadow: 0 4px 16px rgba(0, 168, 132, 0.35);
 }
 
 .wizard-next-btn:disabled {

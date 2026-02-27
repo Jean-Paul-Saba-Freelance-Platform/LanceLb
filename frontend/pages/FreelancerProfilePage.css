@@ -16,10 +16,10 @@
   --fh-text-title: #f8f5ff;
   --fh-text-body: #dddaea;
   --fh-text-muted: #b8b4c8;
-  --fh-text-accent: #d6b7ff;
-  --fh-text-link: #c89eff;
+  --fh-text-accent: #9df3dc;
+  --fh-text-link: #4be2be;
 
-  --fh-focus-ring: 0 0 0 3px rgba(168, 85, 247, 0.35);
+  --fh-focus-ring: 0 0 0 3px rgba(0, 168, 132, 0.35);
   --fh-transition-fast: 180ms ease;
 
   min-height: 100vh;
@@ -120,8 +120,8 @@
 .fh-btn-icon:hover,
 .fh-icon-button:hover {
   color: var(--fh-text-accent);
-  border-color: rgba(200, 138, 255, 0.45);
-  background: rgba(168, 85, 247, 0.12);
+  border-color: rgba(0, 168, 132, 0.45);
+  background: rgba(0, 168, 132, 0.12);
 }
 
 .fh-btn-icon svg,
@@ -220,7 +220,7 @@
 .freelancer-profile-page .profile-header-avatar-placeholder {
   width: 100%;
   height: 100%;
-  background: #a855f7;
+  background: #00a884;
   color: #ffffff;
   display: flex;
   align-items: center;
@@ -235,7 +235,7 @@
   right: 4px;
   width: 16px;
   height: 16px;
-  background: #a855f7;
+  background: #00a884;
   border: 2px solid rgba(15, 12, 24, 0.9);
   border-radius: 50%;
 }
@@ -275,8 +275,8 @@
 }
 
 .freelancer-profile-page .verification-status.verified {
-  background: rgba(168, 85, 247, 0.2);
-  color: #e9d5ff;
+  background: rgba(0, 168, 132, 0.2);
+  color: #d9fdd3;
 }
 
 .freelancer-profile-page .profile-header-location {
@@ -423,7 +423,7 @@
 }
 
 .freelancer-profile-page .promote-option-status.on {
-  color: #d8b4fe;
+  color: #4be2be;
 }
 
 .freelancer-profile-page .promote-toggle-switch {
@@ -462,8 +462,8 @@
 }
 
 .freelancer-profile-page .promote-toggle-switch input:checked + .promote-toggle-slider {
-  background: rgba(168, 85, 247, 0.9);
-  border-color: rgba(209, 169, 255, 0.6);
+  background: rgba(0, 168, 132, 0.9);
+  border-color: rgba(75, 226, 190, 0.6);
 }
 
 .freelancer-profile-page .promote-toggle-switch input:checked + .promote-toggle-slider:before {
@@ -557,9 +557,9 @@
   height: 28px;
   padding: 0 10px;
   border-radius: var(--fh-radius-pill);
-  color: #e9d5ff;
-  background: rgba(168, 85, 247, 0.2);
-  border: 1px solid rgba(216, 180, 254, 0.35);
+  color: #d9fdd3;
+  background: rgba(0, 168, 132, 0.2);
+  border: 1px solid rgba(75, 226, 190, 0.35);
   font-size: 0.82rem;
   font-weight: 600;
 }
@@ -635,8 +635,8 @@
 
 .freelancer-profile-page .portfolio-tab.active {
   color: #f6ecff;
-  border-color: rgba(216, 180, 254, 0.35);
-  background: rgba(168, 85, 247, 0.28);
+  border-color: rgba(75, 226, 190, 0.35);
+  background: rgba(0, 168, 132, 0.28);
 }
 
 .freelancer-profile-page .portfolio-empty-state,
@@ -783,9 +783,9 @@
 }
 
 .freelancer-profile-page .profile-skill-tag-editable {
-  color: #ead8ff;
-  border-color: rgba(216, 180, 254, 0.4);
-  background: rgba(168, 85, 247, 0.18);
+  color: #d9fdd3;
+  border-color: rgba(75, 226, 190, 0.4);
+  background: rgba(0, 168, 132, 0.18);
 }
 
 .freelancer-profile-page .profile-skill-remove {

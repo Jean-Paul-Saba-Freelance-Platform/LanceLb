@@ -17,7 +17,7 @@
 .edit-back-link {
   background: none;
   border: none;
-  color: #a855f7;
+  color: #00a884;
   font-size: 0.88rem;
   font-weight: 500;
   cursor: pointer;
@@ -29,7 +29,7 @@
 }
 
 .edit-back-link:hover {
-  color: #9333ea;
+  color: #008069;
   text-decoration: underline;
 }
 
@@ -145,8 +145,8 @@
 }
 
 .edit-input:focus {
-  border-color: #a855f7;
-  box-shadow: 0 0 0 2px rgba(168, 85, 247, 0.12);
+  border-color: #00a884;
+  box-shadow: 0 0 0 2px rgba(0, 168, 132, 0.12);
 }
 
 .edit-textarea {
@@ -170,8 +170,8 @@
 }
 
 .edit-textarea:focus {
-  border-color: #a855f7;
-  box-shadow: 0 0 0 2px rgba(168, 85, 247, 0.12);
+  border-color: #00a884;
+  box-shadow: 0 0 0 2px rgba(0, 168, 132, 0.12);
 }
 
 .edit-char-count {
@@ -198,9 +198,9 @@
 
 .edit-skills-add-btn {
   padding: 0 1.1rem;
-  background: rgba(168, 85, 247, 0.1);
-  color: #a855f7;
-  border: 1px solid rgba(168, 85, 247, 0.3);
+  background: rgba(0, 168, 132, 0.1);
+  color: #00a884;
+  border: 1px solid rgba(0, 168, 132, 0.3);
   border-radius: 8px;
   font-size: 0.88rem;
   font-weight: 600;
@@ -211,7 +211,7 @@
 }
 
 .edit-skills-add-btn:hover:not(:disabled) {
-  background: rgba(168, 85, 247, 0.2);
+  background: rgba(0, 168, 132, 0.2);
 }
 
 .edit-skills-add-btn:disabled {
@@ -231,12 +231,12 @@
   align-items: center;
   gap: 0.3rem;
   padding: 0.25rem 0.5rem 0.25rem 0.65rem;
-  background: rgba(168, 85, 247, 0.1);
-  border: 1px solid rgba(168, 85, 247, 0.22);
+  background: rgba(0, 168, 132, 0.1);
+  border: 1px solid rgba(0, 168, 132, 0.22);
   border-radius: 999px;
   font-size: 0.8rem;
   font-weight: 500;
-  color: #7c3aed;
+  color: #017561;
 }
 
 .edit-skill-remove {
@@ -249,7 +249,7 @@
   background: rgba(0, 0, 0, 0.06);
   border: none;
   border-radius: 50%;
-  color: #7c3aed;
+  color: #017561;
   font-size: 0.75rem;
   line-height: 1;
   cursor: pointer;
@@ -283,16 +283,16 @@
 }
 
 .edit-option-btn:hover {
-  border-color: rgba(168, 85, 247, 0.35);
-  background: rgba(168, 85, 247, 0.04);
+  border-color: rgba(0, 168, 132, 0.35);
+  background: rgba(0, 168, 132, 0.04);
 }
 
 .edit-option-btn.selected {
-  background: rgba(168, 85, 247, 0.1);
-  border-color: #a855f7;
-  color: #7c3aed;
+  background: rgba(0, 168, 132, 0.1);
+  border-color: #00a884;
+  color: #017561;
   font-weight: 600;
-  box-shadow: 0 0 0 1px rgba(168, 85, 247, 0.12);
+  box-shadow: 0 0 0 1px rgba(0, 168, 132, 0.12);
 }
 
 /* Budget row */
@@ -381,7 +381,7 @@
 
 .edit-save-btn {
   padding: 0.65rem 2rem;
-  background: #a855f7;
+  background: #00a884;
   color: white;
   border: none;
   border-radius: 8px;
@@ -393,9 +393,9 @@
 }
 
 .edit-save-btn:hover:not(:disabled) {
-  background: #9333ea;
+  background: #008069;
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(168, 85, 247, 0.3);
+  box-shadow: 0 4px 12px rgba(0, 168, 132, 0.3);
 }
 
 .edit-save-btn:disabled {

@@ -25,9 +25,9 @@
       1.001 85%,
       1
     );
-    --color-1: #a855f7;
-    --color-2: #a855f7;
-    --color-3: #a855f7;
+    --color-1: #00a884;
+    --color-2: #00a884;
+    --color-3: #00a884;
   }
   
   .gooey-nav-container {
@@ -88,7 +88,7 @@
   .gooey-nav-container nav ul li.active {
     color: white;
     text-shadow: none;
-    box-shadow: 0 0 0 2px rgba(168, 85, 247, 0.8);
+    box-shadow: 0 0 0 2px rgba(0, 168, 132, 0.8);
   }
   
   .gooey-nav-container nav ul li.active::after {
@@ -135,7 +135,7 @@
 
   .gooey-nav-container .effect.active::after {
     animation: pill 0.3s ease both;
-    background: #a855f7;
+    background: #00a884;
     opacity: 0.2;
   }
   

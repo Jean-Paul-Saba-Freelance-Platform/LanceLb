@@ -124,8 +124,8 @@ const FreelancerHomePage = () => {
             <div className="greeting-illustration">
               <div className="illustration-placeholder">
                 <svg width="80" height="80" viewBox="0 0 100 100" fill="none">
-                  <circle cx="50" cy="50" r="40" fill="#a855f7" opacity="0.2"/>
-                  <path d="M30 50 L45 65 L70 35" stroke="#a855f7" strokeWidth="4" strokeLinecap="round"/>
+                  <circle cx="50" cy="50" r="40" fill="#00a884" opacity="0.2"/>
+                  <path d="M30 50 L45 65 L70 35" stroke="#00a884" strokeWidth="4" strokeLinecap="round"/>
                 </svg>
               </div>
             </div>

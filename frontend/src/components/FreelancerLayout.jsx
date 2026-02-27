@@ -8,9 +8,9 @@ const FreelancerLayout = () => {
     <div className="freelancer-layout">
       <div className="layout-background">
         <Grainient
-          color1="#FF9FFC"
-          color2="#5227FF"
-          color3="#B19EEF"
+          color1="#00A884"
+          color2="#111B21"
+          color3="#202C33"
           timeSpeed={0.25}
           colorBalance={0}
           warpStrength={1}

@@ -87,9 +87,9 @@
 }
 
 .settings-nav-item.active {
-  background: rgba(168, 85, 247, 0.1);
-  color: #a855f7;
-  border-left-color: #a855f7;
+  background: rgba(0, 168, 132, 0.1);
+  color: #00a884;
+  border-left-color: #00a884;
   font-weight: 500;
 }
 
@@ -145,7 +145,7 @@
 
 .settings-card-edit-button:hover {
   background: rgba(255, 255, 255, 0.04);
-  color: #a855f7;
+  color: #00a884;
 }
 
 .settings-card-content {
@@ -191,8 +191,8 @@
 }
 
 .settings-input:focus {
-  border-color: #a855f7;
-  box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.1);
+  border-color: #00a884;
+  box-shadow: 0 0 0 3px rgba(0, 168, 132, 0.1);
 }
 
 /* Card Actions */
@@ -210,7 +210,7 @@
   align-items: center;
   gap: 0.5rem;
   padding: 0.625rem 1.25rem;
-  background: #a855f7;
+  background: #00a884;
   color: white;
   border: none;
   border-radius: 6px;
@@ -222,9 +222,9 @@
 }
 
 .settings-button-primary:hover {
-  background: #9333ea;
+  background: #008069;
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(168, 85, 247, 0.2);
+  box-shadow: 0 4px 12px rgba(0, 168, 132, 0.2);
 }
 
 .settings-button-secondary {
@@ -347,7 +347,7 @@
 
   .settings-nav-item.active {
     border-left: none;
-    border-bottom-color: #a855f7;
+    border-bottom-color: #00a884;
   }
 }
 

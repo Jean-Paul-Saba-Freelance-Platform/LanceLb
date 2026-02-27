@@ -56,7 +56,7 @@
 
 .manage-post-btn {
   padding: 0.7rem 1.5rem;
-  background: #a855f7;
+  background: #00a884;
   color: white;
   border: none;
   border-radius: 8px;
@@ -69,9 +69,9 @@
 }
 
 .manage-post-btn:hover {
-  background: #9333ea;
+  background: #008069;
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(168, 85, 247, 0.3);
+  box-shadow: 0 4px 12px rgba(0, 168, 132, 0.3);
 }
 
 /* Toolbar */
@@ -116,8 +116,8 @@
 }
 
 .manage-search-input:focus {
-  border-color: #a855f7;
-  box-shadow: 0 0 0 2px rgba(168, 85, 247, 0.12);
+  border-color: #00a884;
+  box-shadow: 0 0 0 2px rgba(0, 168, 132, 0.12);
 }
 
 .manage-status-filter {
@@ -149,7 +149,7 @@
 }
 
 .manage-status-btn.active {
-  background: #a855f7;
+  background: #00a884;
   color: white;
 }
 
@@ -246,7 +246,7 @@
 }
 
 .manage-job-card:hover {
-  border-color: rgba(168, 85, 247, 0.25);
+  border-color: rgba(0, 168, 132, 0.25);
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
 }
 
@@ -327,12 +327,12 @@
 .manage-skill-chip {
   display: inline-block;
   padding: 0.2rem 0.55rem;
-  background: rgba(168, 85, 247, 0.08);
-  border: 1px solid rgba(168, 85, 247, 0.18);
+  background: rgba(0, 168, 132, 0.08);
+  border: 1px solid rgba(0, 168, 132, 0.18);
   border-radius: 999px;
   font-size: 0.75rem;
   font-weight: 500;
-  color: #7c3aed;
+  color: #017561;
 }
 
 .manage-skill-chip.more {
@@ -365,22 +365,22 @@
 }
 
 .manage-action-btn.primary {
-  background: #a855f7;
+  background: #00a884;
   color: white;
 }
 
 .manage-action-btn.primary:hover {
-  background: #9333ea;
+  background: #008069;
 }
 
 .manage-action-btn.secondary {
   background: transparent;
-  color: #a855f7;
-  border: 1px solid rgba(168, 85, 247, 0.35);
+  color: #00a884;
+  border: 1px solid rgba(0, 168, 132, 0.35);
 }
 
 .manage-action-btn.secondary:hover {
-  background: rgba(168, 85, 247, 0.08);
+  background: rgba(0, 168, 132, 0.08);
 }
 
 .manage-action-btn.danger {

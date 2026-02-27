@@ -31,10 +31,24 @@ if (!process.env.MONGO_URI) {
   process.exit(1);
 }
 
-app.use(cors({
-  origin: ["http://localhost:5173", "http://127.0.0.1:5173"],
-  credentials: true
-}));
+app.use(
+  cors({
+    // Explicitly reflect request Origin in development.
+    // This guarantees Access-Control-Allow-Origin is present on preflight + actual responses.
+    origin: (origin, callback) => {
+      if (process.env.NODE_ENV === "production") {
+        callback(null, process.env.FRONTEND_URL || false);
+        return;
+      }
+      if (!origin) {
+        callback(null, true);
+        return;
+      }
+      callback(null, origin);
+    },
+    credentials: true,
+  })
+);
 app.use(express.json());
 app.use(cookieParser());
 

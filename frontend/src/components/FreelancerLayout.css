@@ -98,8 +98,8 @@
 }
 
 .freelancer-layout .jobs-search-input:focus {
-  border-color: #a855f7 !important;
-  box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.15) !important;
+  border-color: #00a884 !important;
+  box-shadow: 0 0 0 3px rgba(0, 168, 132, 0.18) !important;
 }
 
 .freelancer-layout .jobs-search-input::placeholder {
@@ -108,11 +108,11 @@
 
 /* Component specific overrides */
 .freelancer-layout .top-nav {
-  background: rgba(14, 12, 20, 0.55) !important;
-  backdrop-filter: blur(18px) !important;
-  -webkit-backdrop-filter: blur(18px) !important;
-  border: 1px solid rgba(255, 255, 255, 0.1) !important;
-  border-radius: 16px !important;
+  background: #202c33 !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  border-radius: 0 !important;
+  margin: 0 !important;
+  top: 0 !important;
 }
 
 .freelancer-layout .top-nav-search {
