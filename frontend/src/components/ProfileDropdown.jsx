@@ -28,7 +28,7 @@ import React, { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { 
   User, LineChart, Sun, Moon, Settings, LogOut, ChevronRight,
-  Briefcase, FileText, Search, Send, Package
+  Briefcase, FileText, Search, Send, Package, MessageSquare
 } from 'lucide-react'
 import { getInitialTheme, toggleTheme } from '../lib/theme'
 import './ProfileDropdown.css'
@@ -113,6 +113,12 @@ const ProfileDropdown = ({ userName, userAvatar, isOpen, onClose, onToggle }) =>
         label: 'Manage jobs', 
         icon: FileText, 
         route: '/client/jobs',
+        dividerAfter: false
+      },
+      {
+        label: 'Messages',
+        icon: MessageSquare,
+        route: '/client/messages',
         dividerAfter: true
       }
     ]
@@ -128,6 +134,12 @@ const ProfileDropdown = ({ userName, userAvatar, isOpen, onClose, onToggle }) =>
         label: 'My proposals', 
         icon: Send, 
         route: '/freelancer/proposals',
+        dividerAfter: false
+      },
+      {
+        label: 'Messages',
+        icon: MessageSquare,
+        route: '/freelancer/messages',
         dividerAfter: false
       },
       { 

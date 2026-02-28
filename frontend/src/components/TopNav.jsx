@@ -18,11 +18,13 @@ const TopNav = ({ userName, userAvatar }) => {
   const menuLinks = user?.userType === 'freelancer'
     ? [
       { label: 'Find Work', to: '/freelancer/find-work' },
+      { label: 'Messages', to: '/freelancer/messages' },
       { label: 'My Proposals', to: '/freelancer/proposals' },
       { label: 'Deliver Work', to: '/freelancer/deliver-work' }
     ]
     : [
       { label: 'Home', to: '/client/home' },
+      { label: 'Messages', to: '/client/messages' },
       { label: 'Manage Jobs', to: '/client/jobs' },
       { label: 'Post Job', to: '/client/post-job' }
     ]

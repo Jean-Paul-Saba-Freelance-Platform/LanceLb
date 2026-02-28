@@ -16,6 +16,7 @@ import ClientStatsPage from '../pages/ClientStatsPage'
 import ClientSettingsPage from '../pages/ClientSettingsPage'
 import ClientJobsPage from '../pages/ClientJobsPage'
 import ClientApplicationsPage from '../pages/ClientApplicationsPage'
+import MessagesPage from '../pages/MessagesPage'
 import PostJobPage from '../pages/PostJobPage'
 import PostJobStep1Title from '../pages/client/postJob/PostJobStep1Title'
 import PostJobStep2Skills from '../pages/client/postJob/PostJobStep2Skills'
@@ -42,6 +43,7 @@ function App() {
           <Route path="/freelancer/profile" element={<FreelancerProfilePage />} />
           <Route path="/freelancer/stats" element={<FreelancerStatsPage />} />
           <Route path="/freelancer/settings" element={<FreelancerSettingsPage />} />
+          <Route path="/freelancer/messages" element={<MessagesPage />} />
           <Route path="/freelancer/find-work" element={<FreelancerFindWorkPage />} />
           <Route path="/freelancer/proposals" element={<FreelancerProposalsPage />} />
           <Route path="/freelancer/deliver-work" element={<FreelancerDeliverWorkPage />} />
@@ -87,6 +89,14 @@ function App() {
                 <ClientJobsPage />
               </ClientRoute>
             } 
+          />
+          <Route
+            path="/client/messages"
+            element={
+              <ClientRoute>
+                <MessagesPage />
+              </ClientRoute>
+            }
           />
           <Route 
             path="/client/jobs/new" 

@@ -13,6 +13,7 @@ import applicationRouter from "./routes/applicationRoutes.js";
 import publicJobRoutes from "./routes/publicJobRoutes.js";
 import aiRouter from "./routes/aiRoutes.js";
 import messageRouter from './routes/messageRoutes.js'
+import { app, server } from "./lib/realtime.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -23,7 +24,7 @@ if (!process.env.MONGO_URI) {
   dotenv.config({ path: path.join(__dirname, "..", ".env") });
 }
 
-const app = express();
+
 const PORT = process.env.PORT || 4000;
 
 if (!process.env.MONGO_URI) {
@@ -78,4 +79,4 @@ app.use("/api/message", messageRouter);
 
 // Start
 connectDB();
-app.listen(PORT, () => console.log(`Server is running on port ${PORT}`));
+server.listen(PORT, () => console.log(`Server is running on port ${PORT}`));

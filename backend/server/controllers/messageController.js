@@ -1,10 +1,11 @@
 import User from "../models/userModels.js";
 import Message from "../models/messageModel.js";
+import { getReceiverSocketId, io } from "../lib/realtime.js";
 
 
 export const getUserSideBar = async(req,res)=>{
     try{
-        const loggedInUserId = req.user._id;
+        const loggedInUserId = req.userId;
 
         const filteredUsers = await User.find({_id : {$ne:loggedInUserId}}).select("-password");
 
@@ -21,13 +22,13 @@ export const getUserSideBar = async(req,res)=>{
 export const getMessages = async(req,res)=>{
     try{
         const {id: userToChatId }= req.params;
-        const senderId = req.user._id;
+        const senderId = req.userId;
 
         const messages = await Message.find(
             {$or:
             [
-                {senderId:senderId, receriverId:userToChatId},
-                {senderId:userToChatId, receriverId:senderId}
+                {senderId:senderId, recieverId:userToChatId},
+                {senderId:userToChatId, recieverId:senderId}
             ]
         }
     );
@@ -45,8 +46,8 @@ export const getMessages = async(req,res)=>{
 export const sendMessage= async(req,res)=>{
     try{
         const {text,image}= req.body;
-        const {id: receriverId} = req.params;
-        const senderId = req.user._id;
+        const {id: recieverId} = req.params;
+        const senderId = req.userId;
 
         let imageUrl;
         if (image){
@@ -56,13 +57,17 @@ export const sendMessage= async(req,res)=>{
 
         const newMessage = new Message({
             senderId,
-            receriverId,
+            recieverId,
             text,
             image: imageUrl,
         });
         await newMessage.save();
 
-        //todo: realtime functionality => socket.io
+        const receiverSocketId = getReceiverSocketId(recieverId);
+        if (receiverSocketId) {
+            io.to(receiverSocketId).emit("newMessage", newMessage);
+        }
+
         res.status(201).json(newMessage);
 
     }catch(error){
