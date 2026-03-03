@@ -21,6 +21,11 @@ const getAuthHeaders = () => {
 }
 
 const getUserId = (user) => user?._id || user?.id || user?.userId || ''
+const getEntityId = (entity) => {
+  if (!entity) return ''
+  if (typeof entity === 'string') return entity
+  return entity?._id || entity?.id || ''
+}
 
 const getDisplayName = (user) => {
   const first = user?.firstName || ''
@@ -45,7 +50,10 @@ const MessagesPage = () => {
 
   const [users, setUsers] = useState([])
   const [filteredUsers, setFilteredUsers] = useState([])
+  const [crews, setCrews] = useState([])
+  const [filteredCrews, setFilteredCrews] = useState([])
   const [selectedUser, setSelectedUser] = useState(null)
+  const [selectedCrew, setSelectedCrew] = useState(null)
   const [messages, setMessages] = useState([])
   const [search, setSearch] = useState('')
   const [draft, setDraft] = useState('')
@@ -53,11 +61,17 @@ const MessagesPage = () => {
   const [isLoadingMessages, setIsLoadingMessages] = useState(false)
   const [error, setError] = useState('')
   const [menuOpen, setMenuOpen] = useState(false)
+  const [panelMode, setPanelMode] = useState(null)
+  const [panelCrewName, setPanelCrewName] = useState('')
+  const [panelSearch, setPanelSearch] = useState('')
+  const [panelSelectedMemberIds, setPanelSelectedMemberIds] = useState([])
+  const [panelSubmitting, setPanelSubmitting] = useState(false)
 
   const messagesEndRef = useRef(null)
   const menuRef = useRef(null)
   const socketRef = useRef(null)
   const selectedUserRef = useRef(null)
+  const selectedCrewRef = useRef(null)
   const settingsRoute = currentUser?.userType === 'freelancer' ? '/freelancer/settings' : '/client/settings'
 
   const loadUsers = async () => {
@@ -77,6 +91,22 @@ const MessagesPage = () => {
       setError(err.message || 'Failed to load users')
     } finally {
       setIsLoadingUsers(false)
+    }
+  }
+
+  const loadCrews = async () => {
+    try {
+      const res = await fetch(`${API_BASE}/api/crew`, {
+        credentials: 'include',
+        headers: {
+          ...getAuthHeaders()
+        }
+      })
+      const data = await res.json()
+      if (!res.ok) throw new Error(data?.message || 'Failed to load crews')
+      setCrews(Array.isArray(data?.crews) ? data.crews : [])
+    } catch (err) {
+      setError(err.message || 'Failed to load crews')
     }
   }
 
@@ -101,14 +131,38 @@ const MessagesPage = () => {
     }
   }
 
+  const loadCrewMessages = async (crewId) => {
+    if (!crewId) return
+    setIsLoadingMessages(true)
+    setError('')
+    try {
+      const res = await fetch(`${API_BASE}/api/crew/${crewId}/messages`, {
+        credentials: 'include',
+        headers: {
+          ...getAuthHeaders()
+        }
+      })
+      const data = await res.json()
+      if (!res.ok) throw new Error(data?.message || 'Failed to load crew messages')
+      setMessages(Array.isArray(data?.messages) ? data.messages : [])
+    } catch (err) {
+      setError(err.message || 'Failed to load crew messages')
+    } finally {
+      setIsLoadingMessages(false)
+    }
+  }
+
   const sendMessage = async () => {
     const text = draft.trim()
-    if (!text || !selectedUser?._id) return
+    const activeCrewId = getEntityId(selectedCrew)
+    const activeUserId = getEntityId(selectedUser)
+    if (!text || (!activeUserId && !activeCrewId)) return
 
     const optimistic = {
       _id: `temp-${Date.now()}`,
       senderId: currentUserId,
-      recieverId: selectedUser._id,
+      recieverId: activeUserId || undefined,
+      crewId: activeCrewId || undefined,
       text,
       createdAt: new Date().toISOString()
     }
@@ -117,7 +171,10 @@ const MessagesPage = () => {
     setDraft('')
 
     try {
-      const res = await fetch(`${API_BASE}/api/message/send/${selectedUser._id}`, {
+      const endpoint = activeCrewId
+        ? `${API_BASE}/api/crew/${activeCrewId}/messages`
+        : `${API_BASE}/api/message/send/${activeUserId}`
+      const res = await fetch(endpoint, {
         method: 'POST',
         credentials: 'include',
         headers: {
@@ -128,9 +185,10 @@ const MessagesPage = () => {
       })
       const data = await res.json()
       if (!res.ok) throw new Error(data?.message || 'Failed to send message')
+      const savedMessage = activeCrewId ? data?.message : data
 
       setMessages((prev) =>
-        prev.map((m) => (m._id === optimistic._id ? data : m))
+        prev.map((m) => (m._id === optimistic._id ? savedMessage : m))
       )
     } catch (err) {
       setError(err.message || 'Failed to send message')
@@ -141,20 +199,26 @@ const MessagesPage = () => {
 
   useEffect(() => {
     loadUsers()
+    loadCrews()
   }, [])
 
   useEffect(() => {
     const term = search.trim().toLowerCase()
     if (!term) {
       setFilteredUsers(users)
+      setFilteredCrews(crews)
       return
     }
     setFilteredUsers(
       users.filter((u) => getDisplayName(u).toLowerCase().includes(term))
     )
-  }, [users, search])
+    setFilteredCrews(
+      crews.filter((crew) => (crew?.name || '').toLowerCase().includes(term))
+    )
+  }, [users, crews, search])
 
   useEffect(() => {
+    if (selectedCrew) return
     if (!filteredUsers.length) {
       setSelectedUser(null)
       return
@@ -170,6 +234,20 @@ const MessagesPage = () => {
   useEffect(() => {
     selectedUserRef.current = selectedUser
   }, [selectedUser])
+
+  useEffect(() => {
+    if (!filteredCrews.length) {
+      if (selectedCrew) setSelectedCrew(null)
+      return
+    }
+    if (!selectedCrew) return
+    const crewStillExists = filteredCrews.some((c) => getEntityId(c) === getEntityId(selectedCrew))
+    if (!crewStillExists) setSelectedCrew(null)
+  }, [filteredCrews, selectedCrew])
+
+  useEffect(() => {
+    selectedCrewRef.current = selectedCrew
+  }, [selectedCrew])
 
   useEffect(() => {
     if (!currentUserId) return
@@ -199,6 +277,36 @@ const MessagesPage = () => {
       })
     })
 
+    socket.on('newCrewMessage', (incomingMessage) => {
+      const activeCrew = selectedCrewRef.current
+      if (!activeCrew?._id) return
+      if (String(incomingMessage.crewId) !== String(activeCrew._id)) return
+
+      setMessages((prev) => {
+        if (prev.some((msg) => String(msg._id) === String(incomingMessage._id))) {
+          return prev
+        }
+        return [...prev, incomingMessage]
+      })
+    })
+
+    socket.on('crewUpdated', (payload) => {
+      const crewId = getEntityId(payload?.crew)
+      if (!crewId) return
+
+      setCrews((prev) => {
+        const exists = prev.some((crew) => String(getEntityId(crew)) === String(crewId))
+        if (!exists) return [payload.crew, ...prev]
+        return prev.map((crew) =>
+          String(getEntityId(crew)) === String(crewId) ? payload.crew : crew
+        )
+      })
+
+      if (String(getEntityId(selectedCrewRef.current)) === String(crewId)) {
+        setSelectedCrew(payload.crew)
+      }
+    })
+
     return () => {
       socket.disconnect()
       socketRef.current = null
@@ -206,9 +314,26 @@ const MessagesPage = () => {
   }, [currentUserId])
 
   useEffect(() => {
-    if (!selectedUser?._id) return
-    loadMessages(selectedUser._id)
-  }, [selectedUser?._id])
+    const activeCrewId = getEntityId(selectedCrew)
+    const activeUserId = getEntityId(selectedUser)
+    if (activeCrewId) {
+      loadCrewMessages(activeCrewId)
+      return
+    }
+    if (activeUserId) {
+      loadMessages(activeUserId)
+    }
+  }, [selectedUser?._id, selectedCrew?._id])
+
+  useEffect(() => {
+    const activeCrewId = getEntityId(selectedCrew)
+    const socket = socketRef.current
+    if (!activeCrewId || !socket) return
+    socket.emit('joinCrew', { crewId: activeCrewId })
+    return () => {
+      socket.emit('leaveCrew', { crewId: activeCrewId })
+    }
+  }, [selectedCrew?._id])
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
@@ -240,9 +365,107 @@ const MessagesPage = () => {
     navigate(settingsRoute)
   }
 
-  const handleCreateCrew = () => {
+  const openCreateCrewPanel = () => {
     setMenuOpen(false)
-    setError('Create crew is coming soon.')
+    setPanelMode('create')
+    setPanelCrewName(selectedUser ? `${getDisplayName(selectedUser)} Crew` : '')
+    setPanelSearch('')
+    setPanelSelectedMemberIds(selectedUser?._id ? [selectedUser._id] : [])
+  }
+
+  const openAddMembersPanel = () => {
+    setMenuOpen(false)
+    if (!selectedCrew) return
+    setPanelMode('add')
+    setPanelCrewName(selectedCrew.name || '')
+    setPanelSearch('')
+    setPanelSelectedMemberIds([])
+  }
+
+  const closeMemberPanel = () => {
+    if (panelSubmitting) return
+    setPanelMode(null)
+    setPanelSearch('')
+    setPanelSelectedMemberIds([])
+    setPanelCrewName('')
+  }
+
+  const togglePanelMember = (memberId) => {
+    setPanelSelectedMemberIds((prev) => (
+      prev.includes(memberId)
+        ? prev.filter((id) => id !== memberId)
+        : [...prev, memberId]
+    ))
+  }
+
+  const activeConversation = selectedCrew || selectedUser
+  const isCrewChat = Boolean(selectedCrew)
+  const activeTitle = isCrewChat ? selectedCrew?.name : getDisplayName(selectedUser)
+  const activeSubtitle = isCrewChat ? 'Crew chat' : 'Active now'
+  const canManageCrew = Boolean(
+    isCrewChat && String(getEntityId(selectedCrew?.createdBy)) === String(currentUserId)
+  )
+  const currentCrewMemberIds = new Set((selectedCrew?.members || []).map((m) => String(getEntityId(m))))
+  const panelBaseCandidates = users.filter((u) => {
+    const userId = String(getEntityId(u))
+    if (!userId) return false
+    return panelMode === 'add' ? !currentCrewMemberIds.has(userId) : userId !== String(currentUserId)
+  })
+  const panelCandidates = panelBaseCandidates.filter((u) => {
+    const term = panelSearch.trim().toLowerCase()
+    if (!term) return true
+    const label = `${getDisplayName(u)} ${u.email || ''}`.toLowerCase()
+    return label.includes(term)
+  })
+  const panelTitle = panelMode === 'add' ? 'Add members' : 'Create crew'
+
+  const submitMemberPanel = async () => {
+    if (!panelMode) return
+    if (!panelSelectedMemberIds.length) {
+      setError('Select at least one member.')
+      return
+    }
+
+    if (panelMode === 'create' && !panelCrewName.trim()) {
+      setError('Crew name is required.')
+      return
+    }
+
+    setPanelSubmitting(true)
+    setError('')
+    try {
+      const endpoint = panelMode === 'add'
+        ? `${API_BASE}/api/crew/${getEntityId(selectedCrew)}/members`
+        : `${API_BASE}/api/crew`
+      const payload = panelMode === 'add'
+        ? { memberIds: panelSelectedMemberIds }
+        : { name: panelCrewName.trim(), memberIds: panelSelectedMemberIds }
+
+      const res = await fetch(endpoint, {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+          ...getAuthHeaders()
+        },
+        body: JSON.stringify(payload)
+      })
+      const data = await res.json()
+      if (!res.ok || !data?.success) {
+        throw new Error(data?.message || 'Failed to save crew changes')
+      }
+
+      await loadCrews()
+      if (data.crew) {
+        setSelectedCrew(data.crew)
+        if (panelMode === 'create') setSelectedUser(null)
+      }
+      closeMemberPanel()
+    } catch (err) {
+      setError(err.message || 'Failed to save crew changes')
+    } finally {
+      setPanelSubmitting(false)
+    }
   }
 
   return (
@@ -277,18 +500,47 @@ const MessagesPage = () => {
           </div>
 
           <div className="messages-user-list">
+            {filteredCrews.length > 0 && (
+              <>
+                <div className="messages-list-heading">Crews</div>
+                {filteredCrews.map((crew) => {
+                  const crewId = getEntityId(crew)
+                  const isActive = getEntityId(selectedCrew) === crewId
+                  return (
+                    <button
+                      key={crewId}
+                      className={`messages-user-row ${isActive ? 'active' : ''}`}
+                      onClick={() => {
+                        setSelectedCrew(crew)
+                        setSelectedUser(null)
+                      }}
+                    >
+                      <div className="messages-avatar">C</div>
+                      <div className="messages-user-meta">
+                        <div className="messages-user-name">{crew.name || 'Untitled Crew'}</div>
+                        <div className="messages-user-sub">{(crew.members || []).length} members</div>
+                      </div>
+                    </button>
+                  )
+                })}
+              </>
+            )}
+            <div className="messages-list-heading">Direct messages</div>
             {isLoadingUsers ? (
               <div className="messages-state">Loading users...</div>
             ) : !filteredUsers.length ? (
               <div className="messages-state">No users found.</div>
             ) : (
               filteredUsers.map((user) => {
-                const isActive = selectedUser?._id === user._id
+                const isActive = selectedUser?._id === user._id && !selectedCrew
                 return (
                   <button
                     key={user._id}
                     className={`messages-user-row ${isActive ? 'active' : ''}`}
-                    onClick={() => setSelectedUser(user)}
+                    onClick={() => {
+                      setSelectedUser(user)
+                      setSelectedCrew(null)
+                    }}
                   >
                     <div className="messages-avatar">{getInitial(user)}</div>
                     <div className="messages-user-meta">
@@ -304,13 +556,15 @@ const MessagesPage = () => {
         </aside>
 
         <section className="messages-chat-panel">
-          {selectedUser ? (
+          {activeConversation ? (
             <>
               <header className="messages-chat-header">
-                <div className="messages-avatar">{getInitial(selectedUser)}</div>
+                <div className="messages-avatar">
+                  {isCrewChat ? 'C' : getInitial(selectedUser)}
+                </div>
                 <div>
-                  <h3>{getDisplayName(selectedUser)}</h3>
-                  <p>Active now</p>
+                  <h3>{activeTitle}</h3>
+                  <p>{activeSubtitle}</p>
                 </div>
                 <div className="messages-chat-menu-wrap" ref={menuRef}>
                   <button
@@ -324,8 +578,13 @@ const MessagesPage = () => {
                   {menuOpen && (
                     <div className="messages-menu-panel">
                       {currentUser?.userType === 'client' && (
-                        <button className="messages-menu-item" onClick={handleCreateCrew}>
+                        <button className="messages-menu-item" onClick={openCreateCrewPanel}>
                           Create crew
+                        </button>
+                      )}
+                      {canManageCrew && (
+                        <button className="messages-menu-item" onClick={openAddMembersPanel}>
+                          Add members
                         </button>
                       )}
                       <button className="messages-menu-item" onClick={handleOpenSettings}>
@@ -391,6 +650,93 @@ const MessagesPage = () => {
           {error && <div className="messages-error">{error}</div>}
         </section>
       </div>
+
+      {panelMode && (
+        <div className="messages-panel-overlay" onClick={closeMemberPanel}>
+          <div className="messages-panel" onClick={(e) => e.stopPropagation()}>
+            <div className="messages-panel-header">
+              <h3>{panelTitle}</h3>
+              <button
+                type="button"
+                className="messages-panel-close"
+                onClick={closeMemberPanel}
+                aria-label="Close panel"
+              >
+                ×
+              </button>
+            </div>
+
+            {panelMode === 'create' && (
+              <label className="messages-panel-field">
+                <span>Crew name</span>
+                <input
+                  type="text"
+                  value={panelCrewName}
+                  onChange={(e) => setPanelCrewName(e.target.value)}
+                  placeholder="Enter crew name"
+                  disabled={panelSubmitting}
+                />
+              </label>
+            )}
+
+            <label className="messages-panel-field">
+              <span>Search members</span>
+              <input
+                type="text"
+                value={panelSearch}
+                onChange={(e) => setPanelSearch(e.target.value)}
+                placeholder="Search by name or email"
+                disabled={panelSubmitting}
+              />
+            </label>
+
+            <div className="messages-panel-members">
+              {panelCandidates.length === 0 ? (
+                <div className="messages-state">No matching users.</div>
+              ) : (
+                panelCandidates.map((user) => {
+                  const userId = getEntityId(user)
+                  const checked = panelSelectedMemberIds.includes(userId)
+                  return (
+                    <label key={userId} className="messages-panel-member-row">
+                      <input
+                        type="checkbox"
+                        checked={checked}
+                        onChange={() => togglePanelMember(userId)}
+                        disabled={panelSubmitting}
+                      />
+                      <div className="messages-avatar">{getInitial(user)}</div>
+                      <div className="messages-user-meta">
+                        <div className="messages-user-name">{getDisplayName(user)}</div>
+                        <div className="messages-user-sub">{user.email || 'No email'}</div>
+                      </div>
+                    </label>
+                  )
+                })
+              )}
+            </div>
+
+            <div className="messages-panel-actions">
+              <button
+                type="button"
+                className="messages-panel-btn secondary"
+                onClick={closeMemberPanel}
+                disabled={panelSubmitting}
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                className="messages-panel-btn primary"
+                onClick={submitMemberPanel}
+                disabled={panelSubmitting}
+              >
+                {panelSubmitting ? 'Saving...' : panelMode === 'add' ? 'Add members' : 'Create crew'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

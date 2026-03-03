@@ -1,0 +1,76 @@
+.freelancer-client-profile-page {
+  min-height: 100vh;
+}
+
+.freelancer-client-profile-container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 3rem;
+}
+
+.freelancer-client-profile-card {
+  background: #1b2730;
+  border: 1px solid #2a3942;
+  border-radius: 14px;
+  padding: 1.5rem;
+}
+
+.freelancer-client-profile-back {
+  border: none;
+  background: transparent;
+  color: #9df3dc;
+  font-size: 0.86rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0;
+  margin-bottom: 0.8rem;
+}
+
+.freelancer-client-profile-title {
+  margin: 0 0 1rem;
+  color: #e9edef;
+  font-size: 1.5rem;
+}
+
+.freelancer-client-profile-subtitle {
+  margin: 0;
+  color: #a8b4bc;
+  line-height: 1.6;
+}
+
+.freelancer-client-profile-summary {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  padding: 1rem;
+  border: 1px solid #2a3942;
+  border-radius: 12px;
+  background: #202c33;
+}
+
+.freelancer-client-profile-avatar {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: #00a884;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 1rem;
+  flex-shrink: 0;
+}
+
+.freelancer-client-profile-summary h2 {
+  margin: 0 0 0.3rem;
+  color: #e9edef;
+  font-size: 1.05rem;
+}
+
+.freelancer-client-profile-summary p {
+  margin: 0.1rem 0;
+  color: #a8b4bc;
+  font-size: 0.9rem;
+}

@@ -10,6 +10,7 @@ import FreelancerSettingsPage from '../pages/FreelancerSettingsPage'
 import FreelancerFindWorkPage from '../pages/FreelancerFindWorkPage'
 import FreelancerProposalsPage from '../pages/FreelancerProposalsPage'
 import FreelancerDeliverWorkPage from '../pages/FreelancerDeliverWorkPage'
+import FreelancerClientProfilePage from '../pages/FreelancerClientProfilePage'
 import ClientHomePage from '../pages/ClientHomePage'
 import ClientProfilePage from '../pages/ClientProfilePage'
 import ClientStatsPage from '../pages/ClientStatsPage'
@@ -47,6 +48,7 @@ function App() {
           <Route path="/freelancer/find-work" element={<FreelancerFindWorkPage />} />
           <Route path="/freelancer/proposals" element={<FreelancerProposalsPage />} />
           <Route path="/freelancer/deliver-work" element={<FreelancerDeliverWorkPage />} />
+          <Route path="/freelancer/client-profile/:clientId" element={<FreelancerClientProfilePage />} />
         </Route>
 
         <Route element={<ClientLayout />}>

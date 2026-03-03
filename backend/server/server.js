@@ -13,6 +13,7 @@ import applicationRouter from "./routes/applicationRoutes.js";
 import publicJobRoutes from "./routes/publicJobRoutes.js";
 import aiRouter from "./routes/aiRoutes.js";
 import messageRouter from './routes/messageRoutes.js'
+import crewRouter from "./routes/crewRoutes.js";
 import { app, server } from "./lib/realtime.js";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -76,6 +77,7 @@ app.use("/api/jobs", publicJobRoutes);
 app.use("/api/applications", applicationRouter);
 app.use("/api/ai", aiRouter);
 app.use("/api/message", messageRouter);
+app.use("/api/crew", crewRouter);
 
 // Start
 connectDB();

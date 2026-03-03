@@ -29,8 +29,19 @@ io.on('connection', (socket) => {
   const userId = socket.handshake.auth?.userId;
   if (userId) {
     userSocketMap[String(userId)] = socket.id;
+    socket.join(`user:${String(userId)}`);
     io.emit('onlineUsers', Object.keys(userSocketMap));
   }
+
+  socket.on('joinCrew', ({ crewId }) => {
+    if (!crewId) return;
+    socket.join(`crew:${String(crewId)}`);
+  });
+
+  socket.on('leaveCrew', ({ crewId }) => {
+    if (!crewId) return;
+    socket.leave(`crew:${String(crewId)}`);
+  });
 
   socket.on('disconnect', () => {
     if (userId) {

@@ -92,13 +92,13 @@
 }
 
 .fh-btn-primary {
-  background: linear-gradient(180deg, rgba(176, 102, 255, 0.95), rgba(146, 70, 232, 0.95));
-  border-color: rgba(208, 162, 255, 0.45);
+  background: linear-gradient(180deg, #00a884, #008069);
+  border-color: rgba(75, 226, 190, 0.45);
   color: #ffffff;
 }
 
 .fh-btn-primary:hover {
-  background: linear-gradient(180deg, rgba(190, 119, 255, 0.98), rgba(156, 80, 238, 0.98));
+  background: linear-gradient(180deg, #10ba98, #009178);
 }
 
 .fh-btn-icon,

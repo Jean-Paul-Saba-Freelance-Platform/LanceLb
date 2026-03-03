@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react'
 import { createPortal } from 'react-dom'
+import { useNavigate } from 'react-router-dom'
 import Stepper, { Step } from './Stepper'
 import './JobCard.css'
 
 const API_BASE = 'http://127.0.0.1:4000'
+const DESCRIPTION_PREVIEW_LENGTH = 180
 
 function scoreColor(score) {
   if (score >= 70) return '#10b981'
@@ -55,6 +57,7 @@ function budgetLine(job) {
 }
 
 const JobCard = ({ job }) => {
+  const navigate = useNavigate()
   const [isApplyOpen, setIsApplyOpen] = useState(false)
   const [coverLetter, setCoverLetter] = useState('')
   const [answers, setAnswers] = useState({})
@@ -64,16 +67,35 @@ const JobCard = ({ job }) => {
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState('')
   const [success, setSuccess] = useState(false)
+  const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false)
 
   const postedTime = job.postedTime || timeAgo(job.createdAt)
   const title = job.title || ''
   const typeLine = budgetLine(job)
   const experience = job.experience || EXPERIENCE_LABELS[job.experienceLevel] || ''
   const duration = job.duration ? (DURATION_LABELS[job.duration] || job.duration) : ''
-  const description = job.description
-    ? (job.description.length > 180 ? job.description.slice(0, 180) + '…' : job.description)
-    : ''
+  const fullDescription = job.description || ''
+  const isLongDescription = fullDescription.length > DESCRIPTION_PREVIEW_LENGTH
+  const description = isDescriptionExpanded || !isLongDescription
+    ? fullDescription
+    : fullDescription.slice(0, DESCRIPTION_PREVIEW_LENGTH) + '…'
   const tags = job.tags || (job.requiredSkills ? job.requiredSkills.slice(0, 6) : [])
+  const clientId =
+    job.clientId ||
+    job.client?._id ||
+    job.client?.id ||
+    job.postedBy ||
+    job.userId ||
+    null
+  const clientPreview = {
+    _id: clientId,
+    name: job.client?.name || job.clientName || '',
+    firstName: job.client?.firstName || '',
+    lastName: job.client?.lastName || '',
+    email: job.client?.email || '',
+    avatar: job.client?.avatar || '',
+    location: job.client?.location || '',
+  }
 
   const [questions, setQuestions] = useState([])
   const [loadingQuestions, setLoadingQuestions] = useState(false)
@@ -83,6 +105,7 @@ const JobCard = ({ job }) => {
   const [fitImprovements, setFitImprovements] = useState([])
   const [fitLoading, setFitLoading] = useState(false)
   const [fitProfileComplete, setFitProfileComplete] = useState(true)
+  const [fitError, setFitError] = useState('')
   const [tipsLoading, setTipsLoading] = useState(false)
   const [tipsError, setTipsError] = useState('')
   const [tipsSummary, setTipsSummary] = useState('')
@@ -92,36 +115,48 @@ const JobCard = ({ job }) => {
     setIsApplyOpen(true)
     setLoadingQuestions(true)
     setFitLoading(true)
+    setFitError('')
 
     const token = localStorage.getItem('token')
     const headers = token ? { Authorization: `Bearer ${token}` } : {}
 
     try {
-      const [jobRes, fitRes] = await Promise.all([
+      const [jobResult, fitResult] = await Promise.allSettled([
         fetch(`${API_BASE}/api/client/jobs/${job.id || job._id}`),
         token
           ? fetch(`${API_BASE}/api/ai/fit-score/${job.id || job._id}`, { credentials: 'include', headers })
           : Promise.resolve(null),
       ])
 
-      const data = await jobRes.json()
-      if (data.success && data.job?.screeningQuestions?.length) {
-        setQuestions(data.job.screeningQuestions)
-        const initial = {}
-        data.job.screeningQuestions.forEach(q => {
-          initial[q._id || q.id] = ''
-        })
-        setAnswers(initial)
+      if (jobResult.status === 'fulfilled') {
+        const data = await jobResult.value.json()
+        if (data.success && data.job?.screeningQuestions?.length) {
+          setQuestions(data.job.screeningQuestions)
+          const initial = {}
+          data.job.screeningQuestions.forEach(q => {
+            initial[q._id || q.id] = ''
+          })
+          setAnswers(initial)
+        }
+      } else {
+        console.error('Error fetching job details:', jobResult.reason)
       }
 
-      if (fitRes) {
-        const fitData = await fitRes.json()
-        if (fitData.success) {
-          setFitScore(fitData.fitScore)
+      if (!token) {
+        setFitError('Login required to view AI analysis.')
+      } else if (fitResult.status === 'fulfilled' && fitResult.value) {
+        const fitData = await fitResult.value.json()
+        if (fitResult.value.ok && fitData.success) {
+          setFitScore(fitData.fitScore ?? null)
           setFitStrengths(fitData.strengths || [])
           setFitImprovements(fitData.improvements || [])
           setFitProfileComplete(fitData.profileComplete !== false)
+        } else {
+          setFitError(fitData.message || 'AI analysis is unavailable right now.')
         }
+      } else if (fitResult.status === 'rejected') {
+        console.error('Error fetching AI fit score:', fitResult.reason)
+        setFitError('AI analysis is unavailable right now.')
       }
     } catch (err) {
       console.error('Error fetching job details / fit score:', err)
@@ -230,6 +265,7 @@ const JobCard = ({ job }) => {
     setFitStrengths([])
     setFitImprovements([])
     setFitProfileComplete(true)
+    setFitError('')
     setTipsLoading(false)
     setTipsError('')
     setTipsSummary('')
@@ -252,7 +288,17 @@ const JobCard = ({ job }) => {
         {duration && <span>• {duration}</span>}
       </div>
 
-      <p className="job-description">{description}</p>
+      <p className={`job-description ${isDescriptionExpanded ? 'expanded' : ''}`}>{description}</p>
+      {isLongDescription && (
+        <button
+          type="button"
+          className="job-description-toggle"
+          onClick={() => setIsDescriptionExpanded(prev => !prev)}
+          aria-expanded={isDescriptionExpanded}
+        >
+          {isDescriptionExpanded ? 'Show less' : 'Show full description'}
+        </button>
+      )}
 
       <div className="job-tags">
         {tags.map((tag, index) => (
@@ -284,6 +330,18 @@ const JobCard = ({ job }) => {
         </div>
 
         <div className="job-footer-right">
+          <button
+            className="job-profile-button"
+            onClick={() =>
+              navigate(`/freelancer/client-profile/${clientId || 'unknown'}`, {
+                state: { client: clientPreview, fromJob: job.id || job._id },
+              })
+            }
+            disabled={!clientId}
+            title={clientId ? 'See client profile' : 'Client profile unavailable'}
+          >
+            See client profile
+          </button>
           <button
             className="job-apply-button gooey-button"
             onClick={openApplyModal}
@@ -319,6 +377,8 @@ const JobCard = ({ job }) => {
                     <div className="fit-score-spinner" />
                     <span>Analyzing your fit...</span>
                   </div>
+                ) : fitError ? (
+                  <div className="fit-score-error">{fitError}</div>
                 ) : !fitProfileComplete ? (
                   <div className="fit-score-incomplete">
                     <span className="fit-incomplete-icon">!</span>
