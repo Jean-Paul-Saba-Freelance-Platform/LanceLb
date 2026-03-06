@@ -1,11 +1,12 @@
 import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import { HelpCircle, Bell } from 'lucide-react'
 import ProfileDropdown from './ProfileDropdown'
 import './TopNav.css'
 
 const TopNav = ({ userName, userAvatar }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
+  const location = useLocation()
   
   // Get user from localStorage to determine the brand link
   const userStr = localStorage.getItem('user')
@@ -48,7 +49,7 @@ const TopNav = ({ userName, userAvatar }) => {
         {/* Center: Menu Links */}
         <div className="top-nav-menu">
           {menuLinks.map((item) => (
-            <Link key={item.to} to={item.to} className="top-nav-link">
+            <Link key={item.to} to={item.to} className={`top-nav-link${location.pathname === item.to ? ' active' : ''}`}>
               {item.label}
             </Link>
           ))}

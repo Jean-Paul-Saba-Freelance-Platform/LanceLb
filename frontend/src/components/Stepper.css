@@ -157,3 +157,23 @@
   width: 1rem;
   color: #fff;
 }
+
+
+/* =========================================================================
+   Light Mode Overrides
+   ========================================================================= */
+[data-theme="light"] .step-connector {
+  background-color: #d8dde1;
+}
+
+[data-theme="light"] .back-button {
+  color: #667781;
+}
+
+[data-theme="light"] .back-button:hover {
+  color: #41525d;
+}
+
+[data-theme="light"] .back-button.inactive {
+  color: #94a3b8;
+}

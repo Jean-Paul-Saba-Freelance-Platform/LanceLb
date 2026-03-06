@@ -1,16 +1,22 @@
-import React from 'react';
 import { Outlet } from 'react-router-dom';
 import Grainient from './Grainient';
+import { useTheme } from '../lib/useTheme';
 import './FreelancerLayout.css';
 
+const DARK_COLORS = { color1: '#00A884', color2: '#111B21', color3: '#202C33' };
+const LIGHT_COLORS = { color1: '#00A884', color2: '#d4f0e8', color3: '#e8f5f0' };
+
 const FreelancerLayout = () => {
+  const theme = useTheme();
+  const colors = theme === 'light' ? LIGHT_COLORS : DARK_COLORS;
+
   return (
     <div className="freelancer-layout">
       <div className="layout-background">
         <Grainient
-          color1="#00A884"
-          color2="#111B21"
-          color3="#202C33"
+          color1={colors.color1}
+          color2={colors.color2}
+          color3={colors.color3}
           timeSpeed={0.25}
           colorBalance={0}
           warpStrength={1}

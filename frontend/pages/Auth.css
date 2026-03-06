@@ -342,3 +342,75 @@ select.auth-input {
     font-size: 0.9rem;
   }
 }
+
+
+/* =========================================================================
+   Light Mode Overrides
+   ========================================================================= */
+[data-theme="light"] .auth-container {
+  background: linear-gradient(135deg, #f0f4f8 0%, #e8f5f1 50%, #f0f2f5 100%);
+}
+
+[data-theme="light"] .auth-card {
+  background: #ffffff;
+  border: 1px solid #e0e3e7;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+[data-theme="light"] .auth-card::before,
+[data-theme="light"] .auth-card::after {
+  display: none;
+}
+
+[data-theme="light"] .auth-header h1 {
+  color: #111b21;
+}
+
+[data-theme="light"] .auth-subtitle {
+  color: #41525d;
+}
+
+[data-theme="light"] .form-group label {
+  color: #111b21;
+}
+
+[data-theme="light"] .auth-input {
+  background: #f5f7f8;
+  border-color: #d8dde1;
+  color: #111b21;
+  box-shadow: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+[data-theme="light"] .auth-input::placeholder {
+  color: #667781;
+}
+
+[data-theme="light"] .auth-input:focus {
+  background: #ffffff;
+  border-color: #00a884;
+  box-shadow: 0 0 0 3px rgba(0, 168, 132, 0.15);
+}
+
+[data-theme="light"] .checkbox-label {
+  color: #111b21;
+}
+
+[data-theme="light"] .forgot-password {
+  color: #017561;
+}
+
+[data-theme="light"] .auth-footer {
+  border-top-color: #e0e3e7;
+}
+
+[data-theme="light"] .auth-footer p {
+  color: #41525d;
+}
+
+[data-theme="light"] .auth-dither {
+  opacity: 0;
+}

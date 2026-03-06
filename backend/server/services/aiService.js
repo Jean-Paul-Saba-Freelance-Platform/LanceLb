@@ -1,3 +1,4 @@
+
 import OpenAI from 'openai';
 
 const client = new OpenAI({
@@ -38,7 +39,13 @@ async function chatJSON(systemPrompt, userPrompt, retries = 2) {
 
       // The AI's reply is in response.choices[0].message.content as a string.
       // We parse it into a JS object since we requested JSON format.
-      return JSON.parse(response.choices[0].message.content);
+      
+        const raw = response.choices[0].message.content;
+      try {
+        return JSON.parse(raw);
+      } catch {
+        throw new Error(`AI returned invalid JSON: ${raw?.slice(0, 100)}`);
+      }
     } catch (error) {
       // If we hit a rate limit (HTTP 429), wait and retry instead of failing.
       // Groq's free tier has request-per-minute limits, so this handles bursts.
@@ -52,6 +59,7 @@ async function chatJSON(systemPrompt, userPrompt, retries = 2) {
       throw error; // Non-retryable error or out of retries — let caller handle it
     }
   }
+  throw new Error('chatJSON: exhausted retries without returning');
 }
 
 /**
@@ -127,10 +135,14 @@ Respond with JSON in this exact format:
 {"score": <number 0-100>, "strengths": [<1-3 short strings>], "improvements": [<1-3 short strings>]}`;
 
   try {
-    return await chatJSON(SYSTEM_PROMPT, userPrompt);
+    const result = await chatJSON(SYSTEM_PROMPT, userPrompt);
+    if (typeof result.score !== 'number' || !Array.isArray(result.strengths) || !Array.isArray(result.improvements)) {
+      console.error('AI returned unexpected shape:', result);
+      return { score: null, strengths: [], improvements: ['AI analysis unavailable'] };
+    }
+    return result;
   } catch (error) {
     console.error('AI analyzeProfileFit error:', error.message);
-    // Return a safe fallback so the frontend still works even if AI is down
     return { score: null, strengths: [], improvements: ['AI analysis unavailable'] };
   }
 }
@@ -149,6 +161,7 @@ Respond with JSON in this exact format:
 // Applications are sorted by aiScore so clients see top candidates first.
 //
 // Returns: { score: 0-100, strengths: [...], weaknesses: [...] }
+//learn how the scoring works in the prompt below, then implement the function to send the right data and return the AI's response.
 
 export async function scoreApplication(application, jobData, freelancerProfile) {
   // Format the screening question answers into a readable Q&A format

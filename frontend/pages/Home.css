@@ -707,3 +707,90 @@
     padding: 1.5rem;
   }
 }
+
+
+/* =========================================================================
+   Light Mode Overrides
+   ========================================================================= */
+[data-theme="light"] .landing-container {
+  background: linear-gradient(135deg, #f0f4f8 0%, #eef9f5 50%, #f0f2f5 100%);
+}
+
+[data-theme="light"] .landing-dither {
+  opacity: 0;
+}
+
+[data-theme="light"] .hero-title {
+  color: #111b21;
+}
+
+[data-theme="light"] .hero-subtitle {
+  color: #41525d;
+}
+
+[data-theme="light"] .hero-secondary-button {
+  background: #ffffff;
+  color: #111b21;
+  border-color: #d8dde1;
+}
+
+[data-theme="light"] .hero-secondary-button:hover {
+  background: #f0f2f5;
+}
+
+[data-theme="light"] .glass {
+  background: #ffffff;
+  border-color: #e0e3e7;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+}
+
+[data-theme="light"] .feature-title {
+  color: #111b21;
+}
+
+[data-theme="light"] .feature-description {
+  color: #41525d;
+}
+
+[data-theme="light"] .feature-icon {
+  color: #017561;
+}
+
+[data-theme="light"] .landing-footer {
+  border-top-color: #e0e3e7;
+}
+
+[data-theme="light"] .footer-text {
+  color: #667781;
+}
+
+[data-theme="light"] .glass-sidebar {
+  background: rgba(255, 255, 255, 0.95);
+  border-right-color: #e0e3e7;
+}
+
+[data-theme="light"] .sidebar-link {
+  color: #41525d;
+}
+
+[data-theme="light"] .sidebar-link:hover {
+  background: #f0f2f5;
+  color: #017561;
+}
+
+[data-theme="light"] .sidebar-button:first-child {
+  color: #111b21;
+  border-color: #d8dde1;
+}
+
+[data-theme="light"] .brand-name {
+  color: #111b21;
+}
+
+[data-theme="light"] .sidebar-close {
+  color: #111b21;
+}
+
+[data-theme="light"] .sidebar-overlay {
+  background: rgba(17, 27, 33, 0.4);
+}

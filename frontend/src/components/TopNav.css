@@ -291,3 +291,27 @@
     height: 18px;
   }
 }
+
+.top-nav-link.active {
+  color: #f3f4f6;
+  position: relative;
+}
+
+.top-nav-link.active::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: #00a884;
+  border-radius: 1px;
+}
+
+[data-theme="light"] .top-nav-link.active {
+  color: #017561;
+}
+
+[data-theme="light"] .top-nav-link.active::after {
+  background: #017561;
+}

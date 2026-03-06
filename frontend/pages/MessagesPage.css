@@ -534,3 +534,220 @@
     min-height: 520px;
   }
 }
+
+
+/* =========================================================================
+   Light Mode Overrides
+   ========================================================================= */
+[data-theme="light"] .messages-shell {
+  border-color: #d8dde1;
+}
+
+[data-theme="light"] .messages-sidebar,
+[data-theme="light"] .messages-chat-panel {
+  background: #ffffff;
+}
+
+[data-theme="light"] .messages-sidebar {
+  border-right-color: #d8dde1;
+}
+
+[data-theme="light"] .messages-sidebar-header {
+  background: #f0f2f5;
+  border-bottom-color: #d8dde1;
+}
+
+[data-theme="light"] .messages-back-button {
+  border-color: #d8dde1;
+  background: #ffffff;
+  color: #41525d;
+}
+
+[data-theme="light"] .messages-back-button:hover {
+  background: #e9edef;
+  color: #111b21;
+}
+
+[data-theme="light"] .messages-sidebar-header h2 {
+  color: #111b21;
+}
+
+[data-theme="light"] .messages-sidebar-header p {
+  color: #667781;
+}
+
+[data-theme="light"] .messages-search {
+  border-color: #d8dde1;
+  background: #f0f2f5;
+  color: #667781;
+}
+
+[data-theme="light"] .messages-search input {
+  color: #111b21;
+}
+
+[data-theme="light"] .messages-search input::placeholder {
+  color: #667781;
+}
+
+[data-theme="light"] .messages-list-heading {
+  color: #667781;
+}
+
+[data-theme="light"] .messages-user-row {
+  color: #111b21;
+}
+
+[data-theme="light"] .messages-user-row:hover {
+  background: #f0f2f5;
+}
+
+[data-theme="light"] .messages-user-row.active {
+  background: #e9edef;
+}
+
+[data-theme="light"] .messages-user-name {
+  color: #111b21;
+}
+
+[data-theme="light"] .messages-user-sub {
+  color: #667781;
+}
+
+[data-theme="light"] .messages-chat-header {
+  background: #f0f2f5;
+  border-bottom-color: #d8dde1;
+}
+
+[data-theme="light"] .messages-chat-header h3 {
+  color: #111b21;
+}
+
+[data-theme="light"] .messages-chat-header p {
+  color: #667781;
+}
+
+[data-theme="light"] .messages-chat-menu {
+  color: #667781;
+}
+
+[data-theme="light"] .messages-chat-menu:hover {
+  background: #e9edef;
+  color: #111b21;
+}
+
+[data-theme="light"] .messages-menu-panel {
+  background: #ffffff;
+  border-color: #d8dde1;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+[data-theme="light"] .messages-menu-item {
+  color: #41525d;
+}
+
+[data-theme="light"] .messages-menu-item:hover {
+  background: #f0f2f5;
+  color: #111b21;
+}
+
+[data-theme="light"] .messages-stream {
+  background: #efeae2;
+  background-image: none;
+}
+
+[data-theme="light"] .message-row.from-me .message-bubble {
+  background: #d9fdd3;
+  color: #111b21;
+}
+
+[data-theme="light"] .message-row.from-them .message-bubble {
+  background: #ffffff;
+  color: #111b21;
+}
+
+[data-theme="light"] .message-time {
+  color: rgba(17, 27, 33, 0.55);
+}
+
+[data-theme="light"] .messages-composer {
+  background: #f0f2f5;
+  border-top-color: #d8dde1;
+}
+
+[data-theme="light"] .messages-composer input {
+  background: #ffffff;
+  border-color: #d8dde1;
+  color: #111b21;
+}
+
+[data-theme="light"] .messages-composer input::placeholder {
+  color: #667781;
+}
+
+[data-theme="light"] .messages-state {
+  color: #667781;
+}
+
+[data-theme="light"] .messages-empty-chat {
+  color: #667781;
+}
+
+[data-theme="light"] .messages-empty-chat h3 {
+  color: #41525d;
+}
+
+[data-theme="light"] .messages-panel {
+  background: #ffffff;
+  border-color: #d8dde1;
+}
+
+[data-theme="light"] .messages-panel-header {
+  background: #f0f2f5;
+  border-bottom-color: #d8dde1;
+}
+
+[data-theme="light"] .messages-panel-header h3 {
+  color: #111b21;
+}
+
+[data-theme="light"] .messages-panel-close {
+  color: #667781;
+}
+
+[data-theme="light"] .messages-panel-field span {
+  color: #667781;
+}
+
+[data-theme="light"] .messages-panel-field input {
+  background: #f5f7f8;
+  border-color: #d8dde1;
+  color: #111b21;
+}
+
+[data-theme="light"] .messages-panel-members {
+  border-color: #d8dde1;
+}
+
+[data-theme="light"] .messages-panel-member-row {
+  border-bottom-color: #e9edef;
+}
+
+[data-theme="light"] .messages-panel-actions {
+  border-top-color: #d8dde1;
+}
+
+[data-theme="light"] .messages-panel-btn.secondary {
+  background: #f0f2f5;
+  color: #41525d;
+  border-color: #d8dde1;
+}
+
+[data-theme="light"] .messages-user-name,
+[data-theme="light"] .messages-panel-member-row .messages-user-name {
+  color: #111b21;
+}
+
+[data-theme="light"] .messages-panel-member-row .messages-user-sub {
+  color: #667781;
+}

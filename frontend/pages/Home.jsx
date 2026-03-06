@@ -11,7 +11,9 @@ const Home = () => {
   const user = userStr ? JSON.parse(userStr) : null
   const brandLink = user?.userType === 'freelancer'
     ? '/freelancer/home'
-    :  '/client/home'
+    : user?.userType === 'client'
+      ? '/client/home'
+      : '/'
       
 
   const toggleSidebar = () => {
@@ -81,7 +83,7 @@ const Home = () => {
               onClick={closeSidebar}
               aria-label="Close menu"
             >
-              x
+              &times;
             </button>
           </div>
 

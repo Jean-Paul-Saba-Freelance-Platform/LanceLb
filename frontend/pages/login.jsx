@@ -2,6 +2,8 @@ import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import Grainient from '../src/components/Grainient'
 import './Auth.css'
+const API_BASE = import.meta.env.VITE_API_BASE || 'http://127.0.0.1:4000'
+
 
 const EMAIL_REGEX = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
 
@@ -60,7 +62,7 @@ const Login = () => {
         setError('')
 
         try {
-            const response = await fetch('http://127.0.0.1:4000/api/auth/login', {
+            const response = await fetch(`${API_BASE}/api/auth/login`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -130,6 +132,10 @@ const Login = () => {
                 />
             </div>
             <div className="auth-card">
+                <div className="auth-header">
+                    <h1>Sign In</h1>
+                    <p className="auth-subtitle">Welcome back to LanceLB</p>
+                </div>
                 <form onSubmit={handleSubmit} className="auth-form">
                     {error && <div className="error-message-global">{error}</div>}
                     <div className="form-group">

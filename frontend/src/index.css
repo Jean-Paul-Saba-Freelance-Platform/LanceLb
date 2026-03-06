@@ -221,3 +221,41 @@ button {
   }
 }
 
+
+/* Theme Transition - applies background/border/color smoothly but doesn't conflict with
+   other explicit transitions since named properties always win over shorthand 'all' */
+:root {
+  --theme-transition: background-color 0.2s ease, border-color 0.2s ease, color 0.15s ease;
+}
+
+body, .top-nav, .sidebar-card, .job-card, .greeting-card,
+.messages-sidebar, .messages-chat-panel, .messages-chat-header, .messages-composer,
+.messages-stream, .message-bubble, .messages-search,
+.auth-card, .auth-input, .landing-container, .profile-dropdown,
+.dropdown-menu-item, .messages-user-row, .tab-button, .top-nav-link {
+  transition: var(--theme-transition);
+}
+
+/* Light theme body */
+[data-theme="light"] body {
+  background: #f0f2f5;
+  color: #111b21;
+  background-image: none;
+}
+
+[data-theme="light"] h1,
+[data-theme="light"] h2,
+[data-theme="light"] h3,
+[data-theme="light"] h4,
+[data-theme="light"] h5,
+[data-theme="light"] h6 {
+  color: #111b21;
+}
+
+[data-theme="light"] a {
+  color: #111b21;
+}
+
+[data-theme="light"] a:hover {
+  color: #017561;
+}

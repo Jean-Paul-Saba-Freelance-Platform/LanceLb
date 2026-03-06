@@ -4,7 +4,10 @@ import { MessageSquare, Search, SendHorizontal, MoreVertical } from 'lucide-reac
 import { io } from 'socket.io-client'
 import './MessagesPage.css'
 
-const API_BASE = 'http://127.0.0.1:4000'
+// Use the VITE_API_BASE environment variable when defined (e.g. in production)
+// and fall back to localhost for local development.
+// To configure for production, add VITE_API_BASE=https://your-api.com to your .env file.
+const API_BASE = import.meta.env.VITE_API_BASE || 'http://127.0.0.1:4000'
 
 const getCurrentUser = () => {
   try {

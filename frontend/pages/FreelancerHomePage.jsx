@@ -170,7 +170,7 @@ const FreelancerHomePage = () => {
           {/* Jobs Feed */}
           <div className="jobs-feed">
             {loadingJobs ? (
-              <div className="no-jobs-message"><p>Loading jobs...</p></div>
+              renderSkeletonCards()
             ) : filteredJobs.length > 0 ? (
               filteredJobs.map(job => (
                 <JobCard key={job._id || job.id} job={job} />

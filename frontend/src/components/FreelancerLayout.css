@@ -158,3 +158,124 @@
 .freelancer-layout .online-indicator {
   border-color: rgba(14, 12, 20, 0.6) !important;
 }
+
+
+/* =========================================================================
+   Light Mode Overrides
+   ========================================================================= */
+[data-theme="light"] .freelancer-layout {
+  background: #f0f2f5;
+  color: #111b21;
+}
+
+[data-theme="light"] .freelancer-layout .greeting-card,
+[data-theme="light"] .freelancer-layout .main-section-card,
+[data-theme="light"] .freelancer-layout .sidebar-card,
+[data-theme="light"] .freelancer-layout .stats-card,
+[data-theme="light"] .freelancer-layout .settings-card,
+[data-theme="light"] .freelancer-layout .right-sidebar-card,
+[data-theme="light"] .freelancer-layout .profile-header {
+  background: #ffffff !important;
+  border-color: #e0e3e7 !important;
+  color: #111b21 !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06) !important;
+}
+
+[data-theme="light"] .freelancer-layout .greeting-card:hover,
+[data-theme="light"] .freelancer-layout .main-section-card:hover,
+[data-theme="light"] .freelancer-layout .sidebar-card:hover,
+[data-theme="light"] .freelancer-layout .stats-card:hover,
+[data-theme="light"] .freelancer-layout .settings-card:hover,
+[data-theme="light"] .freelancer-layout .right-sidebar-card:hover,
+[data-theme="light"] .freelancer-layout .job-card:hover,
+[data-theme="light"] .freelancer-layout .profile-header:hover {
+  border-color: #c5cdd4 !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1) !important;
+}
+
+[data-theme="light"] .freelancer-layout h1,
+[data-theme="light"] .freelancer-layout h2,
+[data-theme="light"] .freelancer-layout h3,
+[data-theme="light"] .freelancer-layout .greeting-text,
+[data-theme="light"] .freelancer-layout .section-title,
+[data-theme="light"] .freelancer-layout .profile-header-name,
+[data-theme="light"] .freelancer-layout .stats-page-title,
+[data-theme="light"] .freelancer-layout .settings-page-title {
+  color: #111b21 !important;
+}
+
+[data-theme="light"] .freelancer-layout p,
+[data-theme="light"] .freelancer-layout span,
+[data-theme="light"] .freelancer-layout .greeting-date,
+[data-theme="light"] .freelancer-layout .sidebar-text,
+[data-theme="light"] .freelancer-layout .profile-header-location,
+[data-theme="light"] .freelancer-layout .stats-page-subtitle,
+[data-theme="light"] .freelancer-layout .settings-page-subtitle,
+[data-theme="light"] .freelancer-layout .bio-text,
+[data-theme="light"] .freelancer-layout .section-placeholder-text {
+  color: #41525d !important;
+}
+
+[data-theme="light"] .freelancer-layout .tab-button:not(.active),
+[data-theme="light"] .freelancer-layout .portfolio-tab:not(.active),
+[data-theme="light"] .freelancer-layout .metric-tab:not(.active),
+[data-theme="light"] .freelancer-layout .settings-nav-item:not(.active) {
+  color: #667781 !important;
+}
+
+[data-theme="light"] .freelancer-layout .jobs-search-input {
+  background: #f5f7f8 !important;
+  border-color: #d8dde1 !important;
+  color: #111b21 !important;
+}
+
+[data-theme="light"] .freelancer-layout .jobs-search-input::placeholder {
+  color: #667781 !important;
+}
+
+[data-theme="light"] .freelancer-layout .jobs-search-input:focus {
+  border-color: #00a884 !important;
+  background: #ffffff !important;
+  box-shadow: 0 0 0 3px rgba(0, 168, 132, 0.15) !important;
+}
+
+[data-theme="light"] .freelancer-layout .top-nav {
+  background: #ffffff !important;
+  border-color: #e0e3e7 !important;
+}
+
+[data-theme="light"] .freelancer-layout .top-nav-search {
+  background: #f0f2f5 !important;
+  border-color: #d8dde1 !important;
+}
+
+[data-theme="light"] .freelancer-layout .top-nav-search-input {
+  color: #111b21 !important;
+}
+
+[data-theme="light"] .freelancer-layout .top-nav-search-dropdown {
+  background: #f0f2f5 !important;
+  border-left-color: #d8dde1 !important;
+  color: #111b21 !important;
+}
+
+[data-theme="light"] .freelancer-layout .job-card {
+  background: #ffffff !important;
+  border-color: #e0e3e7 !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06) !important;
+}
+
+[data-theme="light"] .freelancer-layout .job-title {
+  color: #111b21 !important;
+}
+
+[data-theme="light"] .freelancer-layout .job-tag,
+[data-theme="light"] .freelancer-layout .skill-tag {
+  background: #eef9f5 !important;
+  border-color: rgba(0, 168, 132, 0.2) !important;
+  color: #017561 !important;
+}
+
+[data-theme="light"] .freelancer-layout .online-indicator {
+  border-color: #ffffff !important;
+}
