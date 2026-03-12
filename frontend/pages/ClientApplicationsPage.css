@@ -441,6 +441,248 @@
   color: #fbbf24;
 }
 
+/* ─── ATS Grade Badge (header) ─── */
+
+.app-ats-grade-badge {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.04);
+  border: 2px solid var(--ats-color, rgba(255, 255, 255, 0.15));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.app-ats-grade-val {
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+/* ─── ATS Analysis Section ─── */
+
+.app-ats-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  padding: 0.85rem;
+  background: rgba(0, 168, 132, 0.04);
+  border: 1px solid rgba(0, 168, 132, 0.12);
+  border-radius: 10px;
+}
+
+.app-ats-header {
+  display: flex;
+  align-items: baseline;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+
+.app-ats-score {
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+.app-ats-grade {
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
+.app-ats-category {
+  font-size: 0.78rem;
+  color: rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 999px;
+  padding: 0.1rem 0.55rem;
+}
+
+.app-ats-confidence {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.35);
+  margin-left: auto;
+}
+
+/* ─── ATS Breakdown Bars ─── */
+
+.app-ats-breakdown {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.app-ats-bar-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.app-ats-bar-label {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.55);
+  width: 140px;
+  flex-shrink: 0;
+}
+
+.app-ats-bar-track {
+  flex: 1;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.app-ats-bar-fill {
+  height: 100%;
+  border-radius: 999px;
+  transition: width 0.4s ease;
+}
+
+.app-ats-bar-val {
+  font-size: 0.72rem;
+  color: rgba(255, 255, 255, 0.4);
+  width: 36px;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+/* ─── Light mode overrides ─── */
+
+[data-theme="light"] .client-apps-back {
+  color: rgba(0, 0, 0, 0.45);
+}
+
+[data-theme="light"] .client-apps-back:hover {
+  color: rgba(0, 0, 0, 0.75);
+}
+
+[data-theme="light"] .client-apps-title {
+  color: #111827;
+}
+
+[data-theme="light"] .client-apps-count {
+  color: rgba(0, 0, 0, 0.4);
+}
+
+[data-theme="light"] .client-apps-loading {
+  color: rgba(0, 0, 0, 0.45);
+}
+
+[data-theme="light"] .client-apps-empty {
+  color: rgba(0, 0, 0, 0.4);
+  background: rgba(0, 0, 0, 0.03);
+  border-color: rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="light"] .app-card {
+  background: #ffffff;
+  border-color: rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="light"] .app-card:hover {
+  border-color: rgba(0, 168, 132, 0.35);
+}
+
+[data-theme="light"] .app-card-body {
+  border-top-color: rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="light"] .app-name {
+  color: #111827;
+}
+
+[data-theme="light"] .app-email {
+  color: rgba(0, 0, 0, 0.45);
+}
+
+[data-theme="light"] .app-date {
+  color: rgba(0, 0, 0, 0.35);
+}
+
+[data-theme="light"] .app-expand-icon {
+  color: rgba(0, 0, 0, 0.3);
+}
+
+[data-theme="light"] .app-section-title {
+  color: rgba(0, 0, 0, 0.45);
+}
+
+[data-theme="light"] .app-section-text {
+  color: rgba(0, 0, 0, 0.8);
+}
+
+[data-theme="light"] .app-answer {
+  background: rgba(0, 0, 0, 0.02);
+  border-color: rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="light"] .app-answer-q {
+  color: rgba(0, 0, 0, 0.5);
+}
+
+[data-theme="light"] .app-answer-a {
+  color: #111827;
+}
+
+[data-theme="light"] .app-meta-label {
+  color: rgba(0, 0, 0, 0.4);
+}
+
+[data-theme="light"] .app-meta-value {
+  color: #111827;
+}
+
+[data-theme="light"] .ai-score-badge {
+  background: rgba(0, 0, 0, 0.03);
+}
+
+[data-theme="light"] .ai-score-pending {
+  color: rgba(0, 0, 0, 0.3);
+  background: rgba(0, 0, 0, 0.03);
+  border-color: rgba(0, 0, 0, 0.12);
+}
+
+[data-theme="light"] .ai-analysis-section {
+  background: rgba(0, 168, 132, 0.05);
+  border-color: rgba(0, 168, 132, 0.18);
+}
+
+[data-theme="light"] .ai-analysis-item {
+  color: rgba(0, 0, 0, 0.75);
+}
+
+[data-theme="light"] .app-ats-grade-badge {
+  background: rgba(0, 0, 0, 0.03);
+}
+
+[data-theme="light"] .app-ats-section {
+  background: rgba(0, 168, 132, 0.05);
+  border-color: rgba(0, 168, 132, 0.18);
+}
+
+[data-theme="light"] .app-ats-category {
+  color: rgba(0, 0, 0, 0.55);
+  background: rgba(0, 0, 0, 0.04);
+  border-color: rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="light"] .app-ats-confidence {
+  color: rgba(0, 0, 0, 0.35);
+}
+
+[data-theme="light"] .app-ats-bar-label {
+  color: rgba(0, 0, 0, 0.6);
+}
+
+[data-theme="light"] .app-ats-bar-track {
+  background: rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="light"] .app-ats-bar-val {
+  color: rgba(0, 0, 0, 0.45);
+}
+
 /* ─── Responsive ─── */
 
 @media (max-width: 640px) {

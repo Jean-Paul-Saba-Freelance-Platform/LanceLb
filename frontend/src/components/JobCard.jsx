@@ -13,6 +13,11 @@ function scoreColor(score) {
   return '#f87171'
 }
 
+function stripEmoji(str) {
+  if (!str) return str
+  return str.replace(/[\u{1F300}-\u{1FFFF}]|[\u{2600}-\u{27BF}]|[\u{2702}-\u{27B0}]|[\uFE00-\uFEFF]/gu, '').replace(/\s+/g, ' ').trim()
+}
+
 function scoreLabel(score) {
   if (score >= 80) return 'Excellent Match'
   if (score >= 60) return 'Good Match'
@@ -64,6 +69,9 @@ const JobCard = ({ job }) => {
   const [proposedBudget, setProposedBudget] = useState('')
   const [proposedTimeline, setProposedTimeline] = useState('')
   const [cvFile, setCvFile] = useState(null)
+  const [atsResult, setAtsResult] = useState(null)
+  const [atsLoading, setAtsLoading] = useState(false)
+  const [atsError, setAtsError] = useState('')
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState('')
   const [success, setSuccess] = useState(false)
@@ -199,6 +207,40 @@ const JobCard = ({ job }) => {
     }
   }
 
+  const handleCvUpload = async (file) => {
+    if (!file || file.type !== 'application/pdf') {
+      setAtsError('Only PDF files are supported for ATS scoring.')
+      return
+    }
+    setCvFile(file)
+    setAtsResult(null)
+    setAtsError('')
+    setAtsLoading(true)
+
+    const token = localStorage.getItem('token')
+    const formData = new FormData()
+    formData.append('resume', file)
+
+    try {
+      const res = await fetch(`${API_BASE}/api/ats/evaluate`, {
+        method: 'POST',
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
+        credentials: 'include',
+        body: formData,
+      })
+      const data = await res.json()
+      if (res.ok && data.success) {
+        setAtsResult(data)
+      } else {
+        setAtsError(data.message || 'ATS scoring failed.')
+      }
+    } catch {
+      setAtsError('Could not reach ATS service.')
+    } finally {
+      setAtsLoading(false)
+    }
+  }
+
   const handleSubmit = async () => {
     setSubmitting(true)
     setError('')
@@ -222,6 +264,14 @@ const JobCard = ({ job }) => {
       proposedBudget: proposedBudget ? Number(proposedBudget) : undefined,
       proposedTimelineDays: proposedTimeline ? Number(proposedTimeline) : undefined,
       answers: formattedAnswers,
+      ...(atsResult && {
+        atsScore:      atsResult.total_score,
+        atsGrade:      atsResult.grade,
+        atsCategory:   atsResult.predicted_category,
+        atsConfidence: atsResult.confidence,
+        atsBreakdown:  atsResult.breakdown,
+        atsFeedback:   atsResult.feedback,
+      }),
     }
 
     try {
@@ -258,6 +308,9 @@ const JobCard = ({ job }) => {
     setProposedBudget('')
     setProposedTimeline('')
     setCvFile(null)
+    setAtsResult(null)
+    setAtsLoading(false)
+    setAtsError('')
     setError('')
     setSuccess(false)
     setQuestions([])
@@ -579,22 +632,94 @@ const JobCard = ({ job }) => {
                   </div>
                 </Step>
 
-                {/* Step 4: CV Upload & Submit */}
+                {/* Step 4: CV Upload + ATS Scoring */}
                 <Step>
                   <div className="wizard-step">
                     <h4 className="wizard-step-title">Upload Your CV</h4>
-                    <p className="wizard-step-desc">Attach your resume so the client can review your background.</p>
+                    <p className="wizard-step-desc">Upload your PDF resume to get an instant ATS score before submitting.</p>
                     <label className="wizard-file-upload">
                       <input
                         type="file"
-                        accept=".pdf,.doc,.docx"
-                        onChange={(e) => setCvFile(e.target.files[0])}
+                        accept=".pdf"
+                        onChange={(e) => handleCvUpload(e.target.files[0])}
                       />
                       <div className="wizard-file-label">
                         <span className="wizard-file-icon">📎</span>
-                        <span>{cvFile ? cvFile.name : 'Choose a file (PDF, DOC, DOCX)'}</span>
+                        <span>{cvFile ? cvFile.name : 'Choose a PDF file'}</span>
                       </div>
                     </label>
+
+                    {atsLoading && (
+                      <div className="ats-loading">
+                        <div className="ats-spinner" />
+                        <span>Scoring your resume...</span>
+                      </div>
+                    )}
+
+                    {atsError && <p className="wizard-error">{atsError}</p>}
+
+                    {atsResult && (
+                      <div className="ats-result">
+                        <div className="ats-result-main">
+                          <div className="ats-gauge">
+                            <svg viewBox="0 0 80 80" className="ats-ring">
+                              <circle cx="40" cy="40" r="34" fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth="6" />
+                              <circle
+                                cx="40" cy="40" r="34"
+                                fill="none"
+                                stroke={scoreColor(atsResult.total_score)}
+                                strokeWidth="6"
+                                strokeLinecap="round"
+                                strokeDasharray={`${(atsResult.total_score / 100) * 213.6} 213.6`}
+                                transform="rotate(-90 40 40)"
+                              />
+                            </svg>
+                            <span className="ats-gauge-number" style={{ color: scoreColor(atsResult.total_score) }}>
+                              {atsResult.total_score}
+                            </span>
+                          </div>
+                          <div className="ats-result-details">
+                            {atsResult.grade && (
+                              <span className="ats-grade-label" style={{ color: scoreColor(atsResult.total_score) }}>
+                                {stripEmoji(atsResult.grade)}
+                              </span>
+                            )}
+                            <div className="ats-tags">
+                              {atsResult.predicted_category && (
+                                <span className="ats-tag ats-tag--category">{atsResult.predicted_category}</span>
+                              )}
+                              {atsResult.confidence && (
+                                <span className="ats-tag ats-tag--confidence">{atsResult.confidence}% confidence</span>
+                              )}
+                            </div>
+                            {atsResult.breakdown && (
+                              <div className="ats-breakdown">
+                                {Object.entries(atsResult.breakdown).map(([label, val]) => (
+                                  <div key={label} className="ats-bar-row">
+                                    <span className="ats-bar-label">{label}</span>
+                                    <div className="ats-bar-track">
+                                      <div
+                                        className="ats-bar-fill"
+                                        style={{ width: `${Math.min(val * 4, 100)}%`, background: scoreColor(val * 4) }}
+                                      />
+                                    </div>
+                                    <span className="ats-bar-score">{val}</span>
+                                  </div>
+                                ))}
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                        {atsResult.feedback?.length > 0 && (
+                          <div className="ats-tips-panel">
+                            {atsResult.feedback.map((tip, i) => (
+                              <p key={i} className="ats-tip-item">{stripEmoji(tip)}</p>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    )}
+
                     {error && <p className="wizard-error">{error}</p>}
                     {submitting && <p className="wizard-submitting">Submitting your application...</p>}
                   </div>

@@ -89,7 +89,15 @@ const applicationSchema = new Schema(
     viewedByClient: {
       type: Boolean,
       default: false
-    }
+    },
+
+    // ATS resume evaluation — populated when freelancer uploads CV during apply
+    atsScore:      { type: Number, min: 0, max: 100 },
+    atsGrade:      { type: String },
+    atsCategory:   { type: String },
+    atsConfidence: { type: Number },
+    atsBreakdown:  { type: Schema.Types.Mixed },
+    atsFeedback:   { type: [String] },
 
   },
   {

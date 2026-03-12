@@ -43,7 +43,10 @@ const ClientApplicationsPage = () => {
         const appsData = await appsRes.json()
 
         if (jobData.success) setJob(jobData.job)
-        if (appsData.success) setApplications(appsData.applications)
+        if (appsData.success) {
+          console.log('[ATS debug] applications:', appsData.applications.map(a => ({ id: a._id, atsScore: a.atsScore, atsGrade: a.atsGrade })))
+          setApplications(appsData.applications)
+        }
         if (!jobData.success) setError(jobData.message || 'Failed to load job')
       } catch (err) {
         console.error('Error fetching applications:', err)
@@ -95,6 +98,29 @@ const ClientApplicationsPage = () => {
     if (score >= 40) return 'Fair Match'
     return 'Low Match'
   }
+
+  const atsGradeColor = (grade) => {
+    if (grade === 'A') return '#10b981'
+    if (grade === 'B') return '#34d399'
+    if (grade === 'C') return '#fbbf24'
+    if (grade === 'D') return '#f97316'
+    return '#f87171'
+  }
+
+  const BREAKDOWN_MAX = {
+    'Section Completeness': 25,
+    'Keyword Density': 25,
+    'Quantified Impact': 20,
+    'Action Verbs': 15,
+    'Readability': 10,
+    'Contact Info': 5,
+  }
+
+  const parseFeedback = (items) =>
+    items.map((item) => ({
+      text: item.replace(/^[✅❌]\s*/, '').trim(),
+      positive: item.startsWith('✅'),
+    }))
 
   const statusBadge = (status) => {
     const map = {
@@ -171,6 +197,11 @@ const ClientApplicationsPage = () => {
                       </div>
                     </div>
                     <div className="app-card-right">
+                      {app.atsGrade && (
+                        <div className="app-ats-grade-badge" style={{ '--ats-color': atsGradeColor(app.atsGrade) }}>
+                          <span className="app-ats-grade-val" style={{ color: atsGradeColor(app.atsGrade) }}>{app.atsGrade}</span>
+                        </div>
+                      )}
                       {app.aiScore != null ? (
                         <div className="ai-score-badge" style={{ '--ai-color': aiScoreColor(app.aiScore) }}>
                           <span className="ai-score-value" style={{ color: aiScoreColor(app.aiScore) }}>{app.aiScore}</span>
@@ -222,10 +253,10 @@ const ClientApplicationsPage = () => {
                         )}
                       </div>
 
-                      {/* AI Analysis Section */}
+                      {/* AI Profile Analysis Section */}
                       {app.aiScore != null && (
                         <div className="ai-analysis-section">
-                          <h4 className="app-section-title">AI Analysis</h4>
+                          <h4 className="app-section-title">Profile Analysis</h4>
                           <div className="ai-analysis-header">
                             <span className="ai-analysis-score" style={{ color: aiScoreColor(app.aiScore) }}>
                               {app.aiScore}/100
@@ -250,6 +281,65 @@ const ClientApplicationsPage = () => {
                                 <div key={i} className="ai-analysis-item ai-analysis-item--weakness">
                                   <span className="ai-item-icon">!</span>
                                   <span>{w}</span>
+                                </div>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                      )}
+
+                      {/* ATS CV Analysis Section */}
+                      {app.atsScore != null && (
+                        <div className="app-ats-section">
+                          <h4 className="app-section-title">CV Analysis (ATS)</h4>
+                          <div className="app-ats-header">
+                            <span className="app-ats-score" style={{ color: atsGradeColor(app.atsGrade) }}>
+                              {app.atsScore}/100
+                            </span>
+                            <span className="app-ats-grade" style={{ color: atsGradeColor(app.atsGrade) }}>
+                              Grade {app.atsGrade}
+                            </span>
+                            {app.atsCategory && (
+                              <span className="app-ats-category">{app.atsCategory}</span>
+                            )}
+                            {app.atsConfidence != null && (
+                              <span className="app-ats-confidence">
+                                {Math.round(app.atsConfidence * 100)}% confidence
+                              </span>
+                            )}
+                          </div>
+
+                          {app.atsBreakdown && (
+                            <div className="app-ats-breakdown">
+                              {Object.entries(app.atsBreakdown).map(([key, score]) => {
+                                const max = BREAKDOWN_MAX[key] || 25
+                                const pct = Math.min((score / max) * 100, 100)
+                                const fillColor = pct >= 70 ? '#10b981' : pct >= 40 ? '#fbbf24' : '#f87171'
+                                return (
+                                  <div key={key} className="app-ats-bar-row">
+                                    <span className="app-ats-bar-label">{key}</span>
+                                    <div className="app-ats-bar-track">
+                                      <div
+                                        className="app-ats-bar-fill"
+                                        style={{ width: `${pct}%`, background: fillColor }}
+                                      />
+                                    </div>
+                                    <span className="app-ats-bar-val">{score}/{max}</span>
+                                  </div>
+                                )
+                              })}
+                            </div>
+                          )}
+
+                          {app.atsFeedback?.length > 0 && (
+                            <div className="ai-analysis-list">
+                              {parseFeedback(app.atsFeedback).map((item, i) => (
+                                <div
+                                  key={i}
+                                  className={`ai-analysis-item ${item.positive ? 'ai-analysis-item--strength' : 'ai-analysis-item--weakness'}`}
+                                >
+                                  <span className="ai-item-icon">{item.positive ? '✓' : '!'}</span>
+                                  <span>{item.text}</span>
                                 </div>
                               ))}
                             </div>

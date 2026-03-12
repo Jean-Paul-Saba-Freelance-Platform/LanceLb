@@ -16,6 +16,12 @@ export const createApplication = async (req, res) => {
             proposedBudget,
             proposedTimelineDays,
             answers,
+            atsScore,
+            atsGrade,
+            atsCategory,
+            atsConfidence,
+            atsBreakdown,
+            atsFeedback,
         } = req.body;
 
         // Validate that a job ID was provided
@@ -63,7 +69,7 @@ export const createApplication = async (req, res) => {
         // Create the application document
         const application = await Application.create({
             jobId,
-            clientId: job.clientId, // copy the job owner's ID from the job
+            clientId: job.clientId,
             freelancerId,
             coverLetter: coverLetter?.trim(),
             proposedBudget: proposedBudget != null ? Number(proposedBudget) : undefined,
@@ -71,6 +77,15 @@ export const createApplication = async (req, res) => {
             answers: cleanedAnswers,
             status: 'pending',
             viewedByClient: false,
+            // ATS fields — only stored if the freelancer uploaded a CV
+            ...(atsScore != null && {
+                atsScore:      Number(atsScore),
+                atsGrade:      atsGrade || undefined,
+                atsCategory:   atsCategory || undefined,
+                atsConfidence: atsConfidence != null ? Number(atsConfidence) : undefined,
+                atsBreakdown:  atsBreakdown || undefined,
+                atsFeedback:   Array.isArray(atsFeedback) ? atsFeedback : [],
+            }),
         });
 
         // Run AI scoring in the background (don't block the response)

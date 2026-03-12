@@ -1060,3 +1060,198 @@
 [data-theme="light"] .fit-tip-example {
   color: #017561 !important;
 }
+
+/* ── ATS Resume Scoring ── */
+
+.ats-loading {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-top: 0.75rem;
+  color: rgba(255,255,255,0.5);
+  font-size: 0.85rem;
+}
+
+.ats-spinner {
+  width: 18px; height: 18px;
+  border: 2px solid rgba(0,168,132,0.3);
+  border-top-color: #00a884;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+.ats-result {
+  margin-top: 0.85rem;
+  background: #1b2730;
+  border: 1px solid #2a3942;
+  border-radius: 10px;
+  padding: 0.85rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.ats-result-main {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.ats-gauge {
+  position: relative;
+  width: 64px; height: 64px;
+  flex-shrink: 0;
+}
+
+.ats-ring {
+  width: 100%; height: 100%;
+}
+
+.ats-gauge-number {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+.ats-result-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  min-width: 0;
+  flex: 1;
+}
+
+.ats-grade-label {
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+
+.ats-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.ats-tag {
+  font-size: 0.72rem;
+  padding: 0.15rem 0.5rem;
+  border-radius: 999px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.ats-tag--category {
+  background: #1f3a35;
+  color: #10b981;
+  border: 1px solid rgba(16,185,129,0.4);
+}
+
+.ats-tag--confidence {
+  background: rgba(255,255,255,0.05);
+  color: rgba(255,255,255,0.45);
+  border: 1px solid rgba(255,255,255,0.1);
+}
+
+.ats-breakdown {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  margin-top: 0.1rem;
+}
+
+.ats-bar-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.ats-bar-label {
+  font-size: 0.72rem;
+  color: rgba(255,255,255,0.45);
+  width: 130px;
+  flex-shrink: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ats-bar-track {
+  flex: 1;
+  height: 4px;
+  background: rgba(255,255,255,0.07);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.ats-bar-fill {
+  height: 100%;
+  border-radius: 999px;
+  transition: width 0.4s ease;
+}
+
+.ats-bar-score {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: rgba(255,255,255,0.45);
+  width: 20px;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.ats-tips-panel {
+  margin-top: 0.75rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid rgba(255,255,255,0.06);
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.ats-tip-item {
+  font-size: 0.8rem;
+  color: rgba(255,255,255,0.6);
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* ── ATS Light Mode Overrides ── */
+
+[data-theme="light"] .ats-loading {
+  color: #667781;
+}
+
+[data-theme="light"] .ats-spinner {
+  border-color: rgba(0,168,132,0.2);
+  border-top-color: #00a884;
+}
+
+[data-theme="light"] .ats-result {
+  background: #f5f7f8;
+  border-color: #d8dde1;
+}
+
+[data-theme="light"] .ats-tag--category {
+  background: #e6f7f3;
+  color: #017561;
+  border-color: rgba(0,117,97,0.3);
+}
+
+[data-theme="light"] .ats-tag--confidence {
+  background: rgba(0,0,0,0.04);
+  color: #64748b;
+  border-color: rgba(0,0,0,0.1);
+}
+
+[data-theme="light"] .ats-bar-label { color: #64748b; }
+[data-theme="light"] .ats-bar-track { background: rgba(0,0,0,0.07); }
+[data-theme="light"] .ats-bar-score { color: #64748b; }
+
+[data-theme="light"] .ats-tips-panel {
+  border-top-color: rgba(0,0,0,0.07);
+}
+
+[data-theme="light"] .ats-tip-item { color: #374151; }
