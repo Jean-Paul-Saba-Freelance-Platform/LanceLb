@@ -14,6 +14,7 @@ const ClientHomePage = () => {
   const [dashboardSummary, setDashboardSummary] = useState(defaultDashboardSummary)
   const [clientJobs, setClientJobs] = useState([])
   const [loadingJobs, setLoadingJobs] = useState(true)
+  const [jobsError, setJobsError] = useState('')
 
   const fetchDashboardSummary = async () => {
     try {
@@ -74,9 +75,14 @@ const ClientHomePage = () => {
           headers: { Authorization: `Bearer ${token}` },
         })
         const data = await res.json()
-        if (data.success) setClientJobs(data.jobs || data.data || [])
+        if (data.success) {
+          setClientJobs(data.jobs || data.data || [])
+        } else {
+          setJobsError(data.message || 'Failed to load jobs')
+        }
       } catch (err) {
         console.error('Error fetching client jobs:', err)
+        setJobsError('Could not reach the server. Make sure the backend is running.')
       } finally {
         setLoadingJobs(false)
       }
@@ -199,6 +205,8 @@ const ClientHomePage = () => {
                 <>
                   {loadingJobs ? (
                     <p className="overview-loading">Loading your jobs...</p>
+                  ) : jobsError ? (
+                    <p className="overview-error">{jobsError}</p>
                   ) : clientJobs.filter(j => j.status === 'open').length > 0 ? (
                     <div className="overview-job-list">
                       {clientJobs.filter(j => j.status === 'open').map(job => (

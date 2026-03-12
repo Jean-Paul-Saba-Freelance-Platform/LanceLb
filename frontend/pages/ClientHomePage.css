@@ -663,6 +663,12 @@
   padding: 2rem;
 }
 
+.overview-error {
+  text-align: center;
+  color: #f87171;
+  padding: 2rem;
+}
+
 .overview-job-list {
   display: flex;
   flex-direction: column;
