@@ -1,0 +1,285 @@
+.cp-page {
+  min-height: 100vh;
+}
+
+.cp-container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 4rem;
+}
+
+.cp-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.75rem;
+}
+
+.cp-title {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #fff;
+  margin: 0;
+  flex: 1;
+}
+
+.cp-new-btn {
+  padding: 0.5rem 1.1rem;
+  border-radius: 8px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+  background: rgba(0, 168, 132, 0.2);
+  color: #4be2be;
+  border: 1px solid rgba(0, 168, 132, 0.4);
+  transition: background 0.2s;
+}
+.cp-new-btn:hover { background: rgba(0, 168, 132, 0.35); }
+
+/* ─── Create form ─── */
+
+.cp-form {
+  background: rgba(14, 12, 20, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  padding: 1.5rem;
+  margin-bottom: 1.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+}
+
+.cp-form-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #fff;
+  margin: 0;
+}
+
+.cp-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.cp-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.5);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.cp-input {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 0.92rem;
+  padding: 0.6rem 0.85rem;
+  font-family: inherit;
+  width: 100%;
+  box-sizing: border-box;
+}
+.cp-input:focus { outline: none; border-color: rgba(0, 168, 132, 0.5); }
+.cp-textarea { resize: vertical; }
+
+.cp-jobs-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.cp-no-jobs {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.35);
+}
+
+.cp-job-check {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.45rem 0.7rem;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  cursor: pointer;
+  font-size: 0.88rem;
+  color: rgba(255, 255, 255, 0.8);
+  transition: background 0.15s;
+}
+.cp-job-check:hover { background: rgba(255, 255, 255, 0.04); }
+.cp-job-check input { accent-color: #4be2be; }
+
+.cp-job-status {
+  margin-left: auto;
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 0.15rem 0.5rem;
+  border-radius: 999px;
+}
+.cp-status-open { background: rgba(16, 185, 129, 0.12); color: #10b981; }
+.cp-status-closed { background: rgba(161, 161, 170, 0.12); color: #a1a1aa; }
+.cp-status-in_progress { background: rgba(56, 189, 248, 0.12); color: #38bdf8; }
+
+.cp-form-error {
+  font-size: 0.85rem;
+  color: #f87171;
+  margin: 0;
+}
+
+.cp-submit-btn {
+  align-self: flex-end;
+  padding: 0.55rem 1.4rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  background: rgba(0, 168, 132, 0.25);
+  color: #4be2be;
+  border: 1px solid rgba(0, 168, 132, 0.4);
+  transition: background 0.2s;
+}
+.cp-submit-btn:hover:not(:disabled) { background: rgba(0, 168, 132, 0.4); }
+.cp-submit-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* ─── Project list ─── */
+
+.cp-loading {
+  text-align: center;
+  color: rgba(255, 255, 255, 0.4);
+  padding: 3rem 0;
+}
+
+.cp-error {
+  color: #f87171;
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+}
+
+.cp-empty {
+  text-align: center;
+  color: rgba(255, 255, 255, 0.35);
+  padding: 4rem 1rem;
+  background: rgba(14, 12, 20, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 12px;
+}
+
+.cp-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+
+.cp-card {
+  background: rgba(14, 12, 20, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 1.25rem;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+}
+.cp-card:hover {
+  border-color: rgba(0, 168, 132, 0.3);
+  background: rgba(14, 12, 20, 0.75);
+}
+
+.cp-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.cp-card-info { flex: 1; min-width: 0; }
+
+.cp-card-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #fff;
+  margin: 0 0 0.25rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cp-card-desc {
+  font-size: 0.84rem;
+  color: rgba(255, 255, 255, 0.45);
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cp-card-status {
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.2rem 0.65rem;
+  border-radius: 999px;
+  border: 1px solid;
+  background: transparent;
+  flex-shrink: 0;
+  text-transform: capitalize;
+}
+
+.cp-card-meta {
+  display: flex;
+  gap: 0.5rem;
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.35);
+  align-items: center;
+}
+
+/* ─── Progress bar ─── */
+
+.cp-progress-row {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.cp-progress-track {
+  flex: 1;
+  height: 5px;
+  background: rgba(255, 255, 255, 0.07);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.cp-progress-fill {
+  height: 100%;
+  background: #10b981;
+  border-radius: 999px;
+  transition: width 0.4s ease;
+}
+
+.cp-progress-label {
+  font-size: 0.72rem;
+  color: rgba(255, 255, 255, 0.35);
+  width: 40px;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+/* ─── Light mode ─── */
+
+[data-theme="light"] .cp-title { color: #111827; }
+[data-theme="light"] .cp-form { background: #fff; border-color: rgba(0,0,0,0.09); }
+[data-theme="light"] .cp-form-title { color: #111827; }
+[data-theme="light"] .cp-label { color: rgba(0,0,0,0.45); }
+[data-theme="light"] .cp-input { background: rgba(0,0,0,0.03); border-color: rgba(0,0,0,0.12); color: #111827; }
+[data-theme="light"] .cp-job-check { color: #111827; border-color: rgba(0,0,0,0.08); }
+[data-theme="light"] .cp-card { background: #fff; border-color: rgba(0,0,0,0.09); }
+[data-theme="light"] .cp-card:hover { border-color: rgba(0,168,132,0.35); background: #fafafa; }
+[data-theme="light"] .cp-card-title { color: #111827; }
+[data-theme="light"] .cp-card-desc { color: rgba(0,0,0,0.45); }
+[data-theme="light"] .cp-card-meta { color: rgba(0,0,0,0.35); }
+[data-theme="light"] .cp-empty { color: rgba(0,0,0,0.35); background: rgba(0,0,0,0.02); border-color: rgba(0,0,0,0.07); }
+[data-theme="light"] .cp-progress-track { background: rgba(0,0,0,0.07); }
+[data-theme="light"] .cp-progress-label { color: rgba(0,0,0,0.35); }

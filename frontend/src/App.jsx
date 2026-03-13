@@ -17,6 +17,9 @@ import ClientStatsPage from '../pages/ClientStatsPage'
 import ClientSettingsPage from '../pages/ClientSettingsPage'
 import ClientJobsPage from '../pages/ClientJobsPage'
 import ClientApplicationsPage from '../pages/ClientApplicationsPage'
+import ClientProjectsPage from '../pages/ClientProjectsPage'
+import FreelancerProjectsPage from '../pages/FreelancerProjectsPage'
+import ProjectDetailPage from '../pages/ProjectDetailPage'
 import MessagesPage from '../pages/MessagesPage'
 import PostJobPage from '../pages/PostJobPage'
 import PostJobStep1Title from '../pages/client/postJob/PostJobStep1Title'
@@ -49,6 +52,8 @@ function App() {
           <Route path="/freelancer/proposals" element={<FreelancerProposalsPage />} />
           <Route path="/freelancer/deliver-work" element={<FreelancerDeliverWorkPage />} />
           <Route path="/freelancer/client-profile/:clientId" element={<FreelancerClientProfilePage />} />
+          <Route path="/freelancer/projects" element={<FreelancerProjectsPage />} />
+          <Route path="/freelancer/projects/:projectId" element={<ProjectDetailPage />} />
         </Route>
 
         <Route element={<ClientLayout />}>
@@ -113,6 +118,30 @@ function App() {
             element={
               <ClientRoute>
                 <ClientApplicationsPage />
+              </ClientRoute>
+            }
+          />
+          <Route
+            path="/client/projects"
+            element={
+              <ClientRoute>
+                <ClientProjectsPage />
+              </ClientRoute>
+            }
+          />
+          <Route
+            path="/client/projects/new"
+            element={
+              <ClientRoute>
+                <ClientProjectsPage />
+              </ClientRoute>
+            }
+          />
+          <Route
+            path="/client/projects/:projectId"
+            element={
+              <ClientRoute>
+                <ProjectDetailPage />
               </ClientRoute>
             }
           />

@@ -86,6 +86,13 @@ const applicationSchema = new Schema(
       type: String
     },
 
+    // Message sent by client when accepting or rejecting
+    statusMessage: {
+      type: String,
+      trim: true,
+      maxlength: 2000,
+    },
+
     viewedByClient: {
       type: Boolean,
       default: false

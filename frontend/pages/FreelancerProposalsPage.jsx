@@ -192,6 +192,16 @@ const FreelancerProposalsPage = () => {
                         </div>
                       )}
 
+                      {/* Status message from client (accept/reject) */}
+                      {app.statusMessage && (app.status === 'accepted' || app.status === 'rejected') && (
+                        <div className={`prop-status-message ${app.status === 'accepted' ? 'prop-msg-accept' : 'prop-msg-reject'}`}>
+                          <span className="prop-status-msg-label">
+                            {app.status === 'accepted' ? '✓ Message from client' : '✕ Message from client'}
+                          </span>
+                          <p className="prop-status-msg-text">{app.statusMessage}</p>
+                        </div>
+                      )}
+
                       {/* ATS Resume Analysis */}
                       {app.atsScore != null && (
                         <div className="prop-ats-section">

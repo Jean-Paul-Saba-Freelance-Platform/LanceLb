@@ -2,6 +2,8 @@ import Application from '../models/applicationModel.js';
 import Job from '../models/jobModel.js';
 import User from '../models/userModels.js';
 import { scoreApplication } from '../services/aiService.js';
+import Notification from '../models/notificationModel.js';
+import { io } from '../lib/realtime.js';
 
 // ── POST /api/applications ── Submit a new application (freelancer only)
 export const createApplication = async (req, res) => {
@@ -240,7 +242,7 @@ export const getApplicationById = async (req, res) => {
 export const updateApplicationStatus = async (req, res) => {
     try {
         const { id } = req.params;
-        const { status } = req.body;
+        const { status, statusMessage } = req.body;
 
         // Validate the new status value
         const validStatuses = ['pending', 'shortlisted', 'accepted', 'rejected', 'withdrawn'];
@@ -278,9 +280,33 @@ export const updateApplicationStatus = async (req, res) => {
             });
         }
 
-        // Update and return the modified application
+        // Save statusMessage when client accepts or rejects
         application.status = status;
+        if ((status === 'accepted' || status === 'rejected') && statusMessage?.trim()) {
+            application.statusMessage = statusMessage.trim();
+        }
         await application.save();
+
+        // Fire real-time notification to the freelancer on accept/reject
+        if (status === 'accepted' || status === 'rejected') {
+            const job = await Job.findById(application.jobId).select('title');
+            const notifType = status === 'accepted' ? 'application_accepted' : 'application_rejected';
+            const notifTitle = status === 'accepted' ? 'Application accepted!' : 'Application rejected';
+            const defaultMsg = status === 'accepted'
+                ? `Congratulations! Your application for "${job?.title || 'a job'}" has been accepted.`
+                : `Your application for "${job?.title || 'a job'}" was not selected at this time.`;
+
+            const notif = await Notification.create({
+                userId: application.freelancerId,
+                type: notifType,
+                title: notifTitle,
+                message: application.statusMessage || defaultMsg,
+                relatedId: application._id,
+                relatedType: 'application',
+            });
+
+            io.to(`user:${application.freelancerId}`).emit('notification', notif.toObject());
+        }
 
         return res.status(200).json({
             success: true,

@@ -16,6 +16,8 @@ import messageRouter from './routes/messageRoutes.js'
 import crewRouter from "./routes/crewRoutes.js";
 import { app, server } from "./lib/realtime.js";
 import atsRouter from "./routes/atsRoutes.js";
+import notificationRouter from "./routes/notificationRoutes.js";
+import projectRouter from "./routes/projectRoutes.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -80,6 +82,8 @@ app.use("/api/ai", aiRouter);
 app.use("/api/message", messageRouter);
 app.use("/api/crew", crewRouter);
 app.use("/api/ats", atsRouter);
+app.use("/api/notifications", notificationRouter);
+app.use("/api/projects", projectRouter);
 
 // Start
 connectDB();

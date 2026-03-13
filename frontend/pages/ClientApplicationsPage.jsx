@@ -3,7 +3,14 @@ import { useParams, useNavigate } from 'react-router-dom'
 import TopNav from '../src/components/TopNav.jsx'
 import './ClientApplicationsPage.css'
 
-const API_BASE = 'http://127.0.0.1:4000'
+const API_BASE = import.meta.env.VITE_API_BASE || 'http://127.0.0.1:4000'
+
+const DEFAULT_MESSAGES = {
+  accepted: (jobTitle, freelancerName) =>
+    `Hi ${freelancerName},\n\nWe're thrilled to let you know that your application for "${jobTitle}" has been accepted! We were impressed by your profile and look forward to working with you.\n\nWe'll be in touch shortly with next steps.\n\nBest regards`,
+  rejected: (jobTitle, freelancerName) =>
+    `Hi ${freelancerName},\n\nThank you for taking the time to apply for "${jobTitle}". After careful consideration, we've decided to move forward with another candidate.\n\nWe appreciate your interest and encourage you to apply for future opportunities.\n\nBest regards`,
+}
 
 const ClientApplicationsPage = () => {
   const { jobId } = useParams()
@@ -15,6 +22,9 @@ const ClientApplicationsPage = () => {
   const [error, setError] = useState('')
   const [expandedId, setExpandedId] = useState(null)
   const [updatingId, setUpdatingId] = useState(null)
+
+  // Message modal state
+  const [modal, setModal] = useState(null) // { applicationId, status, message, freelancerName }
 
   const getUserName = () => {
     try {
@@ -43,10 +53,7 @@ const ClientApplicationsPage = () => {
         const appsData = await appsRes.json()
 
         if (jobData.success) setJob(jobData.job)
-        if (appsData.success) {
-          console.log('[ATS debug] applications:', appsData.applications.map(a => ({ id: a._id, atsScore: a.atsScore, atsGrade: a.atsGrade })))
-          setApplications(appsData.applications)
-        }
+        if (appsData.success) setApplications(appsData.applications)
         if (!jobData.success) setError(jobData.message || 'Failed to load job')
       } catch (err) {
         console.error('Error fetching applications:', err)
@@ -58,6 +65,53 @@ const ClientApplicationsPage = () => {
     fetchData()
   }, [jobId])
 
+  // Open the message modal before confirming accept/reject
+  const openModal = (applicationId, status) => {
+    const app = applications.find(a => a._id === applicationId)
+    const freelancerName = app?.freelancerId?.name || 'there'
+    const jobTitle = job?.title || 'this job'
+    setModal({
+      applicationId,
+      status,
+      message: DEFAULT_MESSAGES[status](jobTitle, freelancerName),
+      freelancerName,
+    })
+  }
+
+  const closeModal = () => setModal(null)
+
+  const confirmStatusUpdate = async () => {
+    if (!modal) return
+    const { applicationId, status, message } = modal
+    setUpdatingId(applicationId)
+    closeModal()
+    try {
+      const token = localStorage.getItem('token')
+      const res = await fetch(`${API_BASE}/api/applications/${applicationId}/status`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(token && { Authorization: `Bearer ${token}` }),
+        },
+        credentials: 'include',
+        body: JSON.stringify({ status, statusMessage: message }),
+      })
+      const data = await res.json()
+      if (data.success) {
+        setApplications(prev =>
+          prev.map(app =>
+            app._id === applicationId ? { ...app, status, statusMessage: message } : app
+          )
+        )
+      }
+    } catch (err) {
+      console.error('Error updating status:', err)
+    } finally {
+      setUpdatingId(null)
+    }
+  }
+
+  // Shortlist doesn't need a message modal
   const updateStatus = async (applicationId, status) => {
     setUpdatingId(applicationId)
     try {
@@ -74,9 +128,7 @@ const ClientApplicationsPage = () => {
       const data = await res.json()
       if (data.success) {
         setApplications(prev =>
-          prev.map(app =>
-            app._id === applicationId ? { ...app, status } : app
-          )
+          prev.map(app => app._id === applicationId ? { ...app, status } : app)
         )
       }
     } catch (err) {
@@ -133,13 +185,12 @@ const ClientApplicationsPage = () => {
     return `app-status-badge ${map[status] || ''}`
   }
 
-  const formatDate = (dateStr) => {
-    return new Date(dateStr).toLocaleDateString('en-US', {
-      month: 'short',
-      day: 'numeric',
-      year: 'numeric',
+  const formatDate = (dateStr) =>
+    new Date(dateStr).toLocaleDateString('en-US', {
+      month: 'short', day: 'numeric', year: 'numeric',
     })
-  }
+
+  const acceptedCount = applications.filter(a => a.status === 'accepted').length
 
   if (loading) {
     return (
@@ -167,6 +218,14 @@ const ClientApplicationsPage = () => {
           <span className="client-apps-count">
             {applications.length} application{applications.length !== 1 ? 's' : ''}
           </span>
+          {acceptedCount > 0 && (
+            <button
+              className="create-project-btn"
+              onClick={() => navigate('/client/projects/new', { state: { jobId, jobTitle: job?.title } })}
+            >
+              + Create Project ({acceptedCount} accepted)
+            </button>
+          )}
         </div>
 
         {error && <p className="client-apps-error">{error}</p>}
@@ -252,6 +311,16 @@ const ClientApplicationsPage = () => {
                           </div>
                         )}
                       </div>
+
+                      {/* Status message sent by client */}
+                      {app.statusMessage && (app.status === 'accepted' || app.status === 'rejected') && (
+                        <div className={`app-status-message ${app.status === 'accepted' ? 'status-msg-accept' : 'status-msg-reject'}`}>
+                          <span className="app-status-msg-label">
+                            {app.status === 'accepted' ? '✓ Acceptance message sent' : '✕ Rejection message sent'}
+                          </span>
+                          <p className="app-status-msg-text">{app.statusMessage}</p>
+                        </div>
+                      )}
 
                       {/* AI Profile Analysis Section */}
                       {app.aiScore != null && (
@@ -352,14 +421,14 @@ const ClientApplicationsPage = () => {
                           <button
                             className="app-action-btn accept"
                             disabled={updatingId === app._id}
-                            onClick={() => updateStatus(app._id, 'accepted')}
+                            onClick={() => openModal(app._id, 'accepted')}
                           >
                             {updatingId === app._id ? '...' : 'Accept'}
                           </button>
                           <button
                             className="app-action-btn reject"
                             disabled={updatingId === app._id}
-                            onClick={() => updateStatus(app._id, 'rejected')}
+                            onClick={() => openModal(app._id, 'rejected')}
                           >
                             {updatingId === app._id ? '...' : 'Reject'}
                           </button>
@@ -378,14 +447,14 @@ const ClientApplicationsPage = () => {
                           <button
                             className="app-action-btn accept"
                             disabled={updatingId === app._id}
-                            onClick={() => updateStatus(app._id, 'accepted')}
+                            onClick={() => openModal(app._id, 'accepted')}
                           >
                             {updatingId === app._id ? '...' : 'Accept'}
                           </button>
                           <button
                             className="app-action-btn reject"
                             disabled={updatingId === app._id}
-                            onClick={() => updateStatus(app._id, 'rejected')}
+                            onClick={() => openModal(app._id, 'rejected')}
                           >
                             {updatingId === app._id ? '...' : 'Reject'}
                           </button>
@@ -399,6 +468,35 @@ const ClientApplicationsPage = () => {
           </div>
         )}
       </div>
+
+      {/* Accept / Reject message modal */}
+      {modal && (
+        <div className="status-modal-overlay" onClick={closeModal}>
+          <div className="status-modal" onClick={e => e.stopPropagation()}>
+            <h3 className="status-modal-title">
+              {modal.status === 'accepted' ? '✓ Accept Applicant' : '✕ Reject Applicant'}
+            </h3>
+            <p className="status-modal-subtitle">
+              Customize the message that will be sent to {modal.freelancerName}.
+            </p>
+            <textarea
+              className="status-modal-textarea"
+              value={modal.message}
+              onChange={e => setModal(prev => ({ ...prev, message: e.target.value }))}
+              rows={8}
+            />
+            <div className="status-modal-actions">
+              <button className="status-modal-cancel" onClick={closeModal}>Cancel</button>
+              <button
+                className={`status-modal-confirm ${modal.status === 'accepted' ? 'confirm-accept' : 'confirm-reject'}`}
+                onClick={confirmStatusUpdate}
+              >
+                {modal.status === 'accepted' ? 'Accept & Send' : 'Reject & Send'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
