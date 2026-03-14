@@ -517,21 +517,65 @@
   color: #fff;
 }
 
+.messages-mobile-back {
+  display: none;
+  background: transparent;
+  border: none;
+  color: #8696a0;
+  font-size: 1.3rem;
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+}
+
+.messages-mobile-back:hover {
+  background: #2a3942;
+  color: #d1d7db;
+}
+
 @media (max-width: 900px) {
+  .messages-page {
+    padding: 0;
+  }
+
   .messages-shell {
     grid-template-columns: 1fr;
-    height: auto;
-    min-height: calc(100vh - 2.5rem);
-    border-radius: 10px;
+    height: 100vh;
+    height: 100dvh;
+    border-radius: 0;
+    border-left: none;
+    border-right: none;
+    border-bottom: none;
   }
 
   .messages-sidebar {
-    min-height: 260px;
-    max-height: 320px;
+    height: 100%;
+    max-height: 100%;
+    min-height: 0;
   }
 
   .messages-chat-panel {
-    min-height: 520px;
+    height: 100%;
+    min-height: 0;
+  }
+
+  .messages-sidebar.mobile-hidden,
+  .messages-chat-panel.mobile-hidden {
+    display: none;
+  }
+
+  .messages-mobile-back {
+    display: flex;
+  }
+
+  .message-bubble {
+    max-width: min(80%, 300px);
   }
 }
 
@@ -750,4 +794,13 @@
 
 [data-theme="light"] .messages-panel-member-row .messages-user-sub {
   color: #667781;
+}
+
+[data-theme="light"] .messages-mobile-back {
+  color: #667781;
+}
+
+[data-theme="light"] .messages-mobile-back:hover {
+  background: #e9edef;
+  color: #111b21;
 }

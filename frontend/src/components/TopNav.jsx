@@ -11,7 +11,9 @@ const TopNav = ({ userName, userAvatar }) => {
   const [showNotifications, setShowNotifications] = useState(false)
   const [notifications, setNotifications] = useState([])
   const [unreadCount, setUnreadCount] = useState(0)
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const notifRef = useRef(null)
+  const mobileMenuRef = useRef(null)
   const location = useLocation()
 
   const userStr = localStorage.getItem('user')
@@ -74,7 +76,7 @@ const TopNav = ({ userName, userAvatar }) => {
     return () => window.removeEventListener('lancelb:notification', handler)
   }, [])
 
-  // Close panel on outside click
+  // Close notification panel on outside click
   useEffect(() => {
     const handler = (e) => {
       if (notifRef.current && !notifRef.current.contains(e.target)) {
@@ -84,6 +86,18 @@ const TopNav = ({ userName, userAvatar }) => {
     document.addEventListener('mousedown', handler)
     return () => document.removeEventListener('mousedown', handler)
   }, [])
+
+  // Close mobile menu on outside click
+  useEffect(() => {
+    if (!mobileMenuOpen) return
+    const handler = (e) => {
+      if (mobileMenuRef.current && !mobileMenuRef.current.contains(e.target)) {
+        setMobileMenuOpen(false)
+      }
+    }
+    document.addEventListener('mousedown', handler)
+    return () => document.removeEventListener('mousedown', handler)
+  }, [mobileMenuOpen])
 
   const openNotifications = async () => {
     const opening = !showNotifications
@@ -154,6 +168,38 @@ const TopNav = ({ userName, userAvatar }) => {
               {item.label}
             </Link>
           ))}
+        </div>
+
+        {/* Mobile hamburger */}
+        <div className="top-nav-mobile-wrap" ref={mobileMenuRef}>
+          <button
+            className="top-nav-hamburger"
+            onClick={() => setMobileMenuOpen((p) => !p)}
+            aria-label={mobileMenuOpen ? 'Close menu' : 'Open menu'}
+            aria-expanded={mobileMenuOpen}
+          >
+            <span className="hamburger-line" />
+            <span className="hamburger-line" />
+            <span className="hamburger-line" />
+          </button>
+          {mobileMenuOpen && (
+            <nav className="top-nav-mobile-dropdown">
+              {menuLinks.map((item) => (
+                <Link
+                  key={item.to}
+                  to={item.to}
+                  className={`top-nav-mobile-link${
+                    location.pathname === item.to ||
+                    location.pathname.startsWith(item.to + '/')
+                      ? ' active' : ''
+                  }`}
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  {item.label}
+                </Link>
+              ))}
+            </nav>
+          )}
         </div>
 
         {/* Right: Search, Icons, Avatar */}

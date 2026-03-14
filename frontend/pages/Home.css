@@ -25,13 +25,24 @@
   overflow: hidden;
 }
 
-/* Header - Two Level */
+/* Header */
 .header {
-  position: sticky;
-  top: 0;
+  position: relative;
   z-index: 100;
   width: 100%;
-  position: relative;
+}
+
+.header-top-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1.5rem;
+}
+
+.header-auth-links {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
 }
 
 /* Reusable Glass Style */
@@ -637,8 +648,14 @@
 /* Responsive Design */
 @media (max-width: 968px) {
   .header-nav,
-  .header-actions {
+  .header-actions,
+  .header-auth-links,
+  .header-categories {
     display: none;
+  }
+
+  .header-top-bar {
+    padding: 0.75rem 1rem;
   }
 
   .mobile-menu-button {
@@ -793,4 +810,16 @@
 
 [data-theme="light"] .sidebar-overlay {
   background: rgba(17, 27, 33, 0.4);
+}
+
+[data-theme="light"] .nav-link-button {
+  color: #111b21;
+}
+
+[data-theme="light"] .nav-cta-button {
+  background: #017561;
+}
+
+[data-theme="light"] .menu-line {
+  background: #111b21;
 }

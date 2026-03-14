@@ -53,8 +53,25 @@ const Home = () => {
         />
       </div>
 
-      {/* Simplified Header with only GooeyNav */}
       <header className="header">
+        <div className="header-top-bar">
+          <Link to={brandLink} className="brand-link">
+            <span className="brand-name">LanceLB</span>
+          </Link>
+          <div className="header-auth-links">
+            <Link to="/login" className="nav-link-button">Log in</Link>
+            <Link to="/signup" className="nav-cta-button">Get started</Link>
+          </div>
+          <button
+            className="mobile-menu-button"
+            onClick={toggleSidebar}
+            aria-label="Open menu"
+          >
+            <span className="menu-line" />
+            <span className="menu-line" />
+            <span className="menu-line" />
+          </button>
+        </div>
         <div className="header-categories">
           <div className="header-content header-content-center">
             <GooeyNav

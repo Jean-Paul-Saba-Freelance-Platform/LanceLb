@@ -252,6 +252,69 @@
   color: #017561;
 }
 
+/* Mobile hamburger menu */
+.top-nav-mobile-wrap {
+  display: none;
+  position: relative;
+  flex-shrink: 0;
+}
+
+.top-nav-hamburger {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 8px;
+  color: rgba(255, 255, 255, 0.7);
+  transition: background 0.15s;
+}
+
+.top-nav-hamburger:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.hamburger-line {
+  display: block;
+  width: 22px;
+  height: 2px;
+  background: currentColor;
+  border-radius: 2px;
+}
+
+.top-nav-mobile-dropdown {
+  position: absolute;
+  top: calc(100% + 0.5rem);
+  right: 0;
+  min-width: 200px;
+  background: #202c33;
+  border: 1px solid #2f3b43;
+  border-radius: 10px;
+  padding: 0.4rem;
+  display: flex;
+  flex-direction: column;
+  z-index: 500;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+}
+
+.top-nav-mobile-link {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.9rem;
+  font-weight: 500;
+  text-decoration: none;
+  padding: 0.65rem 0.75rem;
+  border-radius: 8px;
+  transition: background 0.15s, color 0.15s;
+}
+
+.top-nav-mobile-link:hover,
+.top-nav-mobile-link.active {
+  background: #2a3942;
+  color: #f3f4f6;
+}
+
 /* Responsive */
 @media (max-width: 968px) {
   .top-nav-menu {
@@ -260,6 +323,11 @@
 
   .top-nav-search {
     display: none;
+  }
+
+  .top-nav-mobile-wrap {
+    display: flex;
+    align-items: center;
   }
 
   .top-nav-right {
@@ -483,3 +551,27 @@
 [data-theme="light"] .notif-msg { color: rgba(0, 0, 0, 0.5); }
 [data-theme="light"] .notif-time { color: rgba(0, 0, 0, 0.3); }
 [data-theme="light"] .notif-empty { color: rgba(0, 0, 0, 0.35); }
+
+[data-theme="light"] .top-nav-hamburger {
+  color: #41525d;
+}
+
+[data-theme="light"] .top-nav-hamburger:hover {
+  background: #f0f2f5;
+}
+
+[data-theme="light"] .top-nav-mobile-dropdown {
+  background: #ffffff;
+  border-color: #d8dde1;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+[data-theme="light"] .top-nav-mobile-link {
+  color: #41525d;
+}
+
+[data-theme="light"] .top-nav-mobile-link:hover,
+[data-theme="light"] .top-nav-mobile-link.active {
+  background: #f0f2f5;
+  color: #111b21;
+}

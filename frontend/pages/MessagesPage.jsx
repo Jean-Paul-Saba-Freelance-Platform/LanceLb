@@ -69,6 +69,7 @@ const MessagesPage = () => {
   const [panelSearch, setPanelSearch] = useState('')
   const [panelSelectedMemberIds, setPanelSelectedMemberIds] = useState([])
   const [panelSubmitting, setPanelSubmitting] = useState(false)
+  const [mobileView, setMobileView] = useState('sidebar')
 
   const messagesEndRef = useRef(null)
   const menuRef = useRef(null)
@@ -263,6 +264,7 @@ const MessagesPage = () => {
     socketRef.current = socket
 
     socket.on('newMessage', (incomingMessage) => {
+      if (String(incomingMessage.senderId) === String(currentUserId)) return
       const activeUser = selectedUserRef.current
       if (!activeUser?._id) return
 
@@ -281,6 +283,7 @@ const MessagesPage = () => {
     })
 
     socket.on('newCrewMessage', (incomingMessage) => {
+      if (String(incomingMessage.senderId) === String(currentUserId)) return
       const activeCrew = selectedCrewRef.current
       if (!activeCrew?._id) return
       if (String(incomingMessage.crewId) !== String(activeCrew._id)) return
@@ -474,7 +477,7 @@ const MessagesPage = () => {
   return (
     <div className="messages-page">
       <div className="messages-shell">
-        <aside className="messages-sidebar">
+        <aside className={`messages-sidebar${mobileView === 'chat' ? ' mobile-hidden' : ''}`}>
           <div className="messages-sidebar-header">
             <button
               className="messages-back-button"
@@ -516,6 +519,7 @@ const MessagesPage = () => {
                       onClick={() => {
                         setSelectedCrew(crew)
                         setSelectedUser(null)
+                        setMobileView('chat')
                       }}
                     >
                       <div className="messages-avatar">C</div>
@@ -543,6 +547,7 @@ const MessagesPage = () => {
                     onClick={() => {
                       setSelectedUser(user)
                       setSelectedCrew(null)
+                      setMobileView('chat')
                     }}
                   >
                     <div className="messages-avatar">{getInitial(user)}</div>
@@ -558,10 +563,17 @@ const MessagesPage = () => {
           </div>
         </aside>
 
-        <section className="messages-chat-panel">
+        <section className={`messages-chat-panel${mobileView === 'sidebar' ? ' mobile-hidden' : ''}`}>
           {activeConversation ? (
             <>
               <header className="messages-chat-header">
+                <button
+                  className="messages-mobile-back"
+                  onClick={() => setMobileView('sidebar')}
+                  aria-label="Back to contacts"
+                >
+                  ←
+                </button>
                 <div className="messages-avatar">
                   {isCrewChat ? 'C' : getInitial(selectedUser)}
                 </div>
