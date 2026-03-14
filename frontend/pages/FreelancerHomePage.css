@@ -1,6 +1,7 @@
 .freelancer-home {
   min-height: 100vh;
   background: transparent;
+  overflow-x: hidden;
 }
 
 .freelancer-home-container {
