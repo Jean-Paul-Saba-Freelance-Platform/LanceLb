@@ -170,40 +170,40 @@ const TopNav = ({ userName, userAvatar }) => {
           ))}
         </div>
 
-        {/* Mobile hamburger */}
-        <div className="top-nav-mobile-wrap" ref={mobileMenuRef}>
-          <button
-            className="top-nav-hamburger"
-            onClick={() => setMobileMenuOpen((p) => !p)}
-            aria-label={mobileMenuOpen ? 'Close menu' : 'Open menu'}
-            aria-expanded={mobileMenuOpen}
-          >
-            <span className="hamburger-line" />
-            <span className="hamburger-line" />
-            <span className="hamburger-line" />
-          </button>
-          {mobileMenuOpen && (
-            <nav className="top-nav-mobile-dropdown">
-              {menuLinks.map((item) => (
-                <Link
-                  key={item.to}
-                  to={item.to}
-                  className={`top-nav-mobile-link${
-                    location.pathname === item.to ||
-                    location.pathname.startsWith(item.to + '/')
-                      ? ' active' : ''
-                  }`}
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  {item.label}
-                </Link>
-              ))}
-            </nav>
-          )}
-        </div>
-
         {/* Right: Search, Icons, Avatar */}
         <div className="top-nav-right">
+          {/* Mobile hamburger — inside right so dropdown anchors to right edge */}
+          <div className="top-nav-mobile-wrap" ref={mobileMenuRef}>
+            <button
+              className="top-nav-hamburger"
+              onClick={() => setMobileMenuOpen((p) => !p)}
+              aria-label={mobileMenuOpen ? 'Close menu' : 'Open menu'}
+              aria-expanded={mobileMenuOpen}
+            >
+              <span className="hamburger-line" />
+              <span className="hamburger-line" />
+              <span className="hamburger-line" />
+            </button>
+            {mobileMenuOpen && (
+              <nav className="top-nav-mobile-dropdown">
+                {menuLinks.map((item) => (
+                  <Link
+                    key={item.to}
+                    to={item.to}
+                    className={`top-nav-mobile-link${
+                      location.pathname === item.to ||
+                      location.pathname.startsWith(item.to + '/')
+                        ? ' active' : ''
+                    }`}
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    {item.label}
+                  </Link>
+                ))}
+              </nav>
+            )}
+          </div>
+
           <div className="top-nav-search">
             <input
               type="text"

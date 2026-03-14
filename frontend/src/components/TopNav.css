@@ -358,6 +358,16 @@
     width: 18px;
     height: 18px;
   }
+
+  .notif-panel {
+    right: 0;
+    width: min(340px, calc(100vw - 1.5rem));
+  }
+
+  .top-nav-mobile-dropdown {
+    right: 0;
+    width: min(220px, calc(100vw - 1.5rem));
+  }
 }
 
 .top-nav-link.active {

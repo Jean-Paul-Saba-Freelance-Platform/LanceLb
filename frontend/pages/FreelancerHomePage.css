@@ -422,10 +422,6 @@
     grid-template-columns: 1fr;
     gap: 1.5rem;
   }
-
-  .freelancer-sidebar {
-    order: -1;
-  }
 }
 
 @media (max-width: 640px) {
