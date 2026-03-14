@@ -784,6 +784,12 @@
 
   .job-footer-right {
     align-self: flex-end;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+
+  .job-profile-button {
+    display: none;
   }
 }
 

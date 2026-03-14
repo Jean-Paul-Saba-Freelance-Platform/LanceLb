@@ -13,6 +13,11 @@
   gap: 2rem;
 }
 
+.freelancer-main-content,
+.freelancer-sidebar {
+  min-width: 0;
+}
+
 /* Greeting Card */
 .greeting-card {
   background: rgba(14, 12, 20, 0.6);
