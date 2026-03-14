@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import Grainient from "../src/components/Grainient";
 import "./Auth.css";
 
+const API_BASE = import.meta.env.VITE_API_BASE || 'http://127.0.0.1:4000'
+
 export default function OtpForm() {
   const navigate = useNavigate();
   const [otp, setOtp] = useState("");
@@ -28,7 +30,7 @@ export default function OtpForm() {
     setError("");
 
     try {
-      const response = await fetch('http://127.0.0.1:4000/api/auth/verify-account', {
+      const response = await fetch(`${API_BASE}/api/auth/verify-account`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -66,7 +68,7 @@ export default function OtpForm() {
   const handleResendOtp = async () => {
     setError("");
     try {
-      const response = await fetch('http://127.0.0.1:4000/api/auth/send-verify-otp', {
+      const response = await fetch(`${API_BASE}/api/auth/send-verify-otp`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

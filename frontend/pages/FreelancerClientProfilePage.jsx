@@ -3,7 +3,7 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import TopNav from '../src/components/TopNav.jsx'
 import './FreelancerClientProfilePage.css'
 
-const API_BASE = 'http://127.0.0.1:4000'
+const API_BASE = import.meta.env.VITE_API_BASE || 'http://127.0.0.1:4000'
 
 const getUserName = () => {
   try {

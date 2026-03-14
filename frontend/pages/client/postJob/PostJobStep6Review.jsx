@@ -24,7 +24,7 @@ import PostJobLayout from './PostJobLayout'
 /* ── Constants ─────────────────────────────────────────────────────────── */
 
 const DRAFT_KEY = 'postJobDraft'
-const API_BASE = 'http://127.0.0.1:4000'
+const API_BASE = import.meta.env.VITE_API_BASE || 'http://127.0.0.1:4000'
 
 /** Human-readable labels for scope enums */
 const SIZE_LABELS = { small: 'Small', medium: 'Medium', large: 'Large' }

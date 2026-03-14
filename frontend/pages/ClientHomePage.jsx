@@ -5,7 +5,7 @@ import RightSidebarCard from '../src/components/RightSidebarCard.jsx'
 import { nextStepsData, categoriesData, resourcesData, defaultDashboardSummary } from './client/mockClientDashboardData.js'
 import './ClientHomePage.css'
 
-const API_BASE = 'http://127.0.0.1:4000'
+const API_BASE = import.meta.env.VITE_API_BASE || 'http://127.0.0.1:4000'
 
 const ClientHomePage = () => {
   const navigate = useNavigate()

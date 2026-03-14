@@ -4,7 +4,7 @@ import JobCard from '../src/components/JobCard.jsx'
 import RightSidebarCard from '../src/components/RightSidebarCard.jsx'
 import './FreelancerHomePage.css'
 
-const API_BASE = 'http://127.0.0.1:4000'
+const API_BASE = import.meta.env.VITE_API_BASE || 'http://127.0.0.1:4000'
 
 const FreelancerHomePage = () => {
   const [user, setUser] = useState(null)

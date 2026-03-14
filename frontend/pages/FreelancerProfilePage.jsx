@@ -7,7 +7,7 @@ import {
 } from 'lucide-react'
 import './FreelancerProfilePage.css'
 
-const API_BASE = 'http://127.0.0.1:4000'
+const API_BASE = import.meta.env.VITE_API_BASE || 'http://127.0.0.1:4000'
 
 const FreelancerProfilePage = () => {
   const [user, setUser] = useState(null)

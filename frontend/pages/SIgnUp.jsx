@@ -7,6 +7,8 @@ const EMAIL_REGEX = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
 const NAME_REGEX = /^[a-zA-Z\s'-]{2,50}$/
 const PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/
 
+const API_BASE = import.meta.env.VITE_API_BASE || 'http://127.0.0.1:4000'
+
 const SignUp = () => {
     const navigate = useNavigate()
     const [formData, setFormData] = useState({
@@ -80,7 +82,7 @@ const SignUp = () => {
         if (Object.keys(errs).length > 0) return
 
         try{
-            const response = await fetch('http://127.0.0.1:4000/api/auth/register', {
+            const response = await fetch(`${API_BASE}/api/auth/register`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

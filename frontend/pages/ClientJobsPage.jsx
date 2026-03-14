@@ -4,7 +4,7 @@ import TopNav from '../src/components/TopNav.jsx'
 import ConfirmDeleteModal from '../src/components/ConfirmDeleteModal.jsx'
 import './ClientJobsPage.css'
 
-const API_BASE = 'http://127.0.0.1:4000'
+const API_BASE = import.meta.env.VITE_API_BASE || 'http://127.0.0.1:4000'
 
 const STATUS_OPTIONS = [
   { value: 'all', label: 'All' },
