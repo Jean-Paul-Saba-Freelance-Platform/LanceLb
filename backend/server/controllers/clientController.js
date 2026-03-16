@@ -1,68 +1,73 @@
-/**
- * Client Controller - Placeholder endpoints
- * 
- * TODO: Implement real business logic when ready
- * - Fetch active jobs from database
- * - Fetch contracts from database
- * - Get user verification status
- * - Get billing method status
- */
+import User from '../models/userModels.js'
+import Job from '../models/jobModel.js'
+import Application from '../models/applicationModel.js'
+import Project from '../models/projectModel.js'
 
-import User from '../models/userModels.js';
-
-/**
- * GET /api/client/dashboard/summary
- * Returns dashboard summary data for client
- * 
- * Response structure:
- * {
- *   success: boolean,
- *   activeJobsCount: number,
- *   contractsCount: number,
- *   emailVerified: boolean,
- *   phoneVerified: boolean,
- *   billingMethodAdded: boolean
- * }
- */
 export const getDashboardSummary = async (req, res) => {
   try {
-    // Get user from request (set by userAuth middleware)
-    const userId = req.userId;
+    const userId = req.userId
+    const user = await User.findById(userId)
+    if (!user) return res.status(404).json({ success: false, message: 'User not found' })
 
-    if (!userId) {
-      return res.status(401).json({ 
-        success: false, 
-        message: 'Not authorized' 
-      });
-    }
+    const [activeJobsCount, contractsCount] = await Promise.all([
+      Job.countDocuments({ clientId: userId, status: { $in: ['open', 'in_progress'] } }),
+      Project.countDocuments({ clientId: userId, status: 'active' })
+    ])
 
-    // Find user
-    const user = await User.findById(userId);
-
-    if (!user) {
-      return res.status(404).json({ 
-        success: false, 
-        message: 'User not found' 
-      });
-    }
-
-    // TODO: Fetch real counts from Job and Contract models when they exist
-    // For now, return placeholder data
-    const summary = {
+    return res.json({
       success: true,
-      activeJobsCount: 0, // TODO: Count from Job model where clientId = userId and status = 'active'
-      contractsCount: 0, // TODO: Count from Contract model where clientId = userId and status = 'in_progress'
+      activeJobsCount,
+      contractsCount,
       emailVerified: user.isAccountVerified || false,
-      phoneVerified: false, // TODO: Add phoneVerified field to User model
-      billingMethodAdded: false // TODO: Check if user has billing method in PaymentMethod model
-    };
-
-    return res.json(summary);
+      phoneVerified: false,
+      billingMethodAdded: false
+    })
   } catch (error) {
-    console.error('Error fetching dashboard summary:', error);
-    return res.status(500).json({ 
-      success: false, 
-      message: 'Server error' 
-    });
+    console.error('getDashboardSummary error:', error)
+    return res.status(500).json({ success: false, message: 'Server error' })
   }
-};
+}
+
+export const getClientStats = async (req, res) => {
+  try {
+    const clientId = req.userId
+
+    const [jobs, projects] = await Promise.all([
+      Job.find({ clientId }).select('status').lean(),
+      Project.find({ clientId }).select('status').lean()
+    ])
+
+    const jobsPosted = jobs.length
+    const openJobs = jobs.filter(j => j.status === 'open').length
+    const inProgressJobs = jobs.filter(j => j.status === 'in_progress').length
+    const closedJobs = jobs.filter(j => j.status === 'closed').length
+    const activeProjects = projects.filter(p => p.status === 'active').length
+    const completedProjects = projects.filter(p => p.status === 'completed').length
+
+    const jobIds = jobs.map(j => j._id)
+    const [totalApplications, freelancersHired, applicationsReviewed] = await Promise.all([
+      Application.countDocuments({ jobId: { $in: jobIds } }),
+      Application.countDocuments({ jobId: { $in: jobIds }, status: 'accepted' }),
+      Application.countDocuments({ jobId: { $in: jobIds }, viewedByClient: true })
+    ])
+
+    const avgApplicationsPerJob = jobsPosted ? Math.round(totalApplications / jobsPosted) : 0
+
+    return res.json({
+      success: true,
+      jobsPosted,
+      openJobs,
+      inProgressJobs,
+      closedJobs,
+      totalApplications,
+      applicationsReviewed,
+      freelancersHired,
+      activeProjects,
+      completedProjects,
+      avgApplicationsPerJob
+    })
+  } catch (err) {
+    console.error('getClientStats error:', err)
+    return res.status(500).json({ success: false, message: 'Server error' })
+  }
+}

@@ -13,7 +13,7 @@
 import express from 'express';
 
 // Controller that handles client dashboard logic
-import { getDashboardSummary } from '../controllers/clientController.js';
+import { getDashboardSummary, getClientStats } from '../controllers/clientController.js';
 
 // Authentication middleware
 // Protects routes by verifying JWT and setting req.userId
@@ -57,6 +57,8 @@ clientRouter.get(
  *   POST /api/client/jobs
  */
 clientRouter.use('/jobs', jobRoutes);
+
+clientRouter.get('/stats', userAuth, getClientStats);
 
 // Export router to be mounted in server.js
 export default clientRouter;

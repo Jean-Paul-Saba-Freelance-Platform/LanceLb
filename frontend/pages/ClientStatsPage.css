@@ -1,66 +1,131 @@
+/*
+ * ClientStatsPage.css
+ * Base layout/card styles are inherited from FreelancerStatsPage.css (imported first in JSX).
+ * This file only contains client-specific additions.
+ */
+
 .client-stats-page {
   min-height: 100vh;
   background: transparent;
 }
 
-.client-stats-container {
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 3rem 1.5rem;
-}
-
-.client-stats-card {
-  background: rgba(14, 12, 20, 0.6);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 12px;
-  padding: 3rem;
-  text-align: center;
-}
-
-.client-stats-title {
-  font-size: 2rem;
+/* ─── Status pills (blue / gray) ─── */
+.client-pill {
+  font-size: 0.78rem;
   font-weight: 600;
-  color: #f3f4f6;
-  margin: 0 0 1rem 0;
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
 }
 
-.client-stats-subtitle {
-  color: #94a3b8;
-  font-size: 1rem;
-  margin: 0 0 2rem 0;
+.client-pill--blue {
+  background: rgba(59, 130, 246, 0.18);
+  color: #60a5fa;
+  border: 1px solid rgba(59, 130, 246, 0.3);
 }
 
-.client-stats-back-button {
-  padding: 0.75rem 1.5rem;
-  background: #00a884;
+.client-pill--gray {
+  background: rgba(156, 163, 175, 0.18);
+  color: #9ca3af;
+  border: 1px solid rgba(156, 163, 175, 0.3);
+}
+
+/* ─── Hired avatars row ─── */
+.hired-avatars-row {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-top: 1rem;
+  flex-wrap: wrap;
+}
+
+.hired-avatar-circle {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #00a884, #008069);
   color: white;
-  border: none;
-  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid rgba(255, 255, 255, 0.15);
+  flex-shrink: 0;
+}
+
+.hired-avatar-overflow {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  border: 2px dashed rgba(255, 255, 255, 0.2);
+  color: #94a3b8;
+  font-size: 0.78rem;
   font-weight: 600;
-  font-size: 0.95rem;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  outline: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
 }
 
-.client-stats-back-button:hover {
-  background: #008069;
+/* ─── Quick Actions: secondary and outline buttons ─── */
+.client-action-button--secondary {
+  background: rgba(0, 168, 132, 0.15) !important;
+  color: #00a884 !important;
+  border: 1px solid rgba(0, 168, 132, 0.35) !important;
+}
+
+.client-action-button--secondary:hover {
+  background: rgba(0, 168, 132, 0.25) !important;
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(0, 168, 132, 0.3);
+  box-shadow: 0 4px 12px rgba(0, 168, 132, 0.15) !important;
 }
 
-@media (max-width: 640px) {
-  .client-stats-container {
-    padding: 2rem 1rem;
-  }
+.client-action-button--outline {
+  background: transparent !important;
+  color: #94a3b8 !important;
+  border: 1px solid rgba(255, 255, 255, 0.18) !important;
+}
 
-  .client-stats-card {
-    padding: 2rem 1.5rem;
-  }
+.client-action-button--outline:hover {
+  background: rgba(255, 255, 255, 0.06) !important;
+  color: #f3f4f6 !important;
+  transform: translateY(-1px);
+}
 
-  .client-stats-title {
-    font-size: 1.5rem;
-  }
+/* ─── Light mode overrides ─── */
+[data-theme="light"] .client-pill--blue {
+  background: rgba(59, 130, 246, 0.12);
+  color: #2563eb;
+  border-color: rgba(59, 130, 246, 0.3);
+}
+
+[data-theme="light"] .client-pill--gray {
+  background: rgba(107, 114, 128, 0.1);
+  color: #6b7280;
+  border-color: rgba(107, 114, 128, 0.3);
+}
+
+[data-theme="light"] .hired-avatar-circle {
+  border-color: rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="light"] .hired-avatar-overflow {
+  background: rgba(0, 0, 0, 0.05);
+  border-color: rgba(0, 0, 0, 0.15);
+  color: #6b7280;
+}
+
+[data-theme="light"] .client-action-button--secondary {
+  background: rgba(0, 168, 132, 0.1) !important;
+}
+
+[data-theme="light"] .client-action-button--outline {
+  border-color: rgba(0, 0, 0, 0.15) !important;
+  color: #6b7280 !important;
+}
+
+[data-theme="light"] .client-action-button--outline:hover {
+  background: rgba(0, 0, 0, 0.04) !important;
+  color: #111827 !important;
 }

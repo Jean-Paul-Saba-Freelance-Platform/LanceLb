@@ -467,3 +467,340 @@
     padding: 0.625rem 0.75rem;
   }
 }
+
+/* ─── Proposals: rates row ─── */
+.proposals-rates {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin: 0.75rem 0 0.25rem;
+}
+
+.rate-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.rate-label {
+  font-size: 0.85rem;
+  color: #94a3b8;
+}
+
+.rate-pill {
+  font-size: 0.78rem;
+  font-weight: 600;
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+}
+
+.rate-pill--green {
+  background: rgba(0, 168, 132, 0.18);
+  color: #00a884;
+  border: 1px solid rgba(0, 168, 132, 0.3);
+}
+
+.rate-pill--yellow {
+  background: rgba(245, 158, 11, 0.18);
+  color: #f59e0b;
+  border: 1px solid rgba(245, 158, 11, 0.3);
+}
+
+.rate-pill--red {
+  background: rgba(239, 68, 68, 0.18);
+  color: #ef4444;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+/* ─── AI & ATS Scores card ─── */
+.score-metric {
+  margin-bottom: 1.25rem;
+}
+
+.score-metric:last-of-type {
+  margin-bottom: 0;
+}
+
+.score-metric-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.score-metric-label {
+  font-size: 0.875rem;
+  color: #94a3b8;
+}
+
+.score-metric-value {
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.score-progress-track {
+  height: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.score-progress-fill {
+  height: 100%;
+  border-radius: 999px;
+  transition: width 0.6s ease;
+}
+
+/* ─── Active Contracts card ─── */
+.contract-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin: 0.75rem 0;
+}
+
+.contract-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 0.75rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 6px;
+  gap: 0.5rem;
+}
+
+.contract-title {
+  font-size: 0.875rem;
+  color: #e2e8f0;
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.contract-progress {
+  font-size: 0.78rem;
+  color: #94a3b8;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* ─── Loading skeleton ─── */
+@keyframes shimmer {
+  0%   { opacity: 0.4; }
+  50%  { opacity: 0.9; }
+  100% { opacity: 0.4; }
+}
+
+.skeleton {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  animation: shimmer 1.4s ease-in-out infinite;
+}
+
+.skeleton-title {
+  height: 2rem;
+  width: 40%;
+  margin-bottom: 0.75rem;
+}
+
+.skeleton-subtitle {
+  height: 1rem;
+  width: 65%;
+}
+
+.skeleton-card {
+  min-height: 160px;
+}
+
+.skeleton-card-title {
+  height: 1.1rem;
+  width: 50%;
+  margin-bottom: 1rem;
+}
+
+.skeleton-card-body {
+  height: 0.85rem;
+  width: 80%;
+  margin-bottom: 0.6rem;
+}
+
+.skeleton-card-body.short {
+  width: 55%;
+}
+
+.stats-skeleton-header {
+  margin-bottom: 2rem;
+}
+
+/* ─── Error state ─── */
+.stats-error-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 3rem 1.5rem;
+  text-align: center;
+}
+
+.stats-error-text {
+  color: #ef4444;
+  font-size: 1rem;
+}
+
+/* ─── Light mode overrides ─── */
+[data-theme="light"] .stats-page-title {
+  color: #111827;
+}
+
+[data-theme="light"] .stats-page-subtitle {
+  color: #6b7280;
+}
+
+[data-theme="light"] .stats-page-note {
+  color: #9ca3af;
+}
+
+[data-theme="light"] .stats-card {
+  background: rgba(255, 255, 255, 0.85);
+  border-color: rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="light"] .stats-card-title {
+  color: #111827;
+}
+
+[data-theme="light"] .stats-card-icon {
+  color: #6b7280;
+}
+
+[data-theme="light"] .stats-card-description {
+  color: #6b7280;
+}
+
+[data-theme="light"] .earnings-value {
+  color: #111827;
+}
+
+[data-theme="light"] .proposals-subtitle {
+  color: #111827;
+}
+
+[data-theme="light"] .breakdown-label {
+  color: #6b7280;
+}
+
+[data-theme="light"] .breakdown-value {
+  color: #111827;
+}
+
+[data-theme="light"] .breakdown-item {
+  border-bottom-color: rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="light"] .rate-label {
+  color: #6b7280;
+}
+
+[data-theme="light"] .score-metric-label {
+  color: #6b7280;
+}
+
+[data-theme="light"] .score-progress-track {
+  background: rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="light"] .contract-item {
+  background: rgba(0, 0, 0, 0.04);
+}
+
+[data-theme="light"] .contract-title {
+  color: #1f2937;
+}
+
+[data-theme="light"] .contract-progress {
+  color: #6b7280;
+}
+
+[data-theme="light"] .score-value {
+  color: #6b7280;
+}
+
+[data-theme="light"] .score-circle {
+  border-color: rgba(0, 0, 0, 0.12);
+}
+
+[data-theme="light"] .filter-select {
+  background: rgba(255, 255, 255, 0.9);
+  border-color: rgba(0, 0, 0, 0.15);
+  color: #374151;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%236b7280' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.5rem center;
+}
+
+[data-theme="light"] .metric-tab {
+  color: #6b7280;
+}
+
+[data-theme="light"] .metric-tab:hover {
+  color: #111827;
+}
+
+[data-theme="light"] .metric-tab.active {
+  color: #00a884;
+}
+
+[data-theme="light"] .metrics-tabs {
+  border-bottom-color: rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="light"] .metric-main-value {
+  color: #111827;
+}
+
+[data-theme="light"] .chart-placeholder {
+  background: rgba(0, 0, 0, 0.04);
+}
+
+[data-theme="light"] .chart-label {
+  color: #6b7280;
+}
+
+[data-theme="light"] .stats-hint-card {
+  background: rgba(0, 0, 0, 0.04);
+  border-color: rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="light"] .hint-text {
+  color: #4b5563;
+}
+
+[data-theme="light"] .credits-value {
+  color: #111827;
+}
+
+[data-theme="light"] .credits-description {
+  color: #6b7280;
+}
+
+[data-theme="light"] .achievement-badge {
+  background: rgba(0, 0, 0, 0.04);
+}
+
+[data-theme="light"] .achievement-badge span {
+  color: #111827;
+}
+
+[data-theme="light"] .legend-item {
+  color: #4b5563;
+}
+
+[data-theme="light"] .skeleton {
+  background: rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="light"] .stats-error-text {
+  color: #dc2626;
+}
