@@ -31,6 +31,8 @@ import PostJobStep6Review from '../pages/client/postJob/PostJobStep6Review'
 import FreelancerLayout from './components/FreelancerLayout'
 import ClientLayout from './components/ClientLayout'
 import ClientRoute from './components/ClientRoute'
+import FreelancerRoute from './components/FreelancerRoute'
+import AuthRedirect from './components/AuthRedirect'
 import './App.css'
 
 function App() {
@@ -38,22 +40,24 @@ function App() {
     <Router>
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<SignUp />} />
-        <Route path="/verify-otp" element={<OtpForm />} />
+        {/* Redirect already-authenticated users away from auth pages */}
+        <Route path="/login" element={<AuthRedirect><Login /></AuthRedirect>} />
+        <Route path="/signup" element={<AuthRedirect><SignUp /></AuthRedirect>} />
+        <Route path="/verify-otp" element={<AuthRedirect><OtpForm /></AuthRedirect>} />
         
         <Route element={<FreelancerLayout />}>
-          <Route path="/freelancer/home" element={<FreelancerHomePage />} />
-          <Route path="/freelancer/profile" element={<FreelancerProfilePage />} />
-          <Route path="/freelancer/stats" element={<FreelancerStatsPage />} />
-          <Route path="/freelancer/settings" element={<FreelancerSettingsPage />} />
-          <Route path="/freelancer/messages" element={<MessagesPage />} />
-          <Route path="/freelancer/find-work" element={<FreelancerFindWorkPage />} />
-          <Route path="/freelancer/proposals" element={<FreelancerProposalsPage />} />
-          <Route path="/freelancer/deliver-work" element={<FreelancerDeliverWorkPage />} />
-          <Route path="/freelancer/client-profile/:clientId" element={<FreelancerClientProfilePage />} />
-          <Route path="/freelancer/projects" element={<FreelancerProjectsPage />} />
-          <Route path="/freelancer/projects/:projectId" element={<ProjectDetailPage />} />
+          {/* All freelancer routes are guarded — unauthenticated → /login, client → /client/home */}
+          <Route path="/freelancer/home" element={<FreelancerRoute><FreelancerHomePage /></FreelancerRoute>} />
+          <Route path="/freelancer/profile" element={<FreelancerRoute><FreelancerProfilePage /></FreelancerRoute>} />
+          <Route path="/freelancer/stats" element={<FreelancerRoute><FreelancerStatsPage /></FreelancerRoute>} />
+          <Route path="/freelancer/settings" element={<FreelancerRoute><FreelancerSettingsPage /></FreelancerRoute>} />
+          <Route path="/freelancer/messages" element={<FreelancerRoute><MessagesPage /></FreelancerRoute>} />
+          <Route path="/freelancer/find-work" element={<FreelancerRoute><FreelancerFindWorkPage /></FreelancerRoute>} />
+          <Route path="/freelancer/proposals" element={<FreelancerRoute><FreelancerProposalsPage /></FreelancerRoute>} />
+          <Route path="/freelancer/deliver-work" element={<FreelancerRoute><FreelancerDeliverWorkPage /></FreelancerRoute>} />
+          <Route path="/freelancer/client-profile/:clientId" element={<FreelancerRoute><FreelancerClientProfilePage /></FreelancerRoute>} />
+          <Route path="/freelancer/projects" element={<FreelancerRoute><FreelancerProjectsPage /></FreelancerRoute>} />
+          <Route path="/freelancer/projects/:projectId" element={<FreelancerRoute><ProjectDetailPage /></FreelancerRoute>} />
         </Route>
 
         <Route element={<ClientLayout />}>

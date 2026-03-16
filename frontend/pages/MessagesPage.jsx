@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { MessageSquare, Search, SendHorizontal, MoreVertical } from 'lucide-react'
 import { io } from 'socket.io-client'
@@ -76,6 +76,7 @@ const MessagesPage = () => {
   const socketRef = useRef(null)
   const selectedUserRef = useRef(null)
   const selectedCrewRef = useRef(null)
+  const shellRef = useRef(null)
   const settingsRoute = currentUser?.userType === 'freelancer' ? '/freelancer/settings' : '/client/settings'
 
   const loadUsers = async () => {
@@ -200,6 +201,32 @@ const MessagesPage = () => {
       setDraft(text)
     }
   }
+
+  // ── Visual Viewport resize: keeps composer above keyboard on iOS Safari ──
+  // On iOS, 100dvh doesn't shrink when the keyboard opens (until iOS 15.4+).
+  // Listening to window.visualViewport gives us the actual visible height and
+  // lets us pin the shell to it, so the composer is never hidden behind the keyboard.
+  useEffect(() => {
+    const vv = window.visualViewport
+    if (!vv) return // not supported, CSS dvh fallback handles it
+
+    const handleViewportResize = () => {
+      if (shellRef.current) {
+        shellRef.current.style.height = `${vv.height}px`
+      }
+    }
+
+    vv.addEventListener('resize', handleViewportResize)
+    vv.addEventListener('scroll', handleViewportResize)
+    handleViewportResize() // set initial value
+
+    return () => {
+      vv.removeEventListener('resize', handleViewportResize)
+      vv.removeEventListener('scroll', handleViewportResize)
+      // Reset so desktop layout uses CSS height again when navigating away
+      if (shellRef.current) shellRef.current.style.height = ''
+    }
+  }, [])
 
   useEffect(() => {
     loadUsers()
@@ -476,7 +503,7 @@ const MessagesPage = () => {
 
   return (
     <div className="messages-page">
-      <div className="messages-shell">
+      <div className="messages-shell" ref={shellRef}>
         <aside className={`messages-sidebar${mobileView === 'chat' ? ' mobile-hidden' : ''}`}>
           <div className="messages-sidebar-header">
             <button

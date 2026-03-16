@@ -1,7 +1,14 @@
 import FormData from "form-data";
 import fetch from "node-fetch";
 
-const FLASK_URL = process.env.FLASK_URL || "http://localhost:5001";
+// FLASK_URL must be set via environment variable in production.
+// Falling back to localhost so the dev server still works without extra config,
+// but a missing value in production is caught by the health-check before any request is forwarded.
+const FLASK_URL = process.env.FLASK_URL || (
+  process.env.NODE_ENV === 'production'
+    ? (() => { throw new Error('FLASK_URL env var is required in production') })()
+    : 'http://localhost:5001'
+);
 
 // ── Forward PDF buffer to Flask ATS microservice ──────────────
 export const evaluateResumeWithFlask = async (fileBuffer, originalName) => {

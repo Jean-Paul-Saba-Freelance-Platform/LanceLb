@@ -1,12 +1,14 @@
 .messages-page {
-  min-height: 100vh;
+  /* Use dvh so the page shrinks with the keyboard on mobile */
+  min-height: 100dvh;
   padding: 0.9rem;
 }
 
 .messages-shell {
   max-width: 1280px;
   margin: 0 auto;
-  height: calc(100vh - 1.8rem);
+  /* dvh accounts for browser chrome changes; keeps shell from overflowing */
+  height: calc(100dvh - 1.8rem);
   display: grid;
   grid-template-columns: 320px 1fr;
   gap: 0;
@@ -19,6 +21,8 @@
 .messages-chat-panel {
   background: #111b21;
   overflow: hidden;
+  /* Ensure children can overflow-y scroll without the parent overflowing */
+  min-height: 0;
 }
 
 .messages-sidebar {
@@ -246,7 +250,12 @@
 .messages-stream {
   flex: 1;
   overflow-y: auto;
+  /* min-height: 0 allows flex children to shrink below their content size */
+  min-height: 0;
   padding: 1rem;
+  /* Smooth momentum scrolling on iOS */
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
   background: #0b141a;
   background-image:
     radial-gradient(circle at 25px 25px, rgba(255, 255, 255, 0.03) 1px, transparent 0);
@@ -323,11 +332,18 @@
 .messages-composer {
   min-height: 64px;
   border-top: 1px solid #2a3942;
+  /* Stick composer to the bottom of the flex column so it stays above keyboard */
+  position: sticky;
+  bottom: 0;
   padding: 0.75rem;
+  /* Reserve space for iOS home-bar / safe area */
+  padding-bottom: max(0.75rem, env(safe-area-inset-bottom));
   display: flex;
   gap: 0.6rem;
   background: #111b21;
   align-items: center;
+  /* Prevent composer from being hidden under navigation bars */
+  z-index: 10;
 }
 
 .messages-composer input {
@@ -546,7 +562,8 @@
 
   .messages-shell {
     grid-template-columns: 1fr;
-    height: 100vh;
+    /* CSS fallback: 100dvh already adapts to keyboard on Android Chrome & modern iOS.
+       The JS Visual Viewport hook in MessagesPage.jsx overrides this for older iOS Safari. */
     height: 100dvh;
     border-radius: 0;
     border-left: none;
@@ -555,6 +572,7 @@
   }
 
   .messages-sidebar {
+    /* Full height of the shell column */
     height: 100%;
     max-height: 100%;
     min-height: 0;

@@ -103,8 +103,11 @@
 body {
   margin: 0;
   min-width: 320px;
-  min-height: 100vh;
+  /* dvh ensures body fills the viewport correctly as mobile chrome appears/disappears */
+  min-height: 100dvh;
   overflow-x: hidden;
+  /* Prevent bounce/elastic overscroll on iOS revealing bare background */
+  overscroll-behavior: none;
   background: var(--bg-primary);
   color: var(--text-primary);
   background-image:
