@@ -4,9 +4,8 @@
   min-height: 100dvh;
   width: 100%;
   background: radial-gradient(circle at top, #2a0f3b 0%, #12081b 45%, #0a0a0f 100%);
-  overflow-x: hidden;
-  /* Prevent elastic overscroll revealing the background color on iOS */
-  overscroll-behavior: none;
+  /* NOTE: do NOT set overflow-x: hidden here — it creates a scroll container
+     that breaks position:sticky nav and prevents body-level vertical scroll */
   color: #f3f4f6;
 }
 

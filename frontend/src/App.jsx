@@ -43,7 +43,7 @@ function App() {
         {/* Redirect already-authenticated users away from auth pages */}
         <Route path="/login" element={<AuthRedirect><Login /></AuthRedirect>} />
         <Route path="/signup" element={<AuthRedirect><SignUp /></AuthRedirect>} />
-        <Route path="/verify-otp" element={<AuthRedirect><OtpForm /></AuthRedirect>} />
+        <Route path="/verify-otp" element={<OtpForm />} />
         
         <Route element={<FreelancerLayout />}>
           {/* All freelancer routes are guarded — unauthenticated → /login, client → /client/home */}
