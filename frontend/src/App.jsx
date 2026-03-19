@@ -33,6 +33,7 @@ import ClientLayout from './components/ClientLayout'
 import ClientRoute from './components/ClientRoute'
 import FreelancerRoute from './components/FreelancerRoute'
 import AuthRedirect from './components/AuthRedirect'
+import AdminDashboard from '../pages/AdminDashboard'
 import './App.css'
 
 function App() {
@@ -44,6 +45,7 @@ function App() {
         <Route path="/login" element={<AuthRedirect><Login /></AuthRedirect>} />
         <Route path="/signup" element={<AuthRedirect><SignUp /></AuthRedirect>} />
         <Route path="/verify-otp" element={<OtpForm />} />
+        <Route path="/admin" element={<AdminDashboard />} />
         
         <Route element={<FreelancerLayout />}>
           {/* All freelancer routes are guarded — unauthenticated → /login, client → /client/home */}

@@ -19,6 +19,7 @@ import atsRouter from "./routes/atsRoutes.js";
 import notificationRouter from "./routes/notificationRoutes.js";
 import projectRouter from "./routes/projectRoutes.js";
 import freelancerRouter from "./routes/freelancerRoutes.js";
+import adminRouter from "./routes/adminRoutes.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -79,6 +80,7 @@ app.use("/api/webhooks", webhookRouter); // optional
 app.use("/api/client", clientRoutes);
 app.use("/api/jobs", publicJobRoutes);
 app.use("/api/applications", applicationRouter);
+app.use("/api/admin", adminRouter);
 app.use("/api/ai", aiRouter);
 app.use("/api/message", messageRouter);
 app.use("/api/crew", crewRouter);
