@@ -17,7 +17,7 @@ work, build reputation). The professor's top priorities are: AI features and the
 
 ```
 FreelanceProject/
-├── CLAUDE.md               
+├── CLAUDE.md               ← you are here
 ├── backend/
 │   ├── controllers/        — business logic (auth, job, application, client, message, crew, project, admin)
 │   ├── middleware/         — userAuth.js, adminAuth.js
@@ -176,6 +176,7 @@ export const getStats = async (req, res) => {
 --color-primary:     #00a884;   /* teal — main brand color */
 --color-bg:          #111B21;   /* darkest background */
 --color-card:        #1b2730;   /* card/panel background */
+--color-sidebar:     #0d1418;   /* sidebar background */
 --color-border:      #2a3942;   /* subtle borders */
 --color-text:        #e9edef;   /* primary text */
 --color-text-muted:  #8696a0;   /* secondary/muted text */
@@ -184,57 +185,147 @@ export const getStats = async (req, res) => {
 --color-danger:      #f87171;   /* red */
 ```
 
-### Design Rules
-- Dark teal aesthetic — ALL new pages must match existing dashboard look
-- Card-based layouts with consistent padding (1.25rem – 1.5rem)
-- Subtle borders, no harsh dividers
-- Framer Motion for page entry animations (fade + slide up, ~0.3s)
-- Hover states on all interactive elements
-- Loading states on every async action (spinner or skeleton)
-- Empty states handled — never show a blank white area
-- Mobile responsive — use CSS Grid / Flexbox, no fixed widths
-
-### Typography
-- Match existing app — clean, readable
-- Headings: font-weight 700, slightly larger line-height
-- Body: font-weight 400–500
-- Muted labels: font-size 0.82rem, color var(--color-text-muted)
-- NEVER use Inter, Roboto, Arial as explicit font choices
-
 ### Component Patterns
 - Buttons: teal background (#00a884), white text, border-radius 8px, hover darken
 - Badges/pills: small, rounded-full, color-coded by status
-- Cards: background var(--color-card), border 1px solid var(--color-border), border-radius 12px
+- Cards: background #1b2730, border 1px solid #2a3942, border-radius 12px, padding 1.25–1.5rem
 - Inputs: dark background, teal focus ring, consistent height
+- Sidebars: background #0d1418, border-right 1px solid #2a3942, fixed 220px wide
 
 ---
 
-## Current Work — Active Branch: feature/admin-dashboard
+## Frontend Design Skill — ALWAYS FOLLOW WHEN BUILDING UI
 
-### Task Checklist
+Invoke this skill on every component, page, or interface. Think before coding:
+
+### Design Thinking Process
+1. **Purpose** — What problem does this screen solve? Who uses it?
+2. **Tone** — LanceLB tone: refined dark luxury, professional, trustworthy
+3. **Differentiation** — What makes this screen memorable, not generic?
+
+### Aesthetic Rules
+- Commit fully to the dark teal direction — no deviating for "variety"
+- Unexpected layouts beat predictable grid clones — use asymmetry, overlap, diagonal flow where appropriate
+- Atmosphere over flat color — subtle gradients, layered transparencies, gentle shadows create depth
+- One well-orchestrated page load animation beats scattered micro-interactions
+
+### Typography Rules
+- NEVER use Inter, Roboto, Arial, or system-ui as explicit font choices on new pages
+- Pair a distinctive display font with a refined body font for new pages
+- Headings: font-weight 700, tight letter-spacing (-0.01em to -0.02em)
+- Muted labels: 0.82rem, color #8696a0
+- Body: 0.875rem–0.95rem, font-weight 400–500
+
+### Motion Rules
+- Framer Motion for page-level entry (fade + slide up, ~0.3s, staggered)
+- CSS transitions for hover states, bar widths, progress bars (0.15s–0.6s ease)
+- Hover states on ALL interactive elements — no static buttons or cards ever
+
+### Layout Rules
+- Card-based, consistent padding (1.25rem–1.5rem)
+- Generous negative space — never crowd elements
+- CSS Grid + Flexbox only — never fixed pixel widths
+- Always handle: loading state (spinner/skeleton), empty state (icon + message), error state
+
+### Never Do
+- Purple gradients on white backgrounds
+- Cookie-cutter AI component patterns
+- Placeholder "coming soon" UI unless explicitly told
+- Inline style overrides when a CSS variable exists
+- Emojis as functional UI elements
+- Anything that looks like it came from a UI kit without customization
+
+---
+
+## Current Work — Merged to Main ✅
+
+### Completed This Session (March 19, 2026)
 - [x] Add isAdmin to userModels.js
 - [x] Set isAdmin: true on Saba's Atlas document
-- [x] Create git branch feature/admin-dashboard
-- [ ] backend/middleware/adminAuth.js
-- [ ] backend/controllers/adminController.js
-- [ ] backend/routes/adminRoutes.js
-- [ ] Wire app.use('/api/admin', adminRoutes) in app.js
-- [ ] Test all 4 endpoints with Postman
-- [ ] frontend/src/pages/AdminDashboard.jsx
-- [ ] Add /admin route in React Router
+- [x] backend/middleware/adminAuth.js
+- [x] backend/controllers/adminController.js (4 MongoDB aggregation endpoints)
+- [x] backend/routes/adminRoutes.js
+- [x] Wire app.use('/api/admin', adminRoutes) in server.js
+- [x] Tested all 4 endpoints with Postman — real data confirmed
+- [x] frontend/pages/AdminDashboard.jsx — full UI with sidebar
+- [x] frontend/pages/AdminDashboard.css
+- [x] /admin route wired in App.jsx
+- [x] Merged to main, conflicts resolved
 
-### Admin Endpoints to Build
-- GET /api/admin/stats           — KPI counts (users, jobs, applications, projects)
-- GET /api/admin/user-growth     — users registered per month (last 6 months)
-- GET /api/admin/job-categories  — top skills/categories from job postings
-- GET /api/admin/top-freelancers — top 5 freelancers by accepted applications
+### Next Tasks (Week of March 19–26)
+- [ ] Fix ATS score bubble in FreelancerProposalsPage ← NEXT
+- [ ] AI Job Matching — wire Best Matches tab to Flask/Groq endpoint
+- [ ] Fix broken nav links (Find Work, Deliver Work)
+- [ ] Landing page below the fold content
+- [ ] Stats & Trends — connect to real backend data
+- [ ] Start project report sections
 
-### Admin Dashboard UI to Build
-- 4 KPI stat cards: Total Freelancers, Total Clients, Active Jobs, Total Applications
-- User growth chart (bar or line, last 6 months)
-- Top skills bar chart (from job requiredSkills)
-- Top freelancers table (rank, name, email, hired count)
-- All data pulled live from MongoDB aggregations
+### Admin Dashboard — DONE ✅
+All 4 endpoints live and tested:
+- GET /api/admin/stats           — { totalFreelancers:14, totalClients:3, activeJobs:7, totalJobs:7, totalApplications:15, totalProjects:2, hiredApplications:5 }
+- GET /api/admin/user-growth     — last 6 months signup aggregation
+- GET /api/admin/job-categories  — top skills: MongoDB, Node.js, React, Python...
+- GET /api/admin/top-freelancers — Jean-Paul Tabet #1 (2 hires)
+
+---
+
+## Screenshot Workflow — Visual UI Testing
+
+Puppeteer is installed at the project root. Use this to visually test and iterate on UI.
+
+### Setup Files (already created)
+- `screenshot.mjs` — Puppeteer script at project root
+- `.screenshot-auth.json` — JWT token + user info (gitignored, never commit)
+- `screenshots/` folder — auto-created on first run (gitignored)
+
+### How to Take a Screenshot
+Make sure frontend (`npm run dev`) and backend (`node server.js`) are both running first.
+
+```bash
+# From project root
+node screenshot.mjs http://localhost:5173/admin admin
+node screenshot.mjs http://localhost:5173/freelancer/home freelancer-home
+node screenshot.mjs http://localhost:5173/ landing
+```
+
+Screenshots saved to `./screenshots/screenshot-N-label.png` (auto-incremented).
+
+### Auth File Format (.screenshot-auth.json)
+```json
+{
+  "token": "JWT_TOKEN_FROM_LOCALSTORAGE",
+  "user": {
+    "name": "Saba Arab",
+    "email": "sabagarab69@gmail.com",
+    "userType": "client"
+  }
+}
+```
+Token expires — if screenshot shows login page, get a fresh token from browser localStorage.
+
+### Claude Code Visual Iteration Loop
+When asked to improve UI, Claude Code should:
+1. Run `node screenshot.mjs <url> <label>` to capture current state
+2. Read the screenshot image to analyze the UI
+3. Make code changes
+4. Screenshot again to verify
+5. Repeat until satisfied — minimum 2 comparison rounds
+6. Stop only when no visible issues remain
+
+### Puppeteer & Chrome Cache Paths (this machine)
+- Puppeteer installed at: `C:/Users/FreelanceProj/FreelanceProject/node_modules/puppeteer`
+- Chrome executable: `C:\Users\soup\.cache\puppeteer\chrome\win64-146.0.7680.76\chrome-win64\chrome.exe`
+- If Puppeteer can't find Chrome, pass it explicitly:
+```javascript
+const browser = await puppeteer.launch({
+  executablePath: 'C:\\Users\\soup\\.cache\\puppeteer\\chrome\\win64-146.0.7680.76\\chrome-win64\\chrome.exe',
+  headless: true,
+  args: ['--no-sandbox', '--disable-setuid-sandbox']
+})
+```
+
+### Viewport
+Default: 1440x900 (desktop). Full page screenshot always.
 
 ---
 
