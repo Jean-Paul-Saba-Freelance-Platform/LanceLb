@@ -20,6 +20,7 @@ import notificationRouter from "./routes/notificationRoutes.js";
 import projectRouter from "./routes/projectRoutes.js";
 import freelancerRouter from "./routes/freelancerRoutes.js";
 import adminRouter from "./routes/adminRoutes.js";
+import publicStatsRouter from "./routes/publicStatsRoutes.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -88,6 +89,7 @@ app.use("/api/ats", atsRouter);
 app.use("/api/notifications", notificationRouter);
 app.use("/api/projects", projectRouter);
 app.use("/api/freelancer", freelancerRouter);
+app.use("/api/public", publicStatsRouter);
 
 // Start
 connectDB();
