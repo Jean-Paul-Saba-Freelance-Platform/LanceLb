@@ -34,3 +34,6 @@ frontend/.vite/
 # Screenshots for claude
 screenshots/
 .screenshot-auth.json
+
+# Hugging Face space (local git repo, not a submodule)
+hf-ats-space/
