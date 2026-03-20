@@ -16,6 +16,8 @@
 
 import mongoose from 'mongoose';
 import Job from '../models/jobModel.js';
+import User from '../models/userModels.js';
+import Application from '../models/applicationModel.js';
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -518,6 +520,35 @@ export const updateClientJob = async (req, res) => {
             success: false,
             message: 'Server error while updating job',
         });
+    }
+};
+
+// ---------------------------------------------------------------------------
+// DELETE  /api/client/jobs/:jobId  —  Delete a job owned by the logged-in client
+// ---------------------------------------------------------------------------
+
+// ---------------------------------------------------------------------------
+// GET  /api/public/stats  —  Public platform stats for the landing page
+// ---------------------------------------------------------------------------
+
+/** Returns aggregate counts of freelancers, jobs, and applications — no auth required. */
+export const getPublicStats = async (req, res) => {
+    try {
+        const [totalFreelancers, totalJobs, totalApplications, hiredApplications] = await Promise.all([
+            User.countDocuments({ userType: 'freelancer' }),
+            Job.countDocuments(),
+            Application.countDocuments(),
+            Application.countDocuments({ status: 'accepted' }),
+        ]);
+
+        const jobFillRate = totalJobs > 0 ? Math.round((hiredApplications / totalJobs) * 100) : 0;
+
+        return res.status(200).json({
+            success: true,
+            stats: { totalFreelancers, totalJobs, totalApplications, hiredApplications, jobFillRate },
+        });
+    } catch (error) {
+        return res.status(500).json({ success: false, message: error.message });
     }
 };
 

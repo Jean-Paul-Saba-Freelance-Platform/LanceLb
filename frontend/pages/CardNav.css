@@ -1,0 +1,365 @@
+/* ============================================================
+   CardNav — LanceLB floating pill navbar
+   Dark mode default, light mode via [data-theme="light"]
+   ============================================================ */
+
+.card-nav-outer {
+  position: absolute;
+  top: 1.75rem;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 90%;
+  max-width: 820px;
+  z-index: 100;
+  box-sizing: border-box;
+}
+
+.card-nav-pill {
+  display: block;
+  height: 60px;
+  background: rgba(14, 12, 20, 0.75);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 14px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  position: relative;
+  overflow: hidden;
+  will-change: height;
+}
+
+/* ── Top bar ─────────────────────────────────────────── */
+.card-nav-topbar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 0.5rem 0 1.1rem;
+  z-index: 2;
+}
+
+/* ── Left controls (hamburger + theme toggle) ─────────── */
+.card-nav-left-controls {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+/* ── Hamburger ────────────────────────────────────────── */
+.card-nav-hamburger {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0.4rem 0.5rem;
+  color: rgba(233, 237, 239, 0.85);
+  flex-shrink: 0;
+}
+
+.card-nav-hamburger:hover .hb-line {
+  opacity: 0.7;
+}
+
+/* ── Theme toggle ─────────────────────────────────────── */
+.card-nav-theme-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: rgba(233, 237, 239, 0.85);
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+  flex-shrink: 0;
+}
+
+.card-nav-theme-toggle:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: #00a884;
+  border-color: rgba(0, 168, 132, 0.35);
+}
+
+.hb-line {
+  width: 26px;
+  height: 2px;
+  background-color: currentColor;
+  border-radius: 2px;
+  transition: transform 0.25s ease, opacity 0.2s ease;
+  transform-origin: 50% 50%;
+}
+
+.card-nav-hamburger.open .hb-line:first-child {
+  transform: translateY(4px) rotate(45deg);
+}
+
+.card-nav-hamburger.open .hb-line:last-child {
+  transform: translateY(-4px) rotate(-45deg);
+}
+
+/* ── Brand ────────────────────────────────────────────── */
+.card-nav-brand {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  text-decoration: none;
+  font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: #e9edef;
+  white-space: nowrap;
+}
+
+/* ── Auth buttons ─────────────────────────────────────── */
+.card-nav-auth {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+.card-nav-login {
+  color: #e9edef;
+  font-size: 0.88rem;
+  font-weight: 500;
+  text-decoration: none;
+  padding: 0.45rem 0.9rem;
+  border-radius: 8px;
+  transition: color 0.15s ease;
+}
+
+.card-nav-login:hover {
+  color: #00a884;
+}
+
+.card-nav-cta {
+  background: #00a884;
+  color: #fff;
+  font-size: 0.88rem;
+  font-weight: 600;
+  text-decoration: none;
+  padding: 0.45rem 1.1rem;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  transition: background 0.15s ease;
+  white-space: nowrap;
+}
+
+.card-nav-cta:hover {
+  background: #0d9a76;
+}
+
+/* ── Expanded content area ────────────────────────────── */
+.card-nav-content {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 60px;
+  bottom: 0;
+  padding: 0.5rem;
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+  visibility: hidden;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.card-nav-pill.open .card-nav-content {
+  visibility: visible;
+  pointer-events: auto;
+}
+
+/* ── Nav cards ────────────────────────────────────────── */
+.card-nav-card {
+  height: 100%;
+  flex: 1 1 0;
+  min-width: 0;
+  border-radius: 10px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  padding: 14px 16px;
+  gap: 8px;
+  user-select: none;
+}
+
+/* Card color variants — teal dark palette */
+.card-nav-card--0 {
+  background: #0d1f1c;
+  color: #e9edef;
+}
+.card-nav-card--1 {
+  background: #0a1a17;
+  color: #e9edef;
+}
+.card-nav-card--2 {
+  background: #081512;
+  color: #e9edef;
+}
+
+.card-nav-card-label {
+  font-weight: 400;
+  font-size: 1.25rem;
+  letter-spacing: -0.03em;
+  color: #e9edef;
+  opacity: 0.9;
+}
+
+.card-nav-card-links {
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.card-nav-link {
+  font-size: 0.88rem;
+  cursor: pointer;
+  text-decoration: none;
+  color: #8696a0;
+  transition: color 0.2s ease, opacity 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.card-nav-link:hover {
+  color: #00a884;
+}
+
+.card-nav-link-icon {
+  font-size: 0.95rem;
+  opacity: 0.7;
+  flex-shrink: 0;
+}
+
+/* ── Light mode ───────────────────────────────────────── */
+[data-theme="light"] .card-nav-pill {
+  background: rgba(255, 255, 255, 0.88);
+  border-color: rgba(0, 0, 0, 0.08);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="light"] .card-nav-hamburger {
+  color: #111b21;
+}
+
+[data-theme="light"] .card-nav-theme-toggle {
+  border-color: rgba(0, 0, 0, 0.12);
+  color: #41525d;
+}
+
+[data-theme="light"] .card-nav-theme-toggle:hover {
+  background: rgba(0, 0, 0, 0.05);
+  color: #017561;
+  border-color: rgba(1, 117, 97, 0.35);
+}
+
+[data-theme="light"] .card-nav-brand {
+  color: #111b21;
+}
+
+[data-theme="light"] .card-nav-login {
+  color: #111b21;
+}
+
+[data-theme="light"] .card-nav-login:hover {
+  color: #017561;
+}
+
+[data-theme="light"] .card-nav-cta {
+  background: #017561;
+}
+
+[data-theme="light"] .card-nav-cta:hover {
+  background: #015f50;
+}
+
+[data-theme="light"] .card-nav-card--0 {
+  background: #e8f4f1;
+  color: #111b21;
+}
+[data-theme="light"] .card-nav-card--1 {
+  background: #ddf0ea;
+  color: #111b21;
+}
+[data-theme="light"] .card-nav-card--2 {
+  background: #d0ece4;
+  color: #111b21;
+}
+
+[data-theme="light"] .card-nav-card-label {
+  color: #111b21;
+}
+
+[data-theme="light"] .card-nav-link {
+  color: #41525d;
+}
+
+[data-theme="light"] .card-nav-link:hover {
+  color: #017561;
+}
+
+/* ── Mobile ───────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .card-nav-outer {
+    width: 92%;
+    top: 1rem;
+  }
+
+  .card-nav-topbar {
+    padding: 0 0.75rem;
+    justify-content: space-between;
+  }
+
+  .card-nav-auth .card-nav-login {
+    display: none;
+  }
+
+  .card-nav-cta {
+    font-size: 0.82rem;
+    padding: 0.4rem 0.85rem;
+  }
+
+  .card-nav-content {
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-start;
+    gap: 6px;
+    overflow-y: auto;
+  }
+
+  .card-nav-card {
+    height: auto;
+    min-height: 70px;
+    flex: none;
+  }
+
+  .card-nav-card-label {
+    font-size: 1rem;
+  }
+
+  .card-nav-card-links {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .card-nav-link {
+    font-size: 0.82rem;
+  }
+}
