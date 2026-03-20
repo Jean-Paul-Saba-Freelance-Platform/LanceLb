@@ -70,6 +70,8 @@ const MessagesPage = () => {
   const [panelSelectedMemberIds, setPanelSelectedMemberIds] = useState([])
   const [panelSubmitting, setPanelSubmitting] = useState(false)
   const [mobileView, setMobileView] = useState('sidebar')
+  const [followRequests, setFollowRequests] = useState([])
+  const [requestsExpanded, setRequestsExpanded] = useState(false)
 
   const messagesEndRef = useRef(null)
   const menuRef = useRef(null)
@@ -78,6 +80,39 @@ const MessagesPage = () => {
   const selectedCrewRef = useRef(null)
   const shellRef = useRef(null)
   const settingsRoute = currentUser?.userType === 'freelancer' ? '/freelancer/settings' : '/client/settings'
+
+  const loadFollowRequests = async () => {
+    try {
+      const res = await fetch(`${API_BASE}/api/follow/requests`, {
+        credentials: 'include',
+        headers: getAuthHeaders(),
+      })
+      const data = await res.json()
+      if (data.success) setFollowRequests(data.requests || [])
+    } catch {
+      // silently ignore — requests section simply won't show
+    }
+  }
+
+  const respondToFollowRequest = async (followId, action) => {
+    try {
+      const res = await fetch(`${API_BASE}/api/follow/${followId}/respond`, {
+        method: 'PATCH',
+        credentials: 'include',
+        headers: { ...getAuthHeaders(), 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action }),
+      })
+      const data = await res.json()
+      if (data.success) {
+        // Remove the request from the list
+        setFollowRequests((prev) => prev.filter((r) => String(r._id) !== String(followId)))
+        // If accepted, reload users so the new contact appears in Direct Messages
+        if (action === 'accept') loadUsers()
+      }
+    } catch {
+      // ignore
+    }
+  }
 
   const loadUsers = async () => {
     setIsLoadingUsers(true)
@@ -231,6 +266,7 @@ const MessagesPage = () => {
   useEffect(() => {
     loadUsers()
     loadCrews()
+    loadFollowRequests()
   }, [])
 
   useEffect(() => {
@@ -321,6 +357,12 @@ const MessagesPage = () => {
         }
         return [...prev, incomingMessage]
       })
+    })
+
+    socket.on('notification', (notification) => {
+      if (notification?.type === 'follow_request') {
+        loadFollowRequests()
+      }
     })
 
     socket.on('crewUpdated', (payload) => {
@@ -555,6 +597,42 @@ const MessagesPage = () => {
                         <div className="messages-user-sub">{(crew.members || []).length} members</div>
                       </div>
                     </button>
+                  )
+                })}
+              </>
+            )}
+            {followRequests.length > 0 && (
+              <>
+                <button
+                  className="messages-list-heading messages-requests-toggle"
+                  onClick={() => setRequestsExpanded((v) => !v)}
+                >
+                  <span>Follow Requests</span>
+                  <span className="messages-requests-badge">{followRequests.length}</span>
+                  <span className="messages-requests-chevron">{requestsExpanded ? '▲' : '▼'}</span>
+                </button>
+                {requestsExpanded && followRequests.map((req) => {
+                  const requester = req.followerId
+                  const name = requester?.name || 'Unknown'
+                  const initial = name.charAt(0).toUpperCase()
+                  return (
+                    <div key={req._id} className="messages-follow-request-row">
+                      <div className="messages-avatar">{initial}</div>
+                      <div className="messages-user-meta">
+                        <div className="messages-user-name">{name}</div>
+                        <div className="messages-user-sub">{requester?.title || requester?.userType || ''}</div>
+                      </div>
+                      <div className="messages-request-actions">
+                        <button
+                          className="messages-request-btn messages-request-btn--accept"
+                          onClick={() => respondToFollowRequest(req._id, 'accept')}
+                        >✓</button>
+                        <button
+                          className="messages-request-btn messages-request-btn--reject"
+                          onClick={() => respondToFollowRequest(req._id, 'reject')}
+                        >✕</button>
+                      </div>
+                    </div>
                   )
                 })}
               </>

@@ -1,5 +1,6 @@
 import User from "../models/userModels.js";
 import Message from "../models/messageModel.js";
+import Follow from "../models/followModel.js";
 import { getReceiverSocketId, io } from "../lib/realtime.js";
 
 // ---------------------------------------------------------------------------
@@ -23,9 +24,21 @@ export const getUserSideBar = async (req, res) => {
     try {
         const loggedInUserId = req.userId;
 
-        // Fetch all users excluding the caller so they don't see themselves
-        // in the contact list. Passwords are stripped from every document.
-        const filteredUsers = await User.find({ _id: { $ne: loggedInUserId } }).select("-password");
+        // Find all accepted follow relationships involving this user (either direction)
+        const acceptedFollows = await Follow.find({
+            status: "accepted",
+            $or: [{ followerId: loggedInUserId }, { followingId: loggedInUserId }],
+        }).lean();
+
+        // Collect the IDs of the other party in each accepted relationship
+        const connectedIds = acceptedFollows.map((f) =>
+            String(f.followerId) === String(loggedInUserId) ? f.followingId : f.followerId
+        );
+
+        // Return only connected users — they can now message each other
+        const filteredUsers = await User.find({ _id: { $in: connectedIds } })
+            .select("-password")
+            .lean();
 
         res.status(200).json(filteredUsers);
     } catch (error) {

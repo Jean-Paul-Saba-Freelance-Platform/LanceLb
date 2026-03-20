@@ -15,6 +15,8 @@ const notificationSchema = new mongoose.Schema(
         "task_completed",
         "task_validated",
         "project_started",
+        "follow_request",
+        "follow_accepted",
       ],
       required: true,
     },
@@ -31,7 +33,7 @@ const notificationSchema = new mongoose.Schema(
     },
     relatedType: {
       type: String,
-      enum: ["application", "task", "project"],
+      enum: ["application", "task", "project", "follow"],
     },
     read: {
       type: Boolean,

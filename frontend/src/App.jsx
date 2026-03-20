@@ -11,6 +11,7 @@ import FreelancerFindWorkPage from '../pages/FreelancerFindWorkPage'
 import FreelancerProposalsPage from '../pages/FreelancerProposalsPage'
 import FreelancerDeliverWorkPage from '../pages/FreelancerDeliverWorkPage'
 import FreelancerClientProfilePage from '../pages/FreelancerClientProfilePage'
+import ClientFreelancerProfilePage from '../pages/ClientFreelancerProfilePage'
 import ClientHomePage from '../pages/ClientHomePage'
 import ClientProfilePage from '../pages/ClientProfilePage'
 import ClientStatsPage from '../pages/ClientStatsPage'
@@ -148,6 +149,15 @@ function App() {
             element={
               <ClientRoute>
                 <ProjectDetailPage />
+              </ClientRoute>
+            }
+          />
+
+          <Route
+            path="/client/freelancer-profile/:freelancerId"
+            element={
+              <ClientRoute>
+                <ClientFreelancerProfilePage />
               </ClientRoute>
             }
           />

@@ -21,6 +21,7 @@ import projectRouter from "./routes/projectRoutes.js";
 import freelancerRouter from "./routes/freelancerRoutes.js";
 import adminRouter from "./routes/adminRoutes.js";
 import publicStatsRouter from "./routes/publicStatsRoutes.js";
+import followRouter from "./routes/followRoutes.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -90,6 +91,7 @@ app.use("/api/notifications", notificationRouter);
 app.use("/api/projects", projectRouter);
 app.use("/api/freelancer", freelancerRouter);
 app.use("/api/public", publicStatsRouter);
+app.use("/api/follow", followRouter);
 
 // Start
 connectDB();

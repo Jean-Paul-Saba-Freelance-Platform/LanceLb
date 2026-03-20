@@ -1,37 +1,30 @@
-import React, { useEffect, useMemo, useState } from 'react'
-import { useLocation, useNavigate, useParams } from 'react-router-dom'
-import TopNav from '../src/components/TopNav.jsx'
+import { useEffect, useState } from 'react'
+import { useNavigate, useParams } from 'react-router-dom'
+import { motion } from 'framer-motion'
+import FollowButton from '../src/components/FollowButton.jsx'
 import './FreelancerClientProfilePage.css'
 
 const API_BASE = import.meta.env.VITE_API_BASE || 'http://127.0.0.1:4000'
 
-const getUserName = () => {
-  try {
-    const userStr = localStorage.getItem('user')
-    if (userStr) {
-      const user = JSON.parse(userStr)
-      return user.name?.split(' ')[0] || user.firstName || 'Freelancer'
-    }
-  } catch (error) {
-    console.error('Error loading user:', error)
-  }
-  return 'Freelancer'
+const getAuthHeaders = () => {
+  const token = localStorage.getItem('token')
+  return token ? { Authorization: `Bearer ${token}` } : {}
 }
 
-const getDisplayName = (client) => {
-  if (!client) return 'Client'
-  const full = `${client.firstName || ''} ${client.lastName || ''}`.trim()
-  return full || client.name || 'Client'
-}
+const getInitial = (name) => (name || 'C').charAt(0).toUpperCase()
 
+/**
+ * FreelancerClientProfilePage
+ *
+ * Lets a freelancer view a client's public profile and follow them.
+ */
 const FreelancerClientProfilePage = () => {
   const navigate = useNavigate()
-  const location = useLocation()
   const { clientId } = useParams()
-  const initialClient = location.state?.client || null
 
-  const [client, setClient] = useState(initialClient)
-  const [loading, setLoading] = useState(!initialClient)
+  const [client, setClient] = useState(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
 
   useEffect(() => {
     if (!clientId || clientId === 'unknown') {
@@ -39,71 +32,105 @@ const FreelancerClientProfilePage = () => {
       return
     }
 
-    if (initialClient?.name || initialClient?.firstName || initialClient?.email) {
-      setLoading(false)
-      return
-    }
-
-    const fetchClient = async () => {
+    const fetchProfile = async () => {
       try {
-        const token = localStorage.getItem('token')
-        const headers = token ? { Authorization: `Bearer ${token}` } : {}
-        const res = await fetch(`${API_BASE}/api/message/user`, {
+        const res = await fetch(`${API_BASE}/api/follow/user/${clientId}`, {
           credentials: 'include',
-          headers,
+          headers: getAuthHeaders(),
         })
         const data = await res.json()
-        if (!res.ok || !Array.isArray(data)) return
-        const found = data.find((u) => String(u._id || u.id) === String(clientId))
-        if (found) setClient(found)
-      } catch (error) {
-        console.error('Error loading client profile:', error)
+        if (!res.ok || !data.success) throw new Error(data.message || 'Failed to load profile')
+        setClient(data.user)
+      } catch (err) {
+        setError(err.message)
       } finally {
         setLoading(false)
       }
     }
 
-    fetchClient()
-  }, [clientId, initialClient])
-
-  const displayName = useMemo(() => getDisplayName(client), [client])
+    fetchProfile()
+  }, [clientId])
 
   return (
-    <div className="freelancer-client-profile-page">
-      <TopNav userName={getUserName()} />
+    <div className="fcp-page">
+      <div className="fcp-container">
+        <button className="fcp-back" onClick={() => navigate('/freelancer/home')}>
+          ← Back to Home
+        </button>
 
-      <div className="freelancer-client-profile-container">
-        <div className="freelancer-client-profile-card">
-          <button
-            className="freelancer-client-profile-back"
-            onClick={() => navigate('/freelancer/home')}
+        {loading && (
+          <div className="fcp-skeleton">
+            <div className="fcp-skeleton-avatar" />
+            <div className="fcp-skeleton-lines">
+              <div className="fcp-skeleton-line fcp-skeleton-line--wide" />
+              <div className="fcp-skeleton-line" />
+              <div className="fcp-skeleton-line fcp-skeleton-line--narrow" />
+            </div>
+          </div>
+        )}
+
+        {error && !loading && (
+          <div className="fcp-error">
+            <p>{error}</p>
+          </div>
+        )}
+
+        {client && !loading && (
+          <motion.div
+            className="fcp-card"
+            initial={{ opacity: 0, y: 18 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3, ease: 'easeOut' }}
           >
-            ← Back to Home
-          </button>
-
-          <h1 className="freelancer-client-profile-title">Client Profile</h1>
-
-          {loading ? (
-            <p className="freelancer-client-profile-subtitle">Loading client info...</p>
-          ) : (
-            <>
-              <div className="freelancer-client-profile-summary">
-                <div className="freelancer-client-profile-avatar">
-                  {(displayName || 'C').charAt(0).toUpperCase()}
-                </div>
-                <div>
-                  <h2>{displayName}</h2>
-                  <p>{client?.email || 'Email unavailable'}</p>
-                  <p>{client?.location || 'Location unavailable'}</p>
+            {/* Header */}
+            <div className="fcp-header">
+              <div className="fcp-avatar">
+                {client.profilePicture ? (
+                  <img src={client.profilePicture} alt={client.name} />
+                ) : (
+                  <span>{getInitial(client.name)}</span>
+                )}
+              </div>
+              <div className="fcp-identity">
+                <h1 className="fcp-name">{client.name}</h1>
+                {client.title && <p className="fcp-title">{client.title}</p>}
+                <div className="fcp-meta-row">
+                  <span className="fcp-badge fcp-badge--type">Client</span>
                 </div>
               </div>
+              <div className="fcp-actions">
+                <FollowButton targetUserId={clientId} />
+              </div>
+            </div>
 
-              <p className="freelancer-client-profile-subtitle">
-                More public client profile details will appear here as the profile module expands.
-              </p>
-            </>
-          )}
-        </div>
+            {/* Bio */}
+            {client.bio && (
+              <div className="fcp-section">
+                <h2 className="fcp-section-title">About</h2>
+                <p className="fcp-bio">{client.bio}</p>
+              </div>
+            )}
+
+            {/* Skills / Interests */}
+            {Array.isArray(client.skills) && client.skills.length > 0 && (
+              <div className="fcp-section">
+                <h2 className="fcp-section-title">Interests</h2>
+                <div className="fcp-skills">
+                  {client.skills.map((skill) => (
+                    <span key={skill} className="fcp-skill-pill">{skill}</span>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Member since */}
+            <div className="fcp-footer">
+              <span className="fcp-member-since">
+                Member since {new Date(client.createdAt).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
+              </span>
+            </div>
+          </motion.div>
+        )}
       </div>
     </div>
   )

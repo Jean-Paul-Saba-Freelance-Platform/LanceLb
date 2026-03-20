@@ -822,3 +822,83 @@
   background: #e9edef;
   color: #111b21;
 }
+
+/* ── Follow Requests Panel ──────────────────────────────────────────────── */
+
+.messages-requests-toggle {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: rgba(0, 168, 132, 0.08);
+  border: none;
+  border-radius: 0;
+  padding: 0.55rem 1rem;
+  cursor: pointer;
+  text-align: left;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #00a884;
+  transition: background 0.15s;
+}
+.messages-requests-toggle:hover { background: rgba(0, 168, 132, 0.14); }
+
+.messages-requests-badge {
+  background: #00a884;
+  color: #fff;
+  border-radius: 999px;
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 0.05rem 0.45rem;
+  line-height: 1.4;
+}
+
+.messages-requests-chevron {
+  margin-left: auto;
+  font-size: 0.65rem;
+  opacity: 0.7;
+}
+
+.messages-follow-request-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.6rem 1rem;
+  background: rgba(0, 168, 132, 0.04);
+  border-bottom: 1px solid #2a3942;
+}
+
+.messages-request-actions {
+  display: flex;
+  gap: 0.35rem;
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+.messages-request-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  font-size: 0.8rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s, transform 0.1s;
+}
+.messages-request-btn:hover { transform: scale(1.1); }
+
+.messages-request-btn--accept {
+  background: rgba(16, 185, 129, 0.18);
+  color: #10b981;
+}
+.messages-request-btn--accept:hover { background: rgba(16, 185, 129, 0.32); }
+
+.messages-request-btn--reject {
+  background: rgba(248, 113, 113, 0.15);
+  color: #f87171;
+}
+.messages-request-btn--reject:hover { background: rgba(248, 113, 113, 0.28); }
