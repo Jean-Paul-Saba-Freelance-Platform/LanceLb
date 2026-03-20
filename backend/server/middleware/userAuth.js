@@ -1,4 +1,5 @@
 import jwt from 'jsonwebtoken';
+import User from '../models/userModels.js';
 
 // ---------------------------------------------------------------------------
 // userAuth — JWT authentication middleware
@@ -16,7 +17,7 @@ import jwt from 'jsonwebtoken';
  *              and calls next() to continue to the route handler.
  * On failure:  returns 401 JSON and stops the request chain.
  */
-const userAuth = async (req, res, next) => {
+export const userAuth = async (req, res, next) => {
     // Prefer the httpOnly cookie; fall back to the Authorization header
     let token = req.cookies?.token;
 
@@ -47,6 +48,25 @@ const userAuth = async (req, res, next) => {
         // jwt.verify throws for expired tokens, bad signatures, malformed JWTs, etc.
         console.error('JWT verification error:', error.message);
         return res.status(401).json({ success: false, message: error.message });
+    }
+};
+// Checks that the authenticated user has verified their email.
+// Must be placed AFTER userAuth (which sets req.userId).
+export const isVerified = async (req, res, next) => {
+    try {
+        const user = await User.findById(req.userId).select('isAccountVerified').lean();
+        if (!user) {
+            return res.status(401).json({ success: false, message: 'User not found' });
+        }
+        if (!user.isAccountVerified) {
+            return res.status(403).json({
+                success: false,
+                message: 'Please verify your account to access this feature.'
+            });
+        }
+        next();
+    } catch (error) {
+        return res.status(500).json({ success: false, message: error.message });
     }
 };
 

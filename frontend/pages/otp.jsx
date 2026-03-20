@@ -55,8 +55,10 @@ export default function OtpForm() {
         localStorage.setItem('user', JSON.stringify(user));
       }
 
-      // Redirect to freelancer home
-      navigate('/freelancer/home');
+      // Redirect to the correct home based on user type
+      
+      const userType = userStr ? JSON.parse(userStr).userType : 'freelancer';
+      navigate(userType === 'client' ? '/client/home' : '/freelancer/home');
     } catch (err) {
       console.error('OTP verification error:', err);
       setError(err.message);

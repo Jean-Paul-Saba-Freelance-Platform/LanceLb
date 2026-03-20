@@ -1,6 +1,6 @@
 import express from 'express'
 import { getFreelancerStats } from '../controllers/freelancerController.js'
-import userAuth from '../middleware/userAuth.js'
+import {userAuth,isVerified} from '../middleware/userAuth.js'
 
 const freelancerRouter = express.Router()
 

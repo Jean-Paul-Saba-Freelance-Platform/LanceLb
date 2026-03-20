@@ -17,7 +17,7 @@ import { getDashboardSummary, getClientStats } from '../controllers/clientContro
 
 // Authentication middleware
 // Protects routes by verifying JWT and setting req.userId
-import userAuth from '../middleware/userAuth.js';
+import {userAuth,isVerified} from '../middleware/userAuth.js';
 
 // Job routes (nested router for job-related functionality)
 import jobRoutes from './jobRoutes.js';
@@ -58,7 +58,7 @@ clientRouter.get(
  */
 clientRouter.use('/jobs', jobRoutes);
 
-clientRouter.get('/stats', userAuth, getClientStats);
+clientRouter.get('/stats', userAuth, isVerified, getClientStats);
 
 // Export router to be mounted in server.js
 export default clientRouter;

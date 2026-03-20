@@ -24,7 +24,7 @@ import {
     updateClientJob,
     deleteClientJob,
 } from '../controllers/jobController.js';
-import userAuth from '../middleware/userAuth.js';
+import {userAuth,isVerified} from '../middleware/userAuth.js';
 
 const jobRouter = express.Router();
 
@@ -34,11 +34,11 @@ jobRouter.get('/open', getOpenJobs);
 
 // --- Protected routes (require authentication) ----------------------------
 
-jobRouter.get('/mine', userAuth, getClientJobs);
-jobRouter.get('/', userAuth, getClientJobs);
-jobRouter.post('/', userAuth, createJob);
-jobRouter.patch('/:jobId', userAuth, updateClientJob);
-jobRouter.delete('/:jobId', userAuth, deleteClientJob);
+jobRouter.get('/mine', userAuth, isVerified, getClientJobs);
+jobRouter.get('/', userAuth, isVerified, getClientJobs);
+jobRouter.post('/', userAuth, isVerified, createJob);
+jobRouter.patch('/:jobId', userAuth, isVerified, updateClientJob);
+jobRouter.delete('/:jobId', userAuth, isVerified, deleteClientJob);
 
 // --- Public parameterised route (must come AFTER static segments) ---------
 

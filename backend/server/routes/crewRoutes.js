@@ -1,5 +1,5 @@
 import express from "express";
-import userAuth from "../middleware/userAuth.js";
+import {userAuth,isVerified} from "../middleware/userAuth.js";
 import {
   addCrewMembers,
   createCrew,
@@ -10,10 +10,10 @@ import {
 
 const crewRouter = express.Router();
 
-crewRouter.get("/", userAuth, getMyCrews);
-crewRouter.post("/", userAuth, createCrew);
-crewRouter.post("/:crewId/members", userAuth, addCrewMembers);
-crewRouter.get("/:crewId/messages", userAuth, getCrewMessages);
-crewRouter.post("/:crewId/messages", userAuth, sendCrewMessage);
+crewRouter.get("/", userAuth, isVerified, getMyCrews);
+crewRouter.post("/", userAuth, isVerified, createCrew);
+crewRouter.post("/:crewId/members", userAuth, isVerified, addCrewMembers);
+crewRouter.get("/:crewId/messages", userAuth, isVerified, getCrewMessages);
+crewRouter.post("/:crewId/messages", userAuth, isVerified, sendCrewMessage);
 
 export default crewRouter;

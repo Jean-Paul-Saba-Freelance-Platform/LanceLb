@@ -345,6 +345,70 @@ select.auth-input {
 
 
 /* =========================================================================
+   Google OAuth Button + Divider
+   ========================================================================= */
+
+.auth-divider {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin: 0.25rem 0;
+  color: #8696a0;
+  font-size: 0.8rem;
+}
+
+.auth-divider::before,
+.auth-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: #2a3942;
+}
+
+.auth-button-google {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.65rem;
+  width: 100%;
+  padding: 0.75rem 1rem;
+  background: transparent;
+  border: 1px solid #2a3942;
+  border-radius: 8px;
+  color: #e9edef;
+  font-size: 0.9rem;
+  font-weight: 500;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease;
+  margin-bottom: 0.5rem;
+}
+
+.auth-button-google:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: #8696a0;
+}
+
+[data-theme="light"] .auth-divider {
+  color: #667781;
+}
+
+[data-theme="light"] .auth-divider::before,
+[data-theme="light"] .auth-divider::after {
+  background: #d8dde1;
+}
+
+[data-theme="light"] .auth-button-google {
+  border-color: #d8dde1;
+  color: #111b21;
+}
+
+[data-theme="light"] .auth-button-google:hover {
+  background: #f5f7f8;
+  border-color: #b0b8be;
+}
+
+/* =========================================================================
    Light Mode Overrides
    ========================================================================= */
 [data-theme="light"] .auth-container {

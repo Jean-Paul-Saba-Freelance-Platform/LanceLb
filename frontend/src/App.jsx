@@ -35,6 +35,7 @@ import ClientRoute from './components/ClientRoute'
 import FreelancerRoute from './components/FreelancerRoute'
 import AuthRedirect from './components/AuthRedirect'
 import AdminDashboard from '../pages/AdminDashboard'
+import GoogleAuthSuccess from '../pages/GoogleAuthSuccess'
 import './App.css'
 
 function App() {
@@ -46,6 +47,7 @@ function App() {
         <Route path="/login" element={<AuthRedirect><Login /></AuthRedirect>} />
         <Route path="/signup" element={<AuthRedirect><SignUp /></AuthRedirect>} />
         <Route path="/verify-otp" element={<OtpForm />} />
+        <Route path="/auth/google/success" element={<GoogleAuthSuccess />} />
         <Route path="/admin" element={<AdminDashboard />} />
         
         <Route element={<FreelancerLayout />}>

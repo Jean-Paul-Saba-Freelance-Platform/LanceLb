@@ -1,5 +1,6 @@
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import fetch from 'node-fetch';
 import User from '../models/userModels.js';
 import transporter from '../config/nodemailer.js';
 
@@ -309,5 +310,117 @@ export const updateProfile = async (req, res) => {
         return res.json({ success: true, message: 'Profile updated', user });
     } catch (error) {
         return res.status(500).json({ success: false, message: error.message });
+    }
+};
+
+// ---------------------------------------------------------------------------
+// GET /api/auth/google — Redirect the browser to Google's OAuth consent screen
+// ---------------------------------------------------------------------------
+
+export const googleAuth = (req, res) => {
+    // userType is passed as a query param from the frontend so we know which
+    // account type to create if this is a new user
+    const userType = req.query.userType === 'client' ? 'client' : 'freelancer';
+
+    const params = new URLSearchParams({
+        client_id: process.env.GOOGLE_CLIENT_ID,
+        redirect_uri: process.env.GOOGLE_CALLBACK_URL,
+        response_type: 'code',
+        scope: 'openid email profile',
+        access_type: 'offline',
+        prompt: 'select_account',
+        state: userType, // pass userType through the OAuth round-trip
+    });
+
+    res.redirect(`https://accounts.google.com/o/oauth2/v2/auth?${params}`);
+};
+
+// ---------------------------------------------------------------------------
+// GET /api/auth/google/callback — Exchange code for tokens, find/create user
+// ---------------------------------------------------------------------------
+
+export const googleCallback = async (req, res) => {
+    const { code, state: userType } = req.query;
+    const FRONTEND = process.env.FRONTEND_URL || 'http://localhost:5173';
+
+    if (!code) {
+        return res.redirect(`${FRONTEND}/login?error=google_cancelled`);
+    }
+
+    try {
+        // Step 1: Exchange the authorization code for an access token
+        const tokenRes = await fetch('https://oauth2.googleapis.com/token', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: new URLSearchParams({
+                code,
+                client_id: process.env.GOOGLE_CLIENT_ID,
+                client_secret: process.env.GOOGLE_CLIENT_SECRET,
+                redirect_uri: process.env.GOOGLE_CALLBACK_URL,
+                grant_type: 'authorization_code',
+            }),
+        });
+        const tokenData = await tokenRes.json();
+
+        if (!tokenData.access_token) {
+            return res.redirect(`${FRONTEND}/login?error=google_token_failed`);
+        }
+
+        // Step 2: Fetch the user's Google profile
+        const profileRes = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
+            headers: { Authorization: `Bearer ${tokenData.access_token}` },
+        });
+        const profile = await profileRes.json();
+
+        const { sub: googleId, email, name, picture } = profile;
+
+        if (!email) {
+            return res.redirect(`${FRONTEND}/login?error=google_no_email`);
+        }
+
+        // Step 3: Find existing user by googleId or email, or create a new one
+        let user = await User.findOne({ $or: [{ googleId }, { email }] });
+
+        if (user) {
+            // Link googleId if the user previously registered with email/password
+            if (!user.googleId) {
+                user.googleId = googleId;
+                if (picture && !user.profilePicture) user.profilePicture = picture;
+                await user.save();
+            }
+        } else {
+            // New user — create account, already verified via Google
+            user = await User.create({
+                name,
+                email,
+                googleId,
+                profilePicture: picture || '',
+                userType: userType || 'freelancer',
+                isAccountVerified: true,
+            });
+        }
+
+        // Step 4: Issue JWT and set cookie
+        const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '7d' });
+        res.cookie('token', token, cookieOptions);
+
+        // Step 5: Redirect to frontend with token + user info in query params
+        // (frontend reads these once and stores them in localStorage)
+        const params = new URLSearchParams({
+            token,
+            user: JSON.stringify({
+                _id: user._id,
+                name: user.name,
+                email: user.email,
+                userType: user.userType,
+                profilePicture: user.profilePicture,
+                isAccountVerified: user.isAccountVerified,
+            }),
+        });
+        res.redirect(`${FRONTEND}/auth/google/success?${params}`);
+
+    } catch (error) {
+        console.error('Google OAuth callback error:', error);
+        res.redirect(`${FRONTEND}/login?error=google_server_error`);
     }
 };
