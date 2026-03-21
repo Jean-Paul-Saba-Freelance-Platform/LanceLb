@@ -52,8 +52,9 @@ void mainImage(out vec4 o, vec2 C){
   vec2 tuv=uv-0.5+uCenterOffset;
   tuv/=max(uZoom,0.001);
 
-  // On portrait screens apply a gentle zoom-out to break the hard colour band
-  float portraitCompensation = ratio < 1.0 ? 1.0 + (1.0 - ratio) * 0.4 : 1.0;
+  // On portrait screens zoom out by sqrt(1/ratio) — enough to break the hard colour band
+  // without pushing the green too far out of view
+  float portraitCompensation = ratio < 1.0 ? sqrt(1.0 / max(ratio, 0.1)) : 1.0;
   tuv /= max(portraitCompensation, 0.001);
 
   float degree=noise(vec2(t*0.1,tuv.x*tuv.y)*uNoiseScale);
@@ -73,7 +74,7 @@ void mainImage(out vec4 o, vec2 C){
   vec3 colDark=uColor3;
   float b=uColorBalance;
   // On portrait screens enforce a minimum softness so the colour boundary never appears as a hard line
-  float s=max(uBlendSoftness, ratio < 1.0 ? 0.18 : 0.0);
+  float s=max(uBlendSoftness, ratio < 1.0 ? 0.28 : 0.0);
   mat2 blendRot=Rot(radians(uBlendAngle));
   float blendX=(tuv*blendRot).x;
   float edge0=-0.3-b-s;
