@@ -270,7 +270,7 @@ const Home = () => {
       <footer className="landing-footer">
         <div className="footer-main">
           <div className="footer-brand">
-            <span className="footer-brand-name">LanceLB</span>
+            <span className="footer-brand-name">openhand</span>
             <p className="footer-tagline">
               Lebanon's dedicated freelance marketplace.<br />Built for talent, built for growth.
             </p>

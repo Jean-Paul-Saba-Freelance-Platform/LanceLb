@@ -151,7 +151,7 @@ const TopNav = ({ userName, userAvatar }) => {
       <div className="top-nav-container">
         {/* Left: Brand */}
         <Link to={brandLink} className="top-nav-brand">
-          LanceLB
+          Open Hand
         </Link>
 
         {/* Center: Menu Links */}
