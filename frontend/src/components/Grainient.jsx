@@ -52,8 +52,8 @@ void mainImage(out vec4 o, vec2 C){
   vec2 tuv=uv-0.5+uCenterOffset;
   tuv/=max(uZoom,0.001);
 
-  // On portrait screens zoom out proportionally so the gradient fills the canvas naturally
-  float portraitCompensation = ratio < 1.0 ? 1.0 / max(ratio, 0.1) : 1.0;
+  // On portrait screens apply a gentle zoom-out to break the hard colour band
+  float portraitCompensation = ratio < 1.0 ? 1.0 + (1.0 - ratio) * 0.4 : 1.0;
   tuv /= max(portraitCompensation, 0.001);
 
   float degree=noise(vec2(t*0.1,tuv.x*tuv.y)*uNoiseScale);
