@@ -20,11 +20,11 @@ const EXPERIENCE_LABELS = {
 const getInitial = (name) => (name || 'F').charAt(0).toUpperCase()
 
 /**
- * ClientFreelancerProfilePage
+ * FreelancerFreelancerProfilePage
  *
- * Lets a client view a freelancer's public profile and send/manage a follow request.
+ * Lets a freelancer view another user's public profile from /explore and send/manage a follow request.
  */
-const ClientFreelancerProfilePage = () => {
+const FreelancerFreelancerProfilePage = () => {
   const navigate = useNavigate()
   const location = useLocation()
   const { freelancerId } = useParams()
@@ -55,7 +55,7 @@ const ClientFreelancerProfilePage = () => {
     fetchProfile()
   }, [freelancerId])
 
-  const backRoute = location.state?.backRoute || '/client/explore'
+  const backRoute = location.state?.backRoute || '/freelancer/explore'
 
   return (
     <div className="cfp-page">
@@ -107,7 +107,9 @@ const ClientFreelancerProfilePage = () => {
                       {EXPERIENCE_LABELS[freelancer.experienceLevel] || freelancer.experienceLevel}
                     </span>
                   )}
-                  <span className="cfp-badge cfp-badge--type">Freelancer</span>
+                  <span className="cfp-badge cfp-badge--type">
+                    {freelancer.userType === 'client' ? 'Client' : 'Freelancer'}
+                  </span>
                 </div>
                 {/* Follower / Following counts */}
                 <div style={{ display: 'flex', gap: '16px', marginTop: '6px' }}>
@@ -159,4 +161,4 @@ const ClientFreelancerProfilePage = () => {
   )
 }
 
-export default ClientFreelancerProfilePage
+export default FreelancerFreelancerProfilePage

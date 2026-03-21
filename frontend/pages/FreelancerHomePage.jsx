@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import TopNav from '../src/components/TopNav.jsx'
 import JobCard from '../src/components/JobCard.jsx'
 import RightSidebarCard from '../src/components/RightSidebarCard.jsx'
@@ -7,12 +8,15 @@ import './FreelancerHomePage.css'
 const API_BASE = import.meta.env.VITE_API_BASE || 'http://127.0.0.1:4000'
 
 const FreelancerHomePage = () => {
+  const navigate = useNavigate()
   const [user, setUser] = useState(null)
   const [jobs, setJobs] = useState([])
   const [loadingJobs, setLoadingJobs] = useState(true)
   const [activeTab, setActiveTab] = useState('bestMatches')
   const [searchQuery, setSearchQuery] = useState('')
   const [profileProgress, setProfileProgress] = useState(40)
+  const [peopleToFollow, setPeopleToFollow] = useState([])
+  const [followStates, setFollowStates] = useState({})
 
   useEffect(() => {
     try {
@@ -39,6 +43,61 @@ const FreelancerHomePage = () => {
     }
     fetchJobs()
   }, [])
+
+  useEffect(() => {
+    const fetchSuggestedPeople = async () => {
+      try {
+        const token = localStorage.getItem('token')
+        if (!token) return
+        const res = await fetch(`${API_BASE}/api/follow/explore?limit=4`, {
+          credentials: 'include',
+          headers: { Authorization: `Bearer ${token}` },
+        })
+        const data = await res.json()
+        if (data.success) {
+          const people = data.users.slice(0, 4)
+          setPeopleToFollow(people)
+          const token = localStorage.getItem('token')
+          const statuses = {}
+          await Promise.all(people.map(async (person) => {
+            try {
+              const r = await fetch(`${API_BASE}/api/follow/status/${person._id}`, {
+                credentials: 'include',
+                headers: { Authorization: `Bearer ${token}` },
+              })
+              const d = await r.json()
+              if (d.success) statuses[person._id] = d.outgoing
+            } catch {}
+          }))
+          setFollowStates(statuses)
+        }
+      } catch {}
+    }
+    fetchSuggestedPeople()
+  }, [])
+
+  const handleWidgetFollow = async (personId) => {
+    const current = followStates[personId]
+    const token = localStorage.getItem('token')
+    try {
+      if (!current) {
+        const res = await fetch(`${API_BASE}/api/follow/${personId}`, {
+          method: 'POST', credentials: 'include',
+          headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+        })
+        const data = await res.json()
+        if (data.success) setFollowStates(prev => ({ ...prev, [personId]: 'requested' }))
+      } else {
+        const res = await fetch(`${API_BASE}/api/follow/${personId}`, {
+          method: 'DELETE', credentials: 'include',
+          headers: { Authorization: `Bearer ${token}` },
+        })
+        const data = await res.json()
+        if (data.success) setFollowStates(prev => ({ ...prev, [personId]: null }))
+      }
+    } catch {}
+  }
+
   const getGreeting = () => {
     const hour = new Date().getHours()
     if (hour < 12) return 'Good Morning'
@@ -189,6 +248,76 @@ const FreelancerHomePage = () => {
 
         {/* Right Sidebar */}
         <div className="freelancer-sidebar">
+          {/* People You May Know Card */}
+          <RightSidebarCard title="People You May Know">
+            {peopleToFollow.length === 0 ? (
+              <p className="sidebar-text">No suggestions right now.</p>
+            ) : (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                {peopleToFollow.map((person) => (
+                  <div key={person._id} style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                    <div style={{
+                      width: '36px', height: '36px', borderRadius: '50%',
+                      background: '#00a884', color: 'white', display: 'flex',
+                      alignItems: 'center', justifyContent: 'center',
+                      fontWeight: '600', fontSize: '0.9rem', flexShrink: 0
+                    }}>
+                      {(person.name || '?').charAt(0).toUpperCase()}
+                    </div>
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <div style={{ fontSize: '0.85rem', fontWeight: '600', color: '#f3f4f6',
+                        whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                        {person.name}
+                      </div>
+                      <div style={{ fontSize: '0.75rem', color: '#94a3b8' }}>
+                        {person.title || person.userType}
+                      </div>
+                    </div>
+                    <div style={{ display: 'flex', gap: '6px', flexShrink: 0 }}>
+                      <button
+                        onClick={() => handleWidgetFollow(person._id)}
+                        style={{
+                          fontSize: '0.72rem', padding: '3px 8px',
+                          background: followStates[person._id] ? 'transparent' : '#00a884',
+                          color: followStates[person._id] ? '#94a3b8' : 'white',
+                          border: followStates[person._id] ? '1px solid rgba(255,255,255,0.15)' : 'none',
+                          borderRadius: '6px', cursor: 'pointer'
+                        }}
+                      >
+                        {followStates[person._id] === 'accepted' ? 'Following'
+                          : followStates[person._id] === 'requested' ? 'Requested'
+                          : 'Follow'}
+                      </button>
+                      <button
+                        onClick={() => {
+                          const path = user?.userType === 'client'
+                            ? `/client/freelancer-profile/${person._id}`
+                            : `/freelancer/freelancer-profile/${person._id}`
+                          navigate(path, { state: { backRoute: '/freelancer/home' } })
+                        }}
+                        style={{
+                          fontSize: '0.72rem', padding: '3px 8px', background: 'transparent',
+                          color: '#00a884', border: '1px solid #00a884', borderRadius: '6px',
+                          cursor: 'pointer'
+                        }}
+                      >
+                        View
+                      </button>
+                    </div>
+                  </div>
+                ))}
+                <button
+                  onClick={() => window.location.href = '/freelancer/explore'}
+                  style={{ fontSize: '0.8rem', color: '#00a884', background: 'none',
+                    border: 'none', cursor: 'pointer', textAlign: 'left', padding: 0,
+                    marginTop: '4px' }}
+                >
+                  See all →
+                </button>
+              </div>
+            )}
+          </RightSidebarCard>
+
           {/* Profile Strength Card */}
           <RightSidebarCard title="Profile Strength">
             <div className="profile-progress-content">

@@ -12,6 +12,7 @@ import FreelancerProposalsPage from '../pages/FreelancerProposalsPage'
 import FreelancerDeliverWorkPage from '../pages/FreelancerDeliverWorkPage'
 import FreelancerClientProfilePage from '../pages/FreelancerClientProfilePage'
 import ClientFreelancerProfilePage from '../pages/ClientFreelancerProfilePage'
+import FreelancerFreelancerProfilePage from '../pages/FreelancerFreelancerProfilePage'
 import ClientHomePage from '../pages/ClientHomePage'
 import ClientProfilePage from '../pages/ClientProfilePage'
 import ClientStatsPage from '../pages/ClientStatsPage'
@@ -66,7 +67,7 @@ function App() {
           <Route path="/freelancer/projects/:projectId" element={<FreelancerRoute><ProjectDetailPage /></FreelancerRoute>} />
           <Route path="/freelancer/explore" element={<FreelancerRoute><ExplorePeoplePage /></FreelancerRoute>} />
           {/* Same-type profile views — reuse existing profile page components */}
-          <Route path="/freelancer/freelancer-profile/:freelancerId" element={<FreelancerRoute><ClientFreelancerProfilePage /></FreelancerRoute>} />
+          <Route path="/freelancer/freelancer-profile/:freelancerId" element={<FreelancerRoute><FreelancerFreelancerProfilePage /></FreelancerRoute>} />
         </Route>
 
         <Route element={<ClientLayout />}>

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useNavigate, useParams, useLocation } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import FollowButton from '../src/components/FollowButton.jsx'
 import './FreelancerClientProfilePage.css'
@@ -20,6 +20,7 @@ const getInitial = (name) => (name || 'C').charAt(0).toUpperCase()
  */
 const FreelancerClientProfilePage = () => {
   const navigate = useNavigate()
+  const location = useLocation()
   const { clientId } = useParams()
 
   const [client, setClient] = useState(null)
@@ -51,11 +52,17 @@ const FreelancerClientProfilePage = () => {
     fetchProfile()
   }, [clientId])
 
+  const backRoute = location.state?.backRoute || (() => {
+    const userStr = localStorage.getItem('user')
+    const currentUser = userStr ? JSON.parse(userStr) : null
+    return currentUser?.userType === 'client' ? '/client/explore' : '/freelancer/explore'
+  })()
+
   return (
     <div className="fcp-page">
       <div className="fcp-container">
-        <button className="fcp-back" onClick={() => navigate('/freelancer/home')}>
-          ← Back to Home
+        <button className="fcp-back" onClick={() => navigate(backRoute)}>
+          ← Back
         </button>
 
         {loading && (
@@ -97,6 +104,15 @@ const FreelancerClientProfilePage = () => {
                 <div className="fcp-meta-row">
                   <span className="fcp-badge fcp-badge--type">Client</span>
                 </div>
+                {/* Follower / Following counts */}
+                <div style={{ display: 'flex', gap: '16px', marginTop: '6px' }}>
+                  <span style={{ fontSize: '0.82rem', color: '#94a3b8' }}>
+                    <strong style={{ color: '#f3f4f6' }}>{client.followersCount ?? 0}</strong> followers
+                  </span>
+                  <span style={{ fontSize: '0.82rem', color: '#94a3b8' }}>
+                    <strong style={{ color: '#f3f4f6' }}>{client.followingCount ?? 0}</strong> following
+                  </span>
+                </div>
               </div>
               <div className="fcp-actions">
                 <FollowButton targetUserId={clientId} />
@@ -126,7 +142,9 @@ const FreelancerClientProfilePage = () => {
             {/* Member since */}
             <div className="fcp-footer">
               <span className="fcp-member-since">
-                Member since {new Date(client.createdAt).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
+                Member since {client.createdAt
+                  ? new Date(client.createdAt).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })
+                  : 'Recently joined'}
               </span>
             </div>
           </motion.div>
