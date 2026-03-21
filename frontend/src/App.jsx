@@ -36,6 +36,7 @@ import FreelancerRoute from './components/FreelancerRoute'
 import AuthRedirect from './components/AuthRedirect'
 import AdminDashboard from '../pages/AdminDashboard'
 import GoogleAuthSuccess from '../pages/GoogleAuthSuccess'
+import ExplorePeoplePage from '../pages/ExplorePeoplePage'
 import './App.css'
 
 function App() {
@@ -63,6 +64,9 @@ function App() {
           <Route path="/freelancer/client-profile/:clientId" element={<FreelancerRoute><FreelancerClientProfilePage /></FreelancerRoute>} />
           <Route path="/freelancer/projects" element={<FreelancerRoute><FreelancerProjectsPage /></FreelancerRoute>} />
           <Route path="/freelancer/projects/:projectId" element={<FreelancerRoute><ProjectDetailPage /></FreelancerRoute>} />
+          <Route path="/freelancer/explore" element={<FreelancerRoute><ExplorePeoplePage /></FreelancerRoute>} />
+          {/* Same-type profile views — reuse existing profile page components */}
+          <Route path="/freelancer/freelancer-profile/:freelancerId" element={<FreelancerRoute><ClientFreelancerProfilePage /></FreelancerRoute>} />
         </Route>
 
         <Route element={<ClientLayout />}>
@@ -160,6 +164,23 @@ function App() {
             element={
               <ClientRoute>
                 <ClientFreelancerProfilePage />
+              </ClientRoute>
+            }
+          />
+          <Route
+            path="/client/explore"
+            element={
+              <ClientRoute>
+                <ExplorePeoplePage />
+              </ClientRoute>
+            }
+          />
+          {/* Same-type profile views — reuse existing profile page components */}
+          <Route
+            path="/client/client-profile/:clientId"
+            element={
+              <ClientRoute>
+                <FreelancerClientProfilePage />
               </ClientRoute>
             }
           />

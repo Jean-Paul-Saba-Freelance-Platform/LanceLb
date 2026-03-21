@@ -258,6 +258,60 @@ export const getFollowers = async (req, res) => {
 };
 
 // ---------------------------------------------------------------------------
+// GET /api/follow/explore — Browse all users with search + filters
+// ---------------------------------------------------------------------------
+
+/**
+ * exploreUsers
+ *
+ * Returns a paginated list of all users except the current user.
+ * Supports optional query params: search, userType, experienceLevel, page, limit.
+ */
+export const exploreUsers = async (req, res) => {
+  try {
+    const currentUserId = req.userId;
+    const { search, userType, experienceLevel, page = 1, limit = 12 } = req.query;
+
+    const query = { _id: { $ne: currentUserId } };
+
+    if (userType && ['freelancer', 'client'].includes(userType)) {
+      query.userType = userType;
+    }
+
+    if (experienceLevel && ['entry', 'intermediate', 'expert'].includes(experienceLevel)) {
+      query.experienceLevel = experienceLevel;
+    }
+
+    if (search) {
+      const re = new RegExp(search.trim(), 'i');
+      query.$or = [{ name: re }, { title: re }, { bio: re }, { skills: re }];
+    }
+
+    const skip = (Number(page) - 1) * Number(limit);
+
+    const [users, total] = await Promise.all([
+      User.find(query)
+        .select('name title bio skills experienceLevel profilePicture userType createdAt')
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(Number(limit))
+        .lean(),
+      User.countDocuments(query),
+    ]);
+
+    return res.json({
+      success: true,
+      users,
+      total,
+      page: Number(page),
+      pages: Math.ceil(total / Number(limit)),
+    });
+  } catch (error) {
+    return res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+// ---------------------------------------------------------------------------
 // GET /api/follow/user/:userId — Public profile of any user
 // ---------------------------------------------------------------------------
 

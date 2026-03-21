@@ -9,6 +9,7 @@ import {
   getFollowing,
   getFollowers,
   getPublicProfile,
+  exploreUsers,
 } from "../controllers/followController.js";
 
 const followRouter = express.Router();
@@ -26,5 +27,8 @@ followRouter.get("/status/:userId", userAuth, getFollowStatus);
 followRouter.get("/requests", userAuth, getFollowRequests);  // must be before /:userId
 followRouter.get("/following", userAuth, getFollowing);
 followRouter.get("/followers", userAuth, getFollowers);
+
+// People directory
+followRouter.get("/explore", userAuth, exploreUsers);
 
 export default followRouter;
