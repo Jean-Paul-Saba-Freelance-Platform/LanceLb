@@ -155,21 +155,7 @@ const Home = () => {
             <p className="hero-subtitle">
               Find the right freelancer to begin working on your project within minutes.
             </p>
-            <form className="hero-search" onSubmit={handleSearch}>
-              <div className="hero-search-inner">
-                <svg className="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <circle cx="11" cy="11" r="8" /><path d="m21 21-4.35-4.35" />
-                </svg>
-                <input
-                  type="text"
-                  className="hero-search-input"
-                  placeholder="Search for a skill or freelancer..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                />
-                <button type="submit" className="hero-search-button">Search</button>
-              </div>
-            </form>
+            
             <div className="hero-actions">
               <MotionLink to="/signup" className="hero-cta-button" whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} transition={{ type: "spring", stiffness: 400, damping: 17 }}>Get started</MotionLink>
               <MotionLink to="/login" className="hero-secondary-button" whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} transition={{ type: "spring", stiffness: 400, damping: 17 }}>Sign in</MotionLink>

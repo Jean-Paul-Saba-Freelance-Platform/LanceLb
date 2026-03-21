@@ -5,11 +5,10 @@
 
 .card-nav-outer {
   position: absolute;
-  top: 1.75rem;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 90%;
-  max-width: 820px;
+  top: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
   z-index: 100;
   box-sizing: border-box;
 }
@@ -17,12 +16,8 @@
 .card-nav-pill {
   display: block;
   height: 60px;
-  background: rgba(14, 12, 20, 0.75);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 14px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  background: transparent;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   position: relative;
   overflow: hidden;
   will-change: height;
@@ -38,7 +33,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 0.5rem 0 1.1rem;
+  padding: 0 1.5rem 0 1.5rem;
   z-index: 2;
 }
 
@@ -169,13 +164,19 @@
   right: 0;
   top: 60px;
   bottom: 0;
-  padding: 0.5rem;
+  padding: 0.5rem 1.5rem;
   display: flex;
+  margin: auto;
   align-items: flex-end;
   gap: 10px;
   visibility: hidden;
   pointer-events: none;
   z-index: 1;
+  background: rgba(14, 12, 20, 0.92);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  
 }
 
 .card-nav-pill.open .card-nav-content {
@@ -249,9 +250,13 @@
 
 /* ── Light mode ───────────────────────────────────────── */
 [data-theme="light"] .card-nav-pill {
-  background: rgba(255, 255, 255, 0.88);
-  border-color: rgba(0, 0, 0, 0.08);
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.1);
+  background: transparent;
+  border-bottom-color: rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="light"] .card-nav-content {
+  background: rgba(255, 255, 255, 0.95);
+  border-bottom-color: rgba(0, 0, 0, 0.1);
 }
 
 [data-theme="light"] .card-nav-hamburger {
@@ -317,12 +322,12 @@
 /* ── Mobile ───────────────────────────────────────────── */
 @media (max-width: 768px) {
   .card-nav-outer {
-    width: 92%;
-    top: 1rem;
+    width: 100%;
+    top: 0;
   }
 
   .card-nav-topbar {
-    padding: 0 0.75rem;
+    padding: 0 1rem;
     justify-content: space-between;
   }
 
