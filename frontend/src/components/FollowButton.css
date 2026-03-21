@@ -1,0 +1,54 @@
+.follow-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.45rem 1.25rem;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  cursor: pointer;
+  border: 1.5px solid transparent;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease, opacity 0.15s ease;
+  white-space: nowrap;
+}
+
+/* Follow — teal filled */
+.follow-btn--follow {
+  background: #00a884;
+  color: #fff;
+  border-color: #00a884;
+}
+.follow-btn--follow:hover {
+  background: #008f71;
+  border-color: #008f71;
+}
+
+/* Requested — muted outlined */
+.follow-btn--requested {
+  background: transparent;
+  color: #8696a0;
+  border-color: #2a3942;
+}
+.follow-btn--requested:hover {
+  color: #f87171;
+  border-color: #f87171;
+}
+
+/* Following — subtle filled */
+.follow-btn--following {
+  background: #1b2730;
+  color: #00a884;
+  border-color: #00a884;
+}
+.follow-btn--following:hover {
+  background: #1b2730;
+  color: #f87171;
+  border-color: #f87171;
+}
+
+.follow-btn--loading,
+.follow-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

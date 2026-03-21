@@ -1,0 +1,146 @@
+/* ==========================================================================
+   ConfirmDeleteModal — Wizard-glass themed confirmation dialog.
+   Matches the PostJobLayout dark glassmorphism aesthetic.
+   ========================================================================== */
+
+.cdm-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  animation: cdmFadeIn 0.15s ease-out;
+}
+
+@keyframes cdmFadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.cdm-modal {
+  width: 100%;
+  max-width: 420px;
+  margin: 1rem;
+  padding: 2rem;
+  background: rgba(14, 12, 20, 0.88);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 16px;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.5);
+  animation: cdmSlideUp 0.2s ease-out;
+}
+
+@keyframes cdmSlideUp {
+  from { opacity: 0; transform: translateY(12px) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.cdm-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #f3f4f6;
+  margin: 0 0 0.65rem 0;
+  line-height: 1.3;
+}
+
+.cdm-body {
+  font-size: 0.92rem;
+  color: #94a3b8;
+  line-height: 1.6;
+  margin: 0 0 1.5rem 0;
+}
+
+.cdm-error {
+  padding: 0.7rem 1rem;
+  background: rgba(239, 68, 68, 0.12);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: 10px;
+  margin-bottom: 1.25rem;
+  font-size: 0.85rem;
+  color: #fca5a5;
+  line-height: 1.4;
+}
+
+.cdm-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.65rem;
+}
+
+.cdm-btn {
+  padding: 0.6rem 1.4rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  outline: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.cdm-cancel {
+  background: transparent;
+  color: #cbd5e1;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.cdm-cancel:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.25);
+  color: #f3f4f6;
+}
+
+.cdm-confirm {
+  background: rgba(239, 68, 68, 0.15);
+  color: #fca5a5;
+  border: 1px solid rgba(239, 68, 68, 0.35);
+}
+
+.cdm-confirm:hover:not(:disabled) {
+  background: rgba(239, 68, 68, 0.25);
+  border-color: rgba(239, 68, 68, 0.5);
+  color: #fee2e2;
+  box-shadow: 0 0 16px rgba(239, 68, 68, 0.15);
+}
+
+.cdm-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.cdm-spinner {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(252, 165, 165, 0.3);
+  border-top-color: #fca5a5;
+  border-radius: 50%;
+  animation: cdmSpin 0.6s linear infinite;
+}
+
+@keyframes cdmSpin {
+  to { transform: rotate(360deg); }
+}
+
+@media (max-width: 480px) {
+  .cdm-modal {
+    padding: 1.5rem;
+    max-width: calc(100% - 2rem);
+  }
+
+  .cdm-actions {
+    flex-direction: column-reverse;
+  }
+
+  .cdm-btn {
+    width: 100%;
+    justify-content: center;
+  }
+}

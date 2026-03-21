@@ -2,6 +2,8 @@ import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import './SignupFreelancer.css'
 
+const API_BASE = import.meta.env.VITE_API_BASE || 'http://127.0.0.1:4000'
+
 const SignupFreelancer = () => {
   const navigate = useNavigate()
   const [formData, setFormData] = useState({
@@ -80,11 +82,12 @@ const SignupFreelancer = () => {
     setSubmitSuccess(false)
 
     try {
-      const response = await fetch('http://127.0.0.1:4000/api/auth/register', {
+      const response = await fetch(`${API_BASE}/api/auth/register`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
+        credentials: 'include',
         body: JSON.stringify({
           name: `${formData.firstName.trim()} ${formData.lastName.trim()}`,
           email: formData.email.trim(),

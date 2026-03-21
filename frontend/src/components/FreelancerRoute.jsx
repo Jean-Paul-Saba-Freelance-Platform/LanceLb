@@ -25,9 +25,10 @@ const FreelancerRoute = ({ children }) => {
     return <Navigate to="/login" replace />
   }
 
-  // If user is not a freelancer, redirect to home
-  if (user.role !== 'freelancer') {
-    return <Navigate to="/" replace />
+  // If user is not a freelancer (e.g. client), redirect to their home
+  // Note: field is userType, not role — align with how ClientRoute and auth store it
+  if (user.userType !== 'freelancer') {
+    return <Navigate to="/client/home" replace />
   }
 
   // User is a freelancer, render the protected content

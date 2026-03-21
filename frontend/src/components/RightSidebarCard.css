@@ -1,8 +1,8 @@
 .sidebar-card {
-  background: rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(0, 0, 0, 0.08);
+  background: rgba(14, 12, 20, 0.6);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 12px;
   padding: 1.25rem;
   margin-bottom: 1rem;
@@ -19,14 +19,14 @@
 .sidebar-card-title {
   font-size: 1rem;
   font-weight: 600;
-  color: #1f2937;
+  color: #f3f4f6;
   margin: 0;
 }
 
 .sidebar-card-toggle {
   background: transparent;
   border: none;
-  color: #6b7280;
+  color: #94a3b8;
   cursor: pointer;
   padding: 0.25rem;
   display: flex;
@@ -45,7 +45,29 @@
 }
 
 .sidebar-card-content {
-  color: #4b5563;
+  color: #cbd5e1;
   font-size: 0.9rem;
   line-height: 1.6;
+}
+
+
+/* Light Mode */
+[data-theme="light"] .sidebar-card {
+  background: #ffffff;
+  border: 1px solid #e0e3e7;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+[data-theme="light"] .sidebar-card-title {
+  color: #111b21;
+}
+
+[data-theme="light"] .sidebar-card-toggle {
+  color: #667781;
+}
+
+[data-theme="light"] .sidebar-card-content {
+  color: #41525d;
 }

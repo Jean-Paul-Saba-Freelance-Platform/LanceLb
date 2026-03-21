@@ -3,19 +3,19 @@
 
 @custom-variant dark (&:is(.dark *));
 
-/* Glassmorphism Theme - Black & Transparent */
+/* Theme Tokens */
 :root {
   /* Colors */
-  --bg-primary: #000000;
+  --bg-primary: #111b21;
   --bg-secondary: rgba(0, 0, 0, 0.8);
-  --glass-bg: rgba(255, 255, 255, 0.05);
-  --glass-border: rgba(255, 255, 255, 0.1);
-  --glass-hover: rgba(255, 255, 255, 0.08);
+  --glass-bg: #202c33;
+  --glass-border: rgba(255, 255, 255, 0.12);
+  --glass-hover: #2a3942;
 
   /* Text Colors */
-  --text-primary: rgba(255, 255, 255, 0.95);
-  --text-secondary: rgba(255, 255, 255, 0.7);
-  --text-muted: rgba(255, 255, 255, 0.5);
+  --text-primary: #f3f4f6;
+  --text-secondary: #cbd5f5;
+  --text-muted: #94a3b8;
 
   /* Spacing */
   --spacing-xs: 0.5rem;
@@ -46,38 +46,52 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  --radius: 0.625rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
+  --radius: 0.75rem;
+  --background: oklch(0.16 0.02 286);
+  --foreground: oklch(0.97 0.01 286);
+  --card: oklch(0.21 0.02 286);
+  --card-foreground: oklch(0.97 0.01 286);
+  --popover: oklch(0.21 0.02 286);
+  --popover-foreground: oklch(0.97 0.01 286);
+  --primary: oklch(0.66 0.16 164);
+  --primary-foreground: oklch(0.98 0 0);
+  --secondary: oklch(0.26 0.02 286);
+  --secondary-foreground: oklch(0.95 0.01 286);
+  --muted: oklch(0.26 0.01 286);
+  --muted-foreground: oklch(0.77 0.02 286);
+  --accent: oklch(0.3 0.02 286);
+  --accent-foreground: oklch(0.95 0.01 286);
   --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
+  --border: oklch(1 0 0 / 12%);
+  --input: oklch(1 0 0 / 15%);
+  --ring: oklch(0.66 0.16 164);
   --chart-1: oklch(0.646 0.222 41.116);
   --chart-2: oklch(0.6 0.118 184.704);
   --chart-3: oklch(0.398 0.07 227.392);
   --chart-4: oklch(0.828 0.189 84.429);
   --chart-5: oklch(0.769 0.188 70.08);
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
+  --sidebar: oklch(0.21 0.02 286);
+  --sidebar-foreground: oklch(0.97 0.01 286);
+  --sidebar-primary: oklch(0.66 0.16 164);
+  --sidebar-primary-foreground: oklch(0.98 0 0);
+  --sidebar-accent: oklch(0.3 0.02 286);
+  --sidebar-accent-foreground: oklch(0.95 0.01 286);
+  --sidebar-border: oklch(1 0 0 / 12%);
+  --sidebar-ring: oklch(0.66 0.16 164);
+  --ui-surface: rgba(32, 44, 51, 0.92);
+  --ui-surface-soft: rgba(255, 255, 255, 0.04);
+  --ui-border: rgba(255, 255, 255, 0.13);
+  --ui-shadow: 0 14px 34px rgba(0, 0, 0, 0.42);
+}
+
+[data-theme="light"] {
+  --bg-primary: #f0f2f5;
+  --text-primary: #111b21;
+  --text-secondary: #41525d;
+  --text-muted: #667781;
+  --glass-bg: #ffffff;
+  --glass-border: #d8dde1;
+  --glass-hover: #f5f7f8;
 }
 
 * {
@@ -89,23 +103,20 @@
 body {
   margin: 0;
   min-width: 320px;
-  min-height: 100vh;
+  /* dvh ensures body fills the viewport correctly as mobile chrome appears/disappears */
+  min-height: 100dvh;
+  overflow-x: hidden;
+  /* Prevent bounce/elastic overscroll on iOS revealing bare background */
+  overscroll-behavior: none;
   background: var(--bg-primary);
   color: var(--text-primary);
-  background-image: 
-    radial-gradient(at 0% 0%, rgba(255, 255, 255, 0.03) 0px, transparent 50%),
-    radial-gradient(at 100% 100%, rgba(255, 255, 255, 0.02) 0px, transparent 50%);
-  animation: backgroundShift 40s ease infinite;
-  background-size: 200% 200%;
+  background-image:
+    radial-gradient(circle at 20% 20%, rgba(0, 168, 132, 0.08), transparent 40%),
+    radial-gradient(circle at 80% 80%, rgba(17, 27, 33, 0.9), transparent 45%);
 }
 
-@keyframes backgroundShift {
-  0%, 100% {
-    background-position: 0% 0%, 100% 100%;
-  }
-  50% {
-    background-position: 100% 100%, 0% 0%;
-  }
+[data-theme="light"] body {
+  background-image: none;
 }
 
 a {
@@ -214,3 +225,41 @@ button {
   }
 }
 
+
+/* Theme Transition - applies background/border/color smoothly but doesn't conflict with
+   other explicit transitions since named properties always win over shorthand 'all' */
+:root {
+  --theme-transition: background-color 0.2s ease, border-color 0.2s ease, color 0.15s ease;
+}
+
+body, .top-nav, .sidebar-card, .job-card, .greeting-card,
+.messages-sidebar, .messages-chat-panel, .messages-chat-header, .messages-composer,
+.messages-stream, .message-bubble, .messages-search,
+.auth-card, .auth-input, .landing-container, .profile-dropdown,
+.dropdown-menu-item, .messages-user-row, .tab-button, .top-nav-link {
+  transition: var(--theme-transition);
+}
+
+/* Light theme body */
+[data-theme="light"] body {
+  background: #f0f2f5;
+  color: #111b21;
+  background-image: none;
+}
+
+[data-theme="light"] h1,
+[data-theme="light"] h2,
+[data-theme="light"] h3,
+[data-theme="light"] h4,
+[data-theme="light"] h5,
+[data-theme="light"] h6 {
+  color: #111b21;
+}
+
+[data-theme="light"] a {
+  color: #111b21;
+}
+
+[data-theme="light"] a:hover {
+  color: #017561;
+}

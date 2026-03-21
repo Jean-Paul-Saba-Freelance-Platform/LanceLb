@@ -1,0 +1,716 @@
+:root {
+  --cal-empty: rgba(255, 255, 255, 0.05);
+  --cal-future: rgba(255, 255, 255, 0.03);
+}
+
+[data-theme="light"] {
+  --cal-empty: rgba(0, 0, 0, 0.06);
+  --cal-future: rgba(0, 0, 0, 0.03);
+}
+
+.pd-page {
+  min-height: 100vh;
+}
+
+.pd-container {
+  max-width: 920px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 5rem;
+}
+
+.pd-back {
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.45);
+  font-size: 0.9rem;
+  cursor: pointer;
+  padding: 0;
+  margin-bottom: 1.5rem;
+  transition: color 0.2s;
+}
+.pd-back:hover { color: rgba(255, 255, 255, 0.8); }
+
+.pd-loading,
+.pd-error {
+  text-align: center;
+  padding: 4rem 0;
+  color: rgba(255, 255, 255, 0.45);
+}
+.pd-error { color: #f87171; }
+
+/* ─── Header ─── */
+
+.pd-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1.5rem;
+  margin-bottom: 1.25rem;
+  flex-wrap: wrap;
+}
+
+.pd-header-left { flex: 1; min-width: 0; }
+
+.pd-title {
+  font-size: 1.7rem;
+  font-weight: 700;
+  color: #fff;
+  margin: 0 0 0.3rem;
+}
+
+.pd-desc {
+  font-size: 0.92rem;
+  color: rgba(255, 255, 255, 0.5);
+  margin: 0;
+}
+
+.pd-status-badge {
+  font-size: 0.8rem;
+  font-weight: 700;
+  padding: 0.3rem 0.85rem;
+  border-radius: 999px;
+  border: 1px solid;
+  flex-shrink: 0;
+  align-self: flex-start;
+  text-transform: capitalize;
+}
+.pd-status-planning { color: #fbbf24; border-color: #fbbf24; }
+.pd-status-active   { color: #10b981; border-color: #10b981; }
+.pd-status-completed{ color: #38bdf8; border-color: #38bdf8; }
+
+/* ─── Meta bar ─── */
+
+.pd-meta-bar {
+  display: flex;
+  gap: 2rem;
+  flex-wrap: wrap;
+  padding: 1rem 1.25rem;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 12px;
+  margin-bottom: 1.5rem;
+}
+
+.pd-meta-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.pd-meta-label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.4);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.pd-meta-value {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #fff;
+}
+
+.pd-channel-link {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #4be2be;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.pd-launch-edit {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.pd-launch-display {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.pd-edit-link {
+  background: none;
+  border: none;
+  color: rgba(0, 168, 132, 0.8);
+  font-size: 0.8rem;
+  cursor: pointer;
+  padding: 0;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+/* ─── Shared inputs ─── */
+
+.pd-date-input {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 7px;
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 0.88rem;
+  padding: 0.45rem 0.7rem;
+  font-family: inherit;
+}
+.pd-date-input:focus { outline: none; border-color: rgba(0, 168, 132, 0.5); }
+
+.pd-save-btn {
+  padding: 0.4rem 0.9rem;
+  border-radius: 7px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  background: rgba(0, 168, 132, 0.2);
+  color: #4be2be;
+  border: 1px solid rgba(0, 168, 132, 0.35);
+  transition: background 0.2s;
+}
+.pd-save-btn:hover:not(:disabled) { background: rgba(0, 168, 132, 0.35); }
+.pd-save-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.pd-cancel-btn {
+  padding: 0.4rem 0.9rem;
+  border-radius: 7px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  background: rgba(255, 255, 255, 0.05);
+  color: rgba(255, 255, 255, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: background 0.2s;
+}
+.pd-cancel-btn:hover { background: rgba(255, 255, 255, 0.09); }
+
+/* ─── Start project ─── */
+
+.pd-start-section {
+  padding: 1.1rem 1.25rem;
+  background: rgba(251, 191, 36, 0.05);
+  border: 1px solid rgba(251, 191, 36, 0.2);
+  border-radius: 12px;
+  margin-bottom: 1.5rem;
+}
+
+.pd-start-hint {
+  font-size: 0.88rem;
+  color: rgba(255, 255, 255, 0.55);
+  margin: 0 0 0.85rem;
+}
+
+.pd-start-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.pd-start-btn {
+  padding: 0.5rem 1.3rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  background: rgba(16, 185, 129, 0.2);
+  color: #10b981;
+  border: 1px solid rgba(16, 185, 129, 0.4);
+  transition: background 0.2s;
+}
+.pd-start-btn:hover:not(:disabled) { background: rgba(16, 185, 129, 0.35); }
+.pd-start-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* ─── Sections ─── */
+
+.pd-section {
+  margin-bottom: 2rem;
+}
+
+.pd-section-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.7);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin: 0 0 1rem;
+}
+
+/* ─── Role cards ─── */
+
+.pd-roles-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.pd-role-card {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  padding: 0.75rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  min-width: 180px;
+}
+
+.pd-role-title {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+.pd-role-members {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.pd-member-chip {
+  font-size: 0.75rem;
+  padding: 0.15rem 0.6rem;
+  border-radius: 999px;
+  background: rgba(0, 168, 132, 0.12);
+  color: #4be2be;
+  border: 1px solid rgba(0, 168, 132, 0.25);
+}
+
+.pd-chip-empty {
+  background: rgba(255, 255, 255, 0.05);
+  color: rgba(255, 255, 255, 0.3);
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+/* ─── GitHub-like Calendar ─── */
+
+.task-calendar {
+  background: rgba(14, 12, 20, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 14px;
+  padding: 1.25rem;
+  position: relative;
+}
+
+.task-cal-header {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.45);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.85rem;
+}
+
+.task-cal-body {
+  display: flex;
+  gap: 6px;
+  align-items: flex-start;
+}
+
+.task-cal-day-labels {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding-top: 2px;
+}
+
+.task-cal-day-label {
+  font-size: 0.62rem;
+  color: rgba(255, 255, 255, 0.3);
+  width: 22px;
+  height: 12px;
+  display: flex;
+  align-items: center;
+  line-height: 1;
+}
+
+.task-cal-grid {
+  display: flex;
+  gap: 3px;
+}
+
+.task-cal-week {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.task-cal-cell {
+  width: 12px;
+  height: 12px;
+  border-radius: 2px;
+  cursor: default;
+  transition: opacity 0.15s, transform 0.1s;
+  flex-shrink: 0;
+}
+
+.task-cal-cell:hover {
+  opacity: 0.85;
+  transform: scale(1.2);
+}
+
+.cal-today {
+  outline: 1px solid rgba(255, 255, 255, 0.5);
+  outline-offset: 1px;
+}
+
+.task-cal-legend {
+  display: flex;
+  gap: 1rem;
+  margin-top: 0.85rem;
+  flex-wrap: wrap;
+}
+
+.cal-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.72rem;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.cal-legend-item span {
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+  display: inline-block;
+  flex-shrink: 0;
+}
+
+.cal-tooltip {
+  position: fixed;
+  background: #1a1f2e;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 10px;
+  padding: 0.6rem 0.85rem;
+  font-size: 0.82rem;
+  color: #fff;
+  z-index: 9999;
+  pointer-events: none;
+  max-width: 220px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+}
+
+.cal-tooltip strong {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.cal-tooltip-task {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.82rem;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.cal-tooltip-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* ─── Tasks ─── */
+
+.pd-tasks-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.pd-add-task-btn {
+  padding: 0.4rem 0.9rem;
+  border-radius: 8px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  background: rgba(0, 168, 132, 0.15);
+  color: #4be2be;
+  border: 1px solid rgba(0, 168, 132, 0.3);
+  transition: background 0.2s;
+}
+.pd-add-task-btn:hover { background: rgba(0, 168, 132, 0.28); }
+
+.pd-task-form,
+.pd-task-edit-form {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 1.1rem;
+  margin-bottom: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.pd-task-input {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 7px;
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 0.9rem;
+  padding: 0.5rem 0.75rem;
+  font-family: inherit;
+  width: 100%;
+  box-sizing: border-box;
+}
+.pd-task-input:focus { outline: none; border-color: rgba(0, 168, 132, 0.5); }
+
+.pd-task-form-row {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.pd-field-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  flex: 1;
+  min-width: 140px;
+}
+
+.pd-field-label {
+  font-size: 0.72rem;
+  color: rgba(255, 255, 255, 0.4);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.pd-task-submit {
+  align-self: flex-end;
+  padding: 0.45rem 1.1rem;
+  border-radius: 7px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  background: rgba(0, 168, 132, 0.2);
+  color: #4be2be;
+  border: 1px solid rgba(0, 168, 132, 0.35);
+  transition: background 0.2s;
+}
+.pd-task-submit:hover:not(:disabled) { background: rgba(0, 168, 132, 0.35); }
+.pd-task-submit:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.pd-edit-actions {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: flex-end;
+}
+
+.pd-tasks-empty {
+  color: rgba(255, 255, 255, 0.35);
+  font-size: 0.9rem;
+  text-align: center;
+  padding: 2rem;
+}
+
+.pd-tasks-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.pd-task-card {
+  background: rgba(14, 12, 20, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 10px;
+  padding: 0.9rem 1.1rem;
+  transition: border-color 0.2s;
+}
+
+.pd-task-completed { border-left: 3px solid #10b981; }
+.pd-task-awaiting  { border-left: 3px solid #fbbf24; }
+.pd-task-overdue   { border-left: 3px solid #f87171; }
+.pd-task-pending   { border-left: 3px solid #38bdf8; }
+
+.pd-task-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.pd-task-left {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  flex: 1;
+  min-width: 0;
+}
+
+.pd-check-btn {
+  font-size: 1.2rem;
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.45);
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+  transition: color 0.15s;
+  flex-shrink: 0;
+}
+.pd-check-btn:hover { color: #4be2be; }
+
+.pd-check-done {
+  font-size: 1.2rem;
+  color: #fbbf24;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.pd-check-validated {
+  font-size: 1.1rem;
+  color: #10b981;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.pd-task-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  min-width: 0;
+}
+
+.pd-task-title {
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: #fff;
+}
+
+.pd-task-title-done {
+  text-decoration: line-through;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.pd-task-desc {
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.pd-task-right {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-shrink: 0;
+  flex-wrap: wrap;
+}
+
+.pd-task-status-pill {
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 0.15rem 0.55rem;
+  border-radius: 999px;
+  border: 1px solid;
+  background: transparent;
+}
+
+.pd-task-assignee {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.4);
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 0.1rem 0.5rem;
+  border-radius: 999px;
+}
+
+.pd-task-due {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.35);
+}
+
+.pd-task-edit-btn {
+  font-size: 0.75rem;
+  background: none;
+  border: none;
+  color: rgba(0, 168, 132, 0.7);
+  cursor: pointer;
+  padding: 0;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  transition: color 0.15s;
+}
+.pd-task-edit-btn:hover { color: #4be2be; }
+
+.pd-validate-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 0.65rem;
+  padding-top: 0.65rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  flex-wrap: wrap;
+}
+
+.pd-validate-hint {
+  font-size: 0.8rem;
+  color: rgba(251, 191, 36, 0.7);
+  flex: 1;
+}
+
+.pd-validate-btn {
+  padding: 0.35rem 0.9rem;
+  border-radius: 7px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  background: rgba(16, 185, 129, 0.15);
+  color: #10b981;
+  border: 1px solid rgba(16, 185, 129, 0.35);
+  transition: background 0.2s;
+}
+.pd-validate-btn:hover { background: rgba(16, 185, 129, 0.3); }
+
+/* ─── Light mode ─── */
+
+[data-theme="light"] .pd-back { color: rgba(0,0,0,0.4); }
+[data-theme="light"] .pd-back:hover { color: rgba(0,0,0,0.7); }
+[data-theme="light"] .pd-title { color: #111827; }
+[data-theme="light"] .pd-desc { color: rgba(0,0,0,0.5); }
+[data-theme="light"] .pd-meta-bar { background: rgba(0,0,0,0.02); border-color: rgba(0,0,0,0.08); }
+[data-theme="light"] .pd-meta-label { color: rgba(0,0,0,0.4); }
+[data-theme="light"] .pd-meta-value { color: #111827; }
+[data-theme="light"] .pd-date-input { background: rgba(0,0,0,0.03); border-color: rgba(0,0,0,0.12); color: #111827; }
+[data-theme="light"] .pd-start-section { background: rgba(251,191,36,0.05); border-color: rgba(251,191,36,0.2); }
+[data-theme="light"] .pd-start-hint { color: rgba(0,0,0,0.5); }
+[data-theme="light"] .pd-role-card { background: rgba(0,0,0,0.02); border-color: rgba(0,0,0,0.08); }
+[data-theme="light"] .pd-role-title { color: #111827; }
+[data-theme="light"] .task-calendar { background: rgba(0,0,0,0.02); border-color: rgba(0,0,0,0.07); }
+[data-theme="light"] .task-cal-header { color: rgba(0,0,0,0.4); }
+[data-theme="light"] .task-cal-day-label { color: rgba(0,0,0,0.3); }
+[data-theme="light"] .cal-legend-item { color: rgba(0,0,0,0.4); }
+[data-theme="light"] .cal-tooltip { background: #fff; border-color: rgba(0,0,0,0.1); color: #111827; }
+[data-theme="light"] .cal-tooltip strong { color: rgba(0,0,0,0.5); }
+[data-theme="light"] .cal-tooltip-task { color: rgba(0,0,0,0.8); }
+[data-theme="light"] .pd-task-card { background: #fff; border-color: rgba(0,0,0,0.08); }
+[data-theme="light"] .pd-task-title { color: #111827; }
+[data-theme="light"] .pd-task-desc { color: rgba(0,0,0,0.45); }
+[data-theme="light"] .pd-tasks-empty { color: rgba(0,0,0,0.35); }
+[data-theme="light"] .pd-section-title { color: rgba(0,0,0,0.55); }
+[data-theme="light"] .pd-task-input { background: rgba(0,0,0,0.03); border-color: rgba(0,0,0,0.12); color: #111827; }
+[data-theme="light"] .pd-task-form,
+[data-theme="light"] .pd-task-edit-form { background: rgba(0,0,0,0.02); border-color: rgba(0,0,0,0.08); }
+[data-theme="light"] .pd-field-label { color: rgba(0,0,0,0.4); }
+[data-theme="light"] .pd-validate-hint { color: rgba(180,130,10,0.8); }
+[data-theme="light"] .pd-task-assignee { color: rgba(0,0,0,0.45); background: rgba(0,0,0,0.04); border-color: rgba(0,0,0,0.09); }
+[data-theme="light"] .pd-task-due { color: rgba(0,0,0,0.35); }
+[data-theme="light"] .pd-check-btn { color: rgba(0,0,0,0.3); }
+
+/* ─── Responsive ─── */
+
+@media (max-width: 640px) {
+  .pd-container { padding: 1.5rem 1rem; }
+  .pd-title { font-size: 1.3rem; }
+  .pd-meta-bar { flex-direction: column; gap: 1rem; }
+  .pd-task-top { flex-direction: column; }
+  .pd-task-right { flex-direction: row; }
+  .task-cal-cell { width: 10px; height: 10px; }
+  .task-cal-day-label { height: 10px; font-size: 0.55rem; width: 18px; }
+}

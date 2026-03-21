@@ -4,40 +4,44 @@ import TopNav from '../src/components/TopNav'
 import { Edit2, Save, X, User, Mail, MapPin, Phone, Globe, CreditCard, Shield, Bell } from 'lucide-react'
 import './FreelancerSettingsPage.css'
 
+const API_BASE = import.meta.env.VITE_API_BASE || 'http://127.0.0.1:4000'
+
 const FreelancerSettingsPage = () => {
   const [user, setUser] = useState(null)
   const [activeSection, setActiveSection] = useState('contact')
   const [isEditingContact, setIsEditingContact] = useState(false)
   const [isEditingLocation, setIsEditingLocation] = useState(false)
+  const [contactSaveMsg, setContactSaveMsg] = useState('')
+  const [locationSaveMsg, setLocationSaveMsg] = useState('')
+  const [savingContact, setSavingContact] = useState(false)
 
   // Contact info state
   const [contactData, setContactData] = useState({
-    userId: 'USR-123456789',
-    name: 'Saba Arab',
-    email: 'saba.arab@example.com'
+    name: '',
+    email: ''
   })
 
   // Location state
   const [locationData, setLocationData] = useState({
-    timezone: 'UTC+02:00 Beirut',
-    address: '123 Main Street',
-    country: 'Lebanon',
-    phone: '+961 3 123 456'
+    timezone: '',
+    address: '',
+    country: '',
+    phone: ''
   })
 
   useEffect(() => {
-    // Get user from localStorage
     try {
       const userStr = localStorage.getItem('user')
       if (userStr) {
         const userData = JSON.parse(userStr)
         setUser(userData)
-        // Use user data if available
-        if (userData.name) {
-          setContactData(prev => ({ ...prev, name: userData.name }))
-        }
-        if (userData.email) {
-          setContactData(prev => ({ ...prev, email: userData.email }))
+        setContactData({
+          name: userData.name || userData.firstName || '',
+          email: userData.email || '',
+        })
+        const savedLoc = localStorage.getItem('userLocation')
+        if (savedLoc) {
+          try { setLocationData(JSON.parse(savedLoc)) } catch {}
         }
       }
     } catch (error) {
@@ -46,27 +50,70 @@ const FreelancerSettingsPage = () => {
   }, [])
 
   const userName = user?.name || user?.firstName || 'Freelancer'
+  const userId = user?._id || user?.id || user?.userId
+  const userIdDisplay = userId ? String(userId).substring(0, 8).toUpperCase() : '—'
 
-  const handleSaveContact = () => {
-    console.log('Saving contact info:', contactData)
-    setIsEditingContact(false)
-    // In real app, would call API here
+  const handleSaveContact = async () => {
+    setSavingContact(true)
+    setContactSaveMsg('')
+    try {
+      const token = localStorage.getItem('token')
+      const res = await fetch(`${API_BASE}/api/auth/profile`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        credentials: 'include',
+        body: JSON.stringify({ name: contactData.name }),
+      })
+      const data = await res.json()
+      if (data.success || res.ok) {
+        try {
+          const stored = JSON.parse(localStorage.getItem('user') || '{}')
+          const updated = { ...stored, name: contactData.name }
+          localStorage.setItem('user', JSON.stringify(updated))
+          setUser(updated)
+        } catch {}
+        setIsEditingContact(false)
+        setContactSaveMsg('Contact info saved.')
+        setTimeout(() => setContactSaveMsg(''), 3500)
+      } else {
+        setContactSaveMsg(data.message || 'Failed to save.')
+      }
+    } catch (err) {
+      console.error('Save contact error:', err)
+      setContactSaveMsg('Network error. Please try again.')
+    } finally {
+      setSavingContact(false)
+    }
   }
 
   const handleCancelContact = () => {
+    setContactData({
+      name: user?.name || user?.firstName || '',
+      email: user?.email || '',
+    })
     setIsEditingContact(false)
-    // Reset to original values if needed
+    setContactSaveMsg('')
   }
 
   const handleSaveLocation = () => {
-    console.log('Saving location info:', locationData)
+    try {
+      localStorage.setItem('userLocation', JSON.stringify(locationData))
+    } catch {}
     setIsEditingLocation(false)
-    // In real app, would call API here
+    setLocationSaveMsg('Location saved locally.')
+    setTimeout(() => setLocationSaveMsg(''), 3500)
   }
 
   const handleCancelLocation = () => {
+    const savedLoc = localStorage.getItem('userLocation')
+    if (savedLoc) {
+      try { setLocationData(JSON.parse(savedLoc)) } catch {}
+    }
     setIsEditingLocation(false)
-    // Reset to original values if needed
+    setLocationSaveMsg('')
   }
 
   const handleCreateClientAccount = () => {
@@ -168,6 +215,11 @@ const FreelancerSettingsPage = () => {
           <div className="settings-content">
             {activeSection === 'contact' && (
               <>
+                {contactSaveMsg && (
+                  <div className="settings-card" style={{ padding: '0.75rem 1.25rem', background: 'rgba(0,168,132,0.1)', borderColor: 'rgba(0,168,132,0.3)', color: '#34d399' }}>
+                    {contactSaveMsg}
+                  </div>
+                )}
                 {/* Account Card */}
                 <div className="settings-card">
                   <div className="settings-card-header">
@@ -187,16 +239,18 @@ const FreelancerSettingsPage = () => {
                     <div className="settings-card-content">
                       <div className="settings-field">
                         <label className="settings-field-label">User ID</label>
-                        <div className="settings-field-value">{contactData.userId}</div>
+                        <div className="settings-field-value">{userIdDisplay}</div>
                       </div>
                       <div className="settings-field">
                         <label className="settings-field-label">Name</label>
-                        <div className="settings-field-value">{contactData.name}</div>
+                        <div className="settings-field-value">{contactData.name || '—'}</div>
                       </div>
                       <div className="settings-field">
                         <label className="settings-field-label">Email</label>
                         <div className="settings-field-value">
-                          {contactData.email.replace(/(.{2})(.*)(@)/, '$1*****$3')}
+                          {contactData.email
+                            ? contactData.email.replace(/(.{2})(.*)(@)/, '$1*****$3')
+                            : '—'}
                         </div>
                       </div>
                     </div>
@@ -204,7 +258,7 @@ const FreelancerSettingsPage = () => {
                     <div className="settings-card-content">
                       <div className="settings-field">
                         <label className="settings-field-label">User ID</label>
-                        <div className="settings-field-value">{contactData.userId}</div>
+                        <div className="settings-field-value">{userIdDisplay}</div>
                         <p className="settings-field-hint">User ID cannot be changed</p>
                       </div>
                       <div className="settings-field">
@@ -222,13 +276,16 @@ const FreelancerSettingsPage = () => {
                           type="email"
                           className="settings-input"
                           value={contactData.email}
-                          onChange={(e) => setContactData({ ...contactData, email: e.target.value })}
+                          disabled
+                          style={{ opacity: 0.55, cursor: 'not-allowed' }}
                         />
+                        <p className="settings-field-hint">To change your email, please contact support.</p>
                       </div>
                       <div className="settings-card-actions">
                         <button
                           className="settings-button-secondary"
                           onClick={handleCancelContact}
+                          disabled={savingContact}
                         >
                           <X size={16} />
                           Cancel
@@ -236,9 +293,10 @@ const FreelancerSettingsPage = () => {
                         <button
                           className="settings-button-primary"
                           onClick={handleSaveContact}
+                          disabled={savingContact}
                         >
                           <Save size={16} />
-                          Save
+                          {savingContact ? 'Saving...' : 'Save'}
                         </button>
                       </div>
                     </div>
@@ -305,24 +363,27 @@ const FreelancerSettingsPage = () => {
                     </button>
                   )}
                 </div>
+                {locationSaveMsg && (
+                  <p style={{ fontSize: '0.85rem', color: '#34d399', margin: '0 0 1rem 0' }}>{locationSaveMsg}</p>
+                )}
 
                 {!isEditingLocation ? (
                   <div className="settings-card-content">
                     <div className="settings-field">
                       <label className="settings-field-label">Time zone</label>
-                      <div className="settings-field-value">{locationData.timezone}</div>
+                      <div className="settings-field-value">{locationData.timezone || '—'}</div>
                     </div>
                     <div className="settings-field">
                       <label className="settings-field-label">Address</label>
-                      <div className="settings-field-value">{locationData.address}</div>
+                      <div className="settings-field-value">{locationData.address || '—'}</div>
                     </div>
                     <div className="settings-field">
                       <label className="settings-field-label">Country</label>
-                      <div className="settings-field-value">{locationData.country}</div>
+                      <div className="settings-field-value">{locationData.country || '—'}</div>
                     </div>
                     <div className="settings-field">
                       <label className="settings-field-label">Phone</label>
-                      <div className="settings-field-value">{locationData.phone}</div>
+                      <div className="settings-field-value">{locationData.phone || '—'}</div>
                     </div>
                   </div>
                 ) : (

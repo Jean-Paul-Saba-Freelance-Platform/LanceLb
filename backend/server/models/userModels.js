@@ -12,11 +12,16 @@ const userSchema = new mongoose.Schema({
     },
     password: {
         type: String,
-        required: true
+        default: null,
     },
+    googleId: {
+        type: String,
+        default: null,
+    },
+    
     verifyOtp: {
         type: String,
-        default:' '
+        default: ''
     },
     verifyOtpExpiry: {
         type: Number,
@@ -34,14 +39,41 @@ const userSchema = new mongoose.Schema({
     },
     resetOtp: {
         type: String,
-        default:' ',
+        default: '',
     },
     resetOtpExpiry: {
         type: Number,
         default:0,
     },
-    
-})
+    skills: {
+        type: [String],
+        default: [],
+    },
+    bio: {
+        type: String,
+        default: '',
+        maxlength: 1000,
+    },
+    experienceLevel: {
+        type: String,
+        enum: ['entry', 'intermediate', 'expert'],
+        default: 'entry',
+    },
+    title: {
+        type: String,
+        default: '',
+        maxlength: 120,
+    },
+    profilePicture:{
+        type:String,
+        default: '',
+        
+    },
+    isAdmin: {
+        type: Boolean,
+        default: false,
+}
+}, { timestamps: true })
 
 const User = mongoose.model('User', userSchema);
 

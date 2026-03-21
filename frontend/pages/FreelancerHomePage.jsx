@@ -1,128 +1,103 @@
 import React, { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import TopNav from '../src/components/TopNav.jsx'
 import JobCard from '../src/components/JobCard.jsx'
 import RightSidebarCard from '../src/components/RightSidebarCard.jsx'
 import './FreelancerHomePage.css'
 
+const API_BASE = import.meta.env.VITE_API_BASE || 'http://127.0.0.1:4000'
+
 const FreelancerHomePage = () => {
+  const navigate = useNavigate()
   const [user, setUser] = useState(null)
+  const [jobs, setJobs] = useState([])
+  const [loadingJobs, setLoadingJobs] = useState(true)
   const [activeTab, setActiveTab] = useState('bestMatches')
   const [searchQuery, setSearchQuery] = useState('')
   const [profileProgress, setProfileProgress] = useState(40)
-
-  // Mock jobs data
-  const mockJobs = [
-    {
-      id: 1,
-      postedTime: 'Posted yesterday',
-      title: 'Arabic Proofreader & Transcriber',
-      type: 'Hourly',
-      experience: 'Intermediate',
-      duration: 'Ongoing',
-      description: 'We are looking for an experienced Arabic proofreader and transcriber to work on various projects. Must have excellent attention to detail and native-level Arabic proficiency.',
-      tags: ['Proofreading', 'Arabic', 'General Transcription'],
-      paymentVerified: true,
-      rating: 4.8,
-      spent: '$5k+ spent',
-      location: 'Lebanon',
-      proposals: '5-10',
-      category: 'bestMatches'
-    },
-    {
-      id: 2,
-      postedTime: 'Posted 2 days ago',
-      title: 'React Developer for E-commerce Platform',
-      type: 'Fixed-price',
-      experience: 'Expert',
-      duration: '1-3 months',
-      description: 'Looking for an experienced React developer to build a modern e-commerce platform. Must have experience with React, TypeScript, and payment integrations.',
-      tags: ['React', 'TypeScript', 'E-commerce', 'Payment Integration'],
-      paymentVerified: true,
-      rating: 4.9,
-      spent: '$10k+ spent',
-      location: 'United States',
-      proposals: '10-15',
-      category: 'bestMatches'
-    },
-    {
-      id: 3,
-      postedTime: 'Posted 3 days ago',
-      title: 'UI/UX Designer for Mobile App',
-      type: 'Hourly',
-      experience: 'Intermediate',
-      duration: '1-2 months',
-      description: 'We need a talented UI/UX designer to create beautiful and intuitive designs for our mobile application. Experience with Figma and design systems required.',
-      tags: ['UI/UX Design', 'Figma', 'Mobile App', 'Design Systems'],
-      paymentVerified: false,
-      rating: 4.5,
-      spent: '$2k+ spent',
-      location: 'United Kingdom',
-      proposals: 'Less than 5',
-      category: 'recent'
-    },
-    {
-      id: 4,
-      postedTime: 'Posted 4 days ago',
-      title: 'Content Writer for Tech Blog',
-      type: 'Fixed-price',
-      experience: 'Entry level',
-      duration: 'Ongoing',
-      description: 'Seeking a skilled content writer to create engaging articles for our technology blog. Topics include web development, AI, and software engineering.',
-      tags: ['Content Writing', 'Blogging', 'Technology', 'SEO'],
-      paymentVerified: true,
-      rating: 4.7,
-      spent: '$3k+ spent',
-      location: 'Canada',
-      proposals: '5-10',
-      category: 'bestMatches'
-    },
-    {
-      id: 5,
-      postedTime: 'Posted 5 days ago',
-      title: 'Full Stack Developer - Node.js & React',
-      type: 'Hourly',
-      experience: 'Expert',
-      duration: '3-6 months',
-      description: 'Join our team as a full stack developer working on cutting-edge web applications. Must be proficient in Node.js, React, and database design.',
-      tags: ['Node.js', 'React', 'Full Stack', 'Database Design'],
-      paymentVerified: true,
-      rating: 5.0,
-      spent: '$20k+ spent',
-      location: 'Australia',
-      proposals: '15-20',
-      category: 'recent'
-    },
-    {
-      id: 6,
-      postedTime: 'Posted 1 week ago',
-      title: 'Social Media Manager',
-      type: 'Hourly',
-      experience: 'Intermediate',
-      duration: 'Ongoing',
-      description: 'We are looking for an experienced social media manager to handle our brand presence across multiple platforms. Experience with analytics and content creation required.',
-      tags: ['Social Media', 'Content Creation', 'Analytics', 'Marketing'],
-      paymentVerified: true,
-      rating: 4.6,
-      spent: '$8k+ spent',
-      location: 'Germany',
-      proposals: '10-15',
-      category: 'saved'
-    }
-  ]
+  const [peopleToFollow, setPeopleToFollow] = useState([])
+  const [followStates, setFollowStates] = useState({})
 
   useEffect(() => {
-    // Get user from localStorage
     try {
       const userStr = localStorage.getItem('user')
-      if (userStr) {
-        setUser(JSON.parse(userStr))
-      }
+      if (userStr) setUser(JSON.parse(userStr))
     } catch (error) {
       console.error('Error loading user:', error)
     }
   }, [])
 
-  // Get current date and greeting
+  useEffect(() => {
+    const fetchJobs = async () => {
+      try {
+        const res = await fetch(`${API_BASE}/api/client/jobs/open`)
+        const data = await res.json()
+        if (data.success) {
+          setJobs(data.jobs)
+        }
+      } catch (err) {
+        console.error('Error fetching jobs:', err)
+      } finally {
+        setLoadingJobs(false)
+      }
+    }
+    fetchJobs()
+  }, [])
+
+  useEffect(() => {
+    const fetchSuggestedPeople = async () => {
+      try {
+        const token = localStorage.getItem('token')
+        if (!token) return
+        const res = await fetch(`${API_BASE}/api/follow/explore?limit=4`, {
+          credentials: 'include',
+          headers: { Authorization: `Bearer ${token}` },
+        })
+        const data = await res.json()
+        if (data.success) {
+          const people = data.users.slice(0, 4)
+          setPeopleToFollow(people)
+          const token = localStorage.getItem('token')
+          const statuses = {}
+          await Promise.all(people.map(async (person) => {
+            try {
+              const r = await fetch(`${API_BASE}/api/follow/status/${person._id}`, {
+                credentials: 'include',
+                headers: { Authorization: `Bearer ${token}` },
+              })
+              const d = await r.json()
+              if (d.success) statuses[person._id] = d.outgoing
+            } catch {}
+          }))
+          setFollowStates(statuses)
+        }
+      } catch {}
+    }
+    fetchSuggestedPeople()
+  }, [])
+
+  const handleWidgetFollow = async (personId) => {
+    const current = followStates[personId]
+    const token = localStorage.getItem('token')
+    try {
+      if (!current) {
+        const res = await fetch(`${API_BASE}/api/follow/${personId}`, {
+          method: 'POST', credentials: 'include',
+          headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+        })
+        const data = await res.json()
+        if (data.success) setFollowStates(prev => ({ ...prev, [personId]: 'requested' }))
+      } else {
+        const res = await fetch(`${API_BASE}/api/follow/${personId}`, {
+          method: 'DELETE', credentials: 'include',
+          headers: { Authorization: `Bearer ${token}` },
+        })
+        const data = await res.json()
+        if (data.success) setFollowStates(prev => ({ ...prev, [personId]: null }))
+      }
+    } catch {}
+  }
+
   const getGreeting = () => {
     const hour = new Date().getHours()
     if (hour < 12) return 'Good Morning'
@@ -139,25 +114,31 @@ const FreelancerHomePage = () => {
     })
   }
 
-  // Filter jobs based on active tab and search query
+  const timeAgo = (dateStr) => {
+    const diff = Date.now() - new Date(dateStr).getTime()
+    const days = Math.floor(diff / 86400000)
+    if (days === 0) return 'Posted today'
+    if (days === 1) return 'Posted yesterday'
+    return `Posted ${days} days ago`
+  }
+
+  const formatJob = (job) => ({
+    ...job,
+    postedTime: timeAgo(job.createdAt),
+    type: job.paymentType === 'hourly' ? 'Hourly' : 'Fixed-price',
+    experience: job.experienceLevel,
+    tags: job.requiredSkills || [],
+  })
+
   const getFilteredJobs = () => {
-    let filtered = mockJobs
+    let filtered = jobs.map(formatJob)
 
-    // Filter by tab
-    if (activeTab === 'bestMatches') {
-      filtered = mockJobs.filter(job => job.category === 'bestMatches')
-    } else if (activeTab === 'recent') {
-      filtered = mockJobs.filter(job => job.category === 'recent')
-    } else if (activeTab === 'saved') {
-      filtered = mockJobs.filter(job => job.category === 'saved')
-    }
-
-    // Filter by search query
     if (searchQuery.trim()) {
+      const q = searchQuery.toLowerCase()
       filtered = filtered.filter(job =>
-        job.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        job.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        job.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()))
+        job.title.toLowerCase().includes(q) ||
+        job.description.toLowerCase().includes(q) ||
+        job.tags.some(tag => tag.toLowerCase().includes(q))
       )
     }
 
@@ -165,8 +146,26 @@ const FreelancerHomePage = () => {
   }
 
   const filteredJobs = getFilteredJobs()
-  // Use fallback name if no user in localStorage (for preview/testing)
   const userName = user?.name || user?.firstName || 'Freelancer'
+
+  const renderSkeletonCards = () => (
+    <>
+      {[1, 2, 3].map(i => (
+        <div key={i} className="job-card skeleton-job-card">
+          <div className="skeleton-line skeleton-short" />
+          <div className="skeleton-line skeleton-title" />
+          <div className="skeleton-line skeleton-medium" />
+          <div className="skeleton-line skeleton-long" />
+          <div className="skeleton-line skeleton-long" />
+          <div className="skeleton-tags-row">
+            <div className="skeleton-tag" />
+            <div className="skeleton-tag" />
+            <div className="skeleton-tag" />
+          </div>
+        </div>
+      ))}
+    </>
+  )
 
   return (
     <div className="freelancer-home">
@@ -184,8 +183,8 @@ const FreelancerHomePage = () => {
             <div className="greeting-illustration">
               <div className="illustration-placeholder">
                 <svg width="80" height="80" viewBox="0 0 100 100" fill="none">
-                  <circle cx="50" cy="50" r="40" fill="#a855f7" opacity="0.2"/>
-                  <path d="M30 50 L45 65 L70 35" stroke="#a855f7" strokeWidth="4" strokeLinecap="round"/>
+                  <circle cx="50" cy="50" r="40" fill="#00a884" opacity="0.2"/>
+                  <path d="M30 50 L45 65 L70 35" stroke="#00a884" strokeWidth="4" strokeLinecap="round"/>
                 </svg>
               </div>
             </div>
@@ -229,13 +228,19 @@ const FreelancerHomePage = () => {
 
           {/* Jobs Feed */}
           <div className="jobs-feed">
-            {filteredJobs.length > 0 ? (
+            {loadingJobs ? (
+              renderSkeletonCards()
+            ) : filteredJobs.length > 0 ? (
               filteredJobs.map(job => (
-                <JobCard key={job.id} job={job} />
+                <JobCard key={job._id || job.id} job={job} />
               ))
             ) : (
               <div className="no-jobs-message">
-                <p>No jobs found. Try adjusting your search or filters.</p>
+                {searchQuery.trim() ? (
+                  <p>No jobs found. Try adjusting your search or filters.</p>
+                ) : (
+                  <p>No jobs available right now.</p>
+                )}
               </div>
             )}
           </div>
@@ -243,6 +248,76 @@ const FreelancerHomePage = () => {
 
         {/* Right Sidebar */}
         <div className="freelancer-sidebar">
+          {/* People You May Know Card */}
+          <RightSidebarCard title="People You May Know">
+            {peopleToFollow.length === 0 ? (
+              <p className="sidebar-text">No suggestions right now.</p>
+            ) : (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                {peopleToFollow.map((person) => (
+                  <div key={person._id} style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                    <div style={{
+                      width: '36px', height: '36px', borderRadius: '50%',
+                      background: '#00a884', color: 'white', display: 'flex',
+                      alignItems: 'center', justifyContent: 'center',
+                      fontWeight: '600', fontSize: '0.9rem', flexShrink: 0
+                    }}>
+                      {(person.name || '?').charAt(0).toUpperCase()}
+                    </div>
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <div style={{ fontSize: '0.85rem', fontWeight: '600', color: '#f3f4f6',
+                        whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                        {person.name}
+                      </div>
+                      <div style={{ fontSize: '0.75rem', color: '#94a3b8' }}>
+                        {person.title || person.userType}
+                      </div>
+                    </div>
+                    <div style={{ display: 'flex', gap: '6px', flexShrink: 0 }}>
+                      <button
+                        onClick={() => handleWidgetFollow(person._id)}
+                        style={{
+                          fontSize: '0.72rem', padding: '3px 8px',
+                          background: followStates[person._id] ? 'transparent' : '#00a884',
+                          color: followStates[person._id] ? '#94a3b8' : 'white',
+                          border: followStates[person._id] ? '1px solid rgba(255,255,255,0.15)' : 'none',
+                          borderRadius: '6px', cursor: 'pointer'
+                        }}
+                      >
+                        {followStates[person._id] === 'accepted' ? 'Following'
+                          : followStates[person._id] === 'requested' ? 'Requested'
+                          : 'Follow'}
+                      </button>
+                      <button
+                        onClick={() => {
+                          const path = user?.userType === 'client'
+                            ? `/client/freelancer-profile/${person._id}`
+                            : `/freelancer/freelancer-profile/${person._id}`
+                          navigate(path, { state: { backRoute: '/freelancer/home' } })
+                        }}
+                        style={{
+                          fontSize: '0.72rem', padding: '3px 8px', background: 'transparent',
+                          color: '#00a884', border: '1px solid #00a884', borderRadius: '6px',
+                          cursor: 'pointer'
+                        }}
+                      >
+                        View
+                      </button>
+                    </div>
+                  </div>
+                ))}
+                <button
+                  onClick={() => window.location.href = '/freelancer/explore'}
+                  style={{ fontSize: '0.8rem', color: '#00a884', background: 'none',
+                    border: 'none', cursor: 'pointer', textAlign: 'left', padding: 0,
+                    marginTop: '4px' }}
+                >
+                  See all →
+                </button>
+              </div>
+            )}
+          </RightSidebarCard>
+
           {/* Profile Strength Card */}
           <RightSidebarCard title="Profile Strength">
             <div className="profile-progress-content">
