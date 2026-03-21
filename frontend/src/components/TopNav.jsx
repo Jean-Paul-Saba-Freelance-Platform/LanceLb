@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react'
-import { Link, useLocation } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { HelpCircle, Bell } from 'lucide-react'
 import ProfileDropdown from './ProfileDropdown'
 import './TopNav.css'
@@ -12,9 +12,12 @@ const TopNav = ({ userName, userAvatar }) => {
   const [notifications, setNotifications] = useState([])
   const [unreadCount, setUnreadCount] = useState(0)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [respondingTo, setRespondingTo] = useState(null)
+  const [followBackStates, setFollowBackStates] = useState({})
   const notifRef = useRef(null)
   const mobileMenuRef = useRef(null)
   const location = useLocation()
+  const navigate = useNavigate()
 
   const userStr = localStorage.getItem('user')
   const user = userStr ? JSON.parse(userStr) : null
@@ -116,12 +119,69 @@ const TopNav = ({ userName, userAvatar }) => {
     }
   }
 
+  const handleFollowResponse = async (followId, notifId, action) => {
+    setRespondingTo(notifId)
+    try {
+      const res = await fetch(`${API_BASE}/api/follow/${followId}/respond`, {
+        method: 'PATCH',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json', ...authHeaders() },
+        body: JSON.stringify({ action }),
+      })
+      const data = await res.json()
+      if (data.success) {
+        // Remove from React state immediately
+        setNotifications(prev => prev.filter(n => n._id !== notifId))
+        // Also delete from DB so it doesn't come back on re-fetch
+        await fetch(`${API_BASE}/api/notifications/${notifId}`, {
+          method: 'DELETE',
+          credentials: 'include',
+          headers: authHeaders(),
+        })
+      }
+    } catch {}
+    setRespondingTo(null)
+  }
+
+  const handleFollowBack = async (targetUserId, notifId) => {
+    setFollowBackStates(prev => ({ ...prev, [notifId]: 'loading' }))
+    try {
+      const res = await fetch(`${API_BASE}/api/follow/${targetUserId}`, {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json', ...authHeaders() },
+      })
+      const data = await res.json()
+      if (data.success) {
+        setFollowBackStates(prev => ({ ...prev, [notifId]: 'requested' }))
+        // Delete the notification from DB so it doesn't reappear on re-fetch
+        await fetch(`${API_BASE}/api/notifications/${notifId}`, {
+          method: 'DELETE',
+          credentials: 'include',
+          headers: authHeaders(),
+        })
+        // Remove from local state after short delay so user sees "Request sent ✓"
+        setTimeout(() => {
+          setNotifications(prev => prev.filter(n => n._id !== notifId))
+        }, 2000)
+      } else {
+        // Reset on failure
+        setFollowBackStates(prev => ({ ...prev, [notifId]: null }))
+      }
+    } catch {
+      setFollowBackStates(prev => ({ ...prev, [notifId]: null }))
+    }
+  }
+
   const notifIcon = (type) => {
     if (type === 'application_accepted') return '✓'
     if (type === 'application_rejected') return '✕'
     if (type === 'task_validated') return '★'
     if (type === 'task_completed') return '◎'
     if (type === 'project_started') return '▶'
+    if (type === 'follow_request') return '👤'
+    if (type === 'follow_accepted') return '✓'
+    if (type === 'follow_back_suggestion') return '👥'
     return '•'
   }
 
@@ -130,6 +190,9 @@ const TopNav = ({ userName, userAvatar }) => {
     if (type === 'application_rejected') return '#f87171'
     if (type === 'task_validated') return '#fbbf24'
     if (type === 'project_started') return '#4be2be'
+    if (type === 'follow_request') return '#4be2be'
+    if (type === 'follow_accepted') return '#10b981'
+    if (type === 'follow_back_suggestion') return '#4be2be'
     return '#38bdf8'
   }
 
@@ -269,7 +332,21 @@ const TopNav = ({ userName, userAvatar }) => {
                         <div key={n._id} className={`notif-item ${n.read ? '' : 'notif-unread'}`}>
                           <span
                             className="notif-type-icon"
-                            style={{ color: notifColor(n.type), background: `${notifColor(n.type)}20` }}
+                            style={{
+                              color: notifColor(n.type),
+                              background: `${notifColor(n.type)}20`,
+                              cursor: n.type === 'follow_request' ? 'pointer' : 'default'
+                            }}
+                            onClick={() => {
+                              if (n.type === 'follow_request' && n.relatedId) {
+                                const profilePath = user?.userType === 'client'
+                                  ? `/client/freelancer-profile/${n.relatedId}`
+                                  : `/freelancer/freelancer-profile/${n.relatedId}`
+                                setShowNotifications(false)
+                                navigate(profilePath, { state: { backRoute: user?.userType === 'client' ? '/client/home' : '/freelancer/home' } })
+                              }
+                            }}
+                            title={n.type === 'follow_request' ? 'View profile' : undefined}
                           >
                             {notifIcon(n.type)}
                           </span>
@@ -277,6 +354,45 @@ const TopNav = ({ userName, userAvatar }) => {
                             <span className="notif-title">{n.title}</span>
                             {n.message && <span className="notif-msg">{n.message}</span>}
                             <span className="notif-time">{formatRelative(n.createdAt)}</span>
+                            {n.type === 'follow_request' && (
+                              <div style={{ display: 'flex', gap: '6px', marginTop: '6px' }}>
+                                <button
+                                  disabled={respondingTo === n._id}
+                                  onClick={() => handleFollowResponse(n.relatedId, n._id, 'accept')}
+                                  style={{ fontSize: '0.75rem', padding: '3px 10px', background: '#10b981', color: 'white', borderRadius: '6px', border: 'none', cursor: 'pointer' }}
+                                >
+                                  {respondingTo === n._id ? '...' : 'Accept'}
+                                </button>
+                                <button
+                                  disabled={respondingTo === n._id}
+                                  onClick={() => handleFollowResponse(n.relatedId, n._id, 'reject')}
+                                  style={{ fontSize: '0.75rem', padding: '3px 10px', background: 'transparent', color: '#94a3b8', borderRadius: '6px', border: '1px solid rgba(255,255,255,0.15)', cursor: 'pointer' }}
+                                >
+                                  {respondingTo === n._id ? '...' : 'Decline'}
+                                </button>
+                              </div>
+                            )}
+                            {n.type === 'follow_back_suggestion' && !followBackStates[n._id] && (
+                              <div style={{ marginTop: '6px' }}>
+                                <button
+                                  onClick={() => handleFollowBack(n.senderId, n._id)}
+                                  style={{
+                                    fontSize: '0.75rem', padding: '3px 10px',
+                                    background: '#00a884', color: 'white',
+                                    borderRadius: '6px', border: 'none', cursor: 'pointer'
+                                  }}
+                                >
+                                  Follow Back
+                                </button>
+                              </div>
+                            )}
+                            {n.type === 'follow_back_suggestion' && followBackStates[n._id] === 'requested' && (
+                              <div style={{ marginTop: '6px' }}>
+                                <span style={{ fontSize: '0.75rem', color: '#94a3b8' }}>
+                                  Request sent ✓
+                                </span>
+                              </div>
+                            )}
                           </div>
                         </div>
                       ))}

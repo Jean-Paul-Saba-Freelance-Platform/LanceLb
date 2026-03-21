@@ -81,7 +81,7 @@ const PeopleCard = ({ person, myType, index }) => {
   // Navigate to DM — go to the messages page (conversation opens there)
   const handleMessage = () => {
     const messagesPath = myType === 'freelancer' ? '/freelancer/messages' : '/client/messages'
-    navigate(messagesPath)
+    navigate(messagesPath, { state: { preSelectUserId: person._id } })
   }
 
   // Navigate to profile based on userTypes
@@ -333,6 +333,19 @@ const ExplorePeoplePage = () => {
                 onClick={() => handleFilter('experienceLevel', f.value)}
               >
                 {f.label}
+              </button>
+            ))}
+          </div>
+
+          {/* Quick skill chips */}
+          <div className="ep-filter-group">
+            {['React', 'Node.js', 'Design', 'Python', 'Marketing', 'Writing'].map((skill) => (
+              <button
+                key={skill}
+                className={`ep-filter-chip ep-filter-chip--skill ${search === skill ? 'active' : ''}`}
+                onClick={() => handleSearchChange(search === skill ? '' : skill)}
+              >
+                {skill}
               </button>
             ))}
           </div>

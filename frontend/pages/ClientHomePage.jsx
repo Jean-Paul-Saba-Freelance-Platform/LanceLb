@@ -15,6 +15,8 @@ const ClientHomePage = () => {
   const [clientJobs, setClientJobs] = useState([])
   const [loadingJobs, setLoadingJobs] = useState(true)
   const [jobsError, setJobsError] = useState('')
+  const [peopleToFollow, setPeopleToFollow] = useState([])
+  const [followStates, setFollowStates] = useState({})
 
   const fetchDashboardSummary = async () => {
     try {
@@ -89,6 +91,59 @@ const ClientHomePage = () => {
     }
     fetchClientJobs()
   }, [])
+
+  useEffect(() => {
+    const fetchSuggestedPeople = async () => {
+      try {
+        const token = localStorage.getItem('token')
+        if (!token) return
+        const res = await fetch(`${API_BASE}/api/follow/explore?limit=4&userType=freelancer`, {
+          credentials: 'include',
+          headers: { Authorization: `Bearer ${token}` },
+        })
+        const data = await res.json()
+        if (data.success) {
+          const people = data.users.slice(0, 4)
+          setPeopleToFollow(people)
+          const statuses = {}
+          await Promise.all(people.map(async (person) => {
+            try {
+              const r = await fetch(`${API_BASE}/api/follow/status/${person._id}`, {
+                credentials: 'include',
+                headers: { Authorization: `Bearer ${token}` },
+              })
+              const d = await r.json()
+              if (d.success) statuses[person._id] = d.outgoing
+            } catch {}
+          }))
+          setFollowStates(statuses)
+        }
+      } catch {}
+    }
+    fetchSuggestedPeople()
+  }, [])
+
+  const handleWidgetFollow = async (personId) => {
+    const current = followStates[personId]
+    const token = localStorage.getItem('token')
+    try {
+      if (!current) {
+        const res = await fetch(`${API_BASE}/api/follow/${personId}`, {
+          method: 'POST', credentials: 'include',
+          headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+        })
+        const data = await res.json()
+        if (data.success) setFollowStates(prev => ({ ...prev, [personId]: 'requested' }))
+      } else {
+        const res = await fetch(`${API_BASE}/api/follow/${personId}`, {
+          method: 'DELETE', credentials: 'include',
+          headers: { Authorization: `Bearer ${token}` },
+        })
+        const data = await res.json()
+        if (data.success) setFollowStates(prev => ({ ...prev, [personId]: null }))
+      }
+    } catch {}
+  }
 
   // Get greeting based on time of day
   const getGreeting = () => {
@@ -275,6 +330,69 @@ const ClientHomePage = () => {
               ))}
             </div>
           </div>
+
+          {/* People You May Know */}
+          {peopleToFollow.length > 0 && (
+            <div className="categories-section">
+              <h2 className="section-title">People You May Know</h2>
+              <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
+                {peopleToFollow.map((person) => (
+                  <div key={person._id} style={{
+                    background: 'rgba(14,12,20,0.6)', border: '1px solid rgba(255,255,255,0.1)',
+                    borderRadius: '12px', padding: '16px', display: 'flex', flexDirection: 'column',
+                    alignItems: 'center', gap: '8px', width: '140px', textAlign: 'center'
+                  }}>
+                    <div style={{
+                      width: '48px', height: '48px', borderRadius: '50%', background: '#00a884',
+                      color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      fontWeight: '600', fontSize: '1.1rem'
+                    }}>
+                      {(person.name || '?').charAt(0).toUpperCase()}
+                    </div>
+                    <div style={{ fontSize: '0.82rem', fontWeight: '600', color: '#f3f4f6' }}>
+                      {person.name}
+                    </div>
+                    <div style={{ fontSize: '0.72rem', color: '#94a3b8' }}>
+                      {person.title || 'Freelancer'}
+                    </div>
+                    <button
+                      onClick={() => handleWidgetFollow(person._id)}
+                      style={{
+                        fontSize: '0.72rem', padding: '4px 10px',
+                        background: followStates[person._id] ? 'transparent' : '#00a884',
+                        color: followStates[person._id] ? '#94a3b8' : 'white',
+                        border: followStates[person._id] ? '1px solid rgba(255,255,255,0.15)' : 'none',
+                        borderRadius: '6px', cursor: 'pointer', marginTop: '4px', width: '100%'
+                      }}
+                    >
+                      {followStates[person._id] === 'accepted' ? 'Following'
+                        : followStates[person._id] === 'requested' ? 'Requested'
+                        : 'Follow'}
+                    </button>
+                    <button
+                      onClick={() => navigate(`/client/freelancer-profile/${person._id}`, { state: { backRoute: '/client/home' } })}
+                      style={{
+                        fontSize: '0.72rem', padding: '4px 10px', background: 'transparent',
+                        color: '#00a884', border: '1px solid #00a884', borderRadius: '6px',
+                        cursor: 'pointer', width: '100%'
+                      }}
+                    >
+                      View Profile
+                    </button>
+                  </div>
+                ))}
+                <div style={{ display: 'flex', alignItems: 'flex-end', paddingBottom: '4px' }}>
+                  <button
+                    onClick={() => navigate('/client/explore')}
+                    style={{ fontSize: '0.82rem', color: '#00a884', background: 'none',
+                      border: 'none', cursor: 'pointer', padding: 0 }}
+                  >
+                    See all →
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
 
           {/* E) Help & Resources */}
           <div className="resources-section">

@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 import { MessageSquare, Search, SendHorizontal, MoreVertical } from 'lucide-react'
 import { io } from 'socket.io-client'
 import './MessagesPage.css'
@@ -49,6 +49,8 @@ const MessagesPage = () => {
   const navigate = useNavigate()
   const currentUser = useMemo(() => getCurrentUser(), [])
   const currentUserId = getUserId(currentUser)
+  const location = useLocation()
+  const preSelectUserId = location.state?.preSelectUserId || null
   const homeRoute = currentUser?.userType === 'freelancer' ? '/freelancer/home' : '/client/home'
 
   const [users, setUsers] = useState([])
@@ -290,13 +292,22 @@ const MessagesPage = () => {
       setSelectedUser(null)
       return
     }
+    // If we arrived with a preSelectUserId, find and select that user
+    if (preSelectUserId && !selectedUser) {
+      const target = filteredUsers.find((u) => u._id === preSelectUserId)
+      if (target) {
+        setSelectedUser(target)
+        setMobileView('chat')
+        return
+      }
+    }
     if (!selectedUser) {
       setSelectedUser(filteredUsers[0])
       return
     }
     const stillExists = filteredUsers.some((u) => u._id === selectedUser._id)
     if (!stillExists) setSelectedUser(filteredUsers[0])
-  }, [filteredUsers, selectedUser])
+  }, [filteredUsers, selectedUser, preSelectUserId])
 
   useEffect(() => {
     selectedUserRef.current = selectedUser

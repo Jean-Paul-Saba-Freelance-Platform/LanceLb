@@ -49,3 +49,20 @@ export const markAllRead = async (req, res) => {
     return res.status(500).json({ success: false, message: "Server error" });
   }
 };
+
+// ── DELETE /api/notifications/:id ── Delete a single notification
+export const deleteNotification = async (req, res) => {
+  try {
+    const notification = await Notification.findOneAndDelete({
+      _id: req.params.id,
+      userId: req.userId,
+    });
+    if (!notification) {
+      return res.status(404).json({ success: false, message: 'Notification not found' });
+    }
+    return res.status(200).json({ success: true });
+  } catch (error) {
+    console.error('Error deleting notification:', error);
+    return res.status(500).json({ success: false, message: 'Server error' });
+  }
+};

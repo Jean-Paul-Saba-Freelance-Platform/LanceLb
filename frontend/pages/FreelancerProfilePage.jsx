@@ -24,6 +24,12 @@ const FreelancerProfilePage = () => {
   const [savingProfile, setSavingProfile] = useState(false)
   const [saveMessage, setSaveMessage] = useState('')
 
+  const [followersCount, setFollowersCount] = useState(0)
+  const [followingCount, setFollowingCount] = useState(0)
+  const [showFollowModal, setShowFollowModal] = useState(null) // null | 'followers' | 'following'
+  const [followList, setFollowList] = useState([])
+  const [followListLoading, setFollowListLoading] = useState(false)
+
   useEffect(() => {
     const fetchProfile = async () => {
       try {
@@ -44,6 +50,21 @@ const FreelancerProfilePage = () => {
           setProfileBio(data.user.bio || '')
           setProfileSkills(data.user.skills || [])
           setProfileExperience(data.user.experienceLevel || 'entry')
+
+          const [followersRes, followingRes] = await Promise.all([
+            fetch(`${API_BASE}/api/follow/followers`, {
+              credentials: 'include',
+              headers: { Authorization: `Bearer ${token}` },
+            }),
+            fetch(`${API_BASE}/api/follow/following`, {
+              credentials: 'include',
+              headers: { Authorization: `Bearer ${token}` },
+            }),
+          ])
+          const followersData = await followersRes.json()
+          const followingData = await followingRes.json()
+          if (followersData.success) setFollowersCount(followersData.followers.length)
+          if (followingData.success) setFollowingCount(followingData.following.length)
         }
       } catch (error) {
         console.error('Error loading profile:', error)
@@ -99,6 +120,46 @@ const FreelancerProfilePage = () => {
     setProfileSkills(prev => prev.filter(s => s !== skillToRemove))
   }
 
+  // Unfollow a person directly from the modal list
+  const unfollowFromModal = async (personId) => {
+    try {
+      const token = localStorage.getItem('token')
+      const res = await fetch(`${API_BASE}/api/follow/${personId}`, {
+        method: 'DELETE',
+        credentials: 'include',
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      const data = await res.json()
+      if (data.success) {
+        setFollowList(prev => prev.filter(p => p._id !== personId))
+        if (showFollowModal === 'following') {
+          setFollowingCount(prev => prev - 1)
+        } else {
+          setFollowersCount(prev => prev - 1)
+        }
+      }
+    } catch {}
+  }
+
+  // Open followers/following modal and load the list
+  const openFollowModal = async (type) => {
+    setShowFollowModal(type)
+    setFollowListLoading(true)
+    setFollowList([])
+    try {
+      const token = localStorage.getItem('token')
+      const res = await fetch(`${API_BASE}/api/follow/${type}`, {
+        credentials: 'include',
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      const data = await res.json()
+      if (data.success) {
+        setFollowList(type === 'followers' ? data.followers : data.following)
+      }
+    } catch {}
+    setFollowListLoading(false)
+  }
+
   const userName = user?.name || user?.firstName || 'Freelancer'
   const userInitial = userName.charAt(0).toUpperCase()
   const currentTime = new Date().toLocaleTimeString('en-US', { 
@@ -136,6 +197,24 @@ const FreelancerProfilePage = () => {
               </div>
               <div className="profile-header-location">
                 Amioun, Lebanon • {currentTime} local time
+              </div>
+              <div style={{ display: 'flex', gap: '20px', marginTop: '8px' }}>
+                <button
+                  onClick={() => openFollowModal('followers')}
+                  style={{ background: 'none', border: 'none', cursor: 'pointer',
+                    color: '#f3f4f6', fontSize: '0.88rem' }}
+                >
+                  <strong>{followersCount}</strong>
+                  <span style={{ color: '#94a3b8', marginLeft: '4px' }}>followers</span>
+                </button>
+                <button
+                  onClick={() => openFollowModal('following')}
+                  style={{ background: 'none', border: 'none', cursor: 'pointer',
+                    color: '#f3f4f6', fontSize: '0.88rem' }}
+                >
+                  <strong>{followingCount}</strong>
+                  <span style={{ color: '#94a3b8', marginLeft: '4px' }}>following</span>
+                </button>
               </div>
             </div>
           </div>
@@ -506,6 +585,93 @@ const FreelancerProfilePage = () => {
           </div>
         </div>
       </div>
+
+      {showFollowModal && (
+        <div
+          onClick={() => setShowFollowModal(null)}
+          style={{
+            position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.6)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            zIndex: 1000,
+          }}
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              background: '#1b2730', border: '1px solid #2a3942', borderRadius: '12px',
+              width: '360px', maxHeight: '480px', display: 'flex', flexDirection: 'column',
+              overflow: 'hidden',
+            }}
+          >
+            {/* Modal header */}
+            <div style={{
+              display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+              padding: '1rem 1.25rem', borderBottom: '1px solid #2a3942',
+            }}>
+              <h3 style={{ margin: 0, fontSize: '1rem', fontWeight: 600, color: '#e9edef', textTransform: 'capitalize' }}>
+                {showFollowModal}
+              </h3>
+              <button
+                onClick={() => setShowFollowModal(null)}
+                style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#8696a0', padding: '4px' }}
+              >
+                <X size={18} />
+              </button>
+            </div>
+
+            {/* Modal body */}
+            <div style={{ overflowY: 'auto', padding: '0.5rem 0' }}>
+              {followListLoading ? (
+                <p style={{ textAlign: 'center', color: '#8696a0', padding: '2rem', margin: 0 }}>Loading...</p>
+              ) : followList.length === 0 ? (
+                <p style={{ textAlign: 'center', color: '#8696a0', padding: '2rem', margin: 0 }}>No {showFollowModal} yet</p>
+              ) : (
+                followList.map((person) => {
+                  const name = person.name || 'User'
+                  const initial = name.charAt(0).toUpperCase()
+                  return (
+                    <div key={person._id} style={{
+                      display: 'flex', alignItems: 'center', gap: '12px',
+                      padding: '0.65rem 1.25rem',
+                    }}>
+                      {person.profilePicture ? (
+                        <img src={person.profilePicture} alt={name}
+                          style={{ width: 38, height: 38, borderRadius: '50%', objectFit: 'cover' }} />
+                      ) : (
+                        <div style={{
+                          width: 38, height: 38, borderRadius: '50%',
+                          background: '#00a884', display: 'flex', alignItems: 'center',
+                          justifyContent: 'center', fontSize: '0.95rem', fontWeight: 700, color: '#fff',
+                          flexShrink: 0,
+                        }}>
+                          {initial}
+                        </div>
+                      )}
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <div style={{ color: '#e9edef', fontSize: '0.9rem', fontWeight: 500 }}>{name}</div>
+                        {person.title && (
+                          <div style={{ color: '#8696a0', fontSize: '0.78rem' }}>{person.title}</div>
+                        )}
+                      </div>
+                      <button
+                        onClick={() => unfollowFromModal(person._id)}
+                        style={{
+                          fontSize: '0.72rem', padding: '3px 10px',
+                          background: 'transparent', color: '#f87171',
+                          border: '1px solid rgba(248,113,113,0.3)',
+                          borderRadius: '6px', cursor: 'pointer', flexShrink: 0
+                        }}
+                      >
+                        {showFollowModal === 'followers' ? 'Remove' : 'Unfollow'}
+                      </button>
+                    </div>
+                  )
+                })
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

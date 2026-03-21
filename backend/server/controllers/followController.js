@@ -103,6 +103,7 @@ export const respondToFollowRequest = async (req, res) => {
     const acceptor = await User.findById(req.userId).select("name").lean();
     const acceptorName = acceptor?.name || "Someone";
 
+    // Notify A that their request was accepted
     const notification = await Notification.create({
       userId: follow.followerId,
       type: "follow_accepted",
@@ -110,9 +111,34 @@ export const respondToFollowRequest = async (req, res) => {
       message: `${acceptorName} accepted your follow request.`,
       relatedId: follow._id,
       relatedType: "follow",
+      senderId: req.userId,
     });
 
     emitNotification(String(follow.followerId), notification);
+
+    // Fetch requester's name for B's suggestion notification
+    const requester = await User.findById(follow.followerId).select("name").lean();
+    const requesterName = requester?.name || "Someone";
+
+    // Check if B is already following A — if so, skip the suggestion
+    const alreadyFollowingBack = await Follow.findOne({
+      followerId: req.userId,
+      followingId: follow.followerId,
+    });
+
+    if (!alreadyFollowingBack) {
+      // Notify B to follow back A
+      const suggestionNotif = await Notification.create({
+        userId: req.userId,
+        type: "follow_back_suggestion",
+        title: "Follow back?",
+        message: `${requesterName} is now following you. Follow them back?`,
+        relatedId: follow._id,
+        relatedType: "follow",
+        senderId: follow.followerId,
+      });
+      emitNotification(String(req.userId), suggestionNotif);
+    }
 
     return res.json({ success: true, follow });
   } catch (error) {
@@ -264,7 +290,8 @@ export const getFollowers = async (req, res) => {
 /**
  * exploreUsers
  *
- * Returns a paginated list of all users except the current user.
+ * Returns a paginated list of all users except the current user,
+ * excluding users already followed or with a pending follow request.
  * Supports optional query params: search, userType, experienceLevel, page, limit.
  */
 export const exploreUsers = async (req, res) => {
@@ -272,7 +299,15 @@ export const exploreUsers = async (req, res) => {
     const currentUserId = req.userId;
     const { search, userType, experienceLevel, page = 1, limit = 12 } = req.query;
 
-    const query = { _id: { $ne: currentUserId } };
+    // Get all users the current user already follows or has requested
+    const existingFollows = await Follow.find({
+      followerId: currentUserId,
+    }).select('followingId').lean();
+
+    const excludedIds = existingFollows.map(f => f.followingId);
+    excludedIds.push(currentUserId); // also exclude self
+
+    const query = { _id: { $nin: excludedIds } };
 
     if (userType && ['freelancer', 'client'].includes(userType)) {
       query.userType = userType;
@@ -331,7 +366,12 @@ export const getPublicProfile = async (req, res) => {
       return res.status(404).json({ success: false, message: "User not found." });
     }
 
-    return res.json({ success: true, user });
+    const [followersCount, followingCount] = await Promise.all([
+      Follow.countDocuments({ followingId: req.params.userId, status: 'accepted' }),
+      Follow.countDocuments({ followerId: req.params.userId, status: 'accepted' }),
+    ]);
+
+    return res.json({ success: true, user: { ...user, followersCount, followingCount } });
   } catch (error) {
     return res.status(500).json({ success: false, message: error.message });
   }
