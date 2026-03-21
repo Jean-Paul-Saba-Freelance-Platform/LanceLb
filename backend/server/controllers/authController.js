@@ -341,7 +341,7 @@ export const googleAuth = (req, res) => {
 
 export const googleCallback = async (req, res) => {
     const { code, state: userType } = req.query;
-    const FRONTEND = process.env.FRONTEND_URL || 'http://localhost:5173';
+    const FRONTEND = (process.env.FRONTEND_URL || 'http://localhost:5173').replace(/\/$/, '');
 
     if (!code) {
         return res.redirect(`${FRONTEND}/login?error=google_cancelled`);
