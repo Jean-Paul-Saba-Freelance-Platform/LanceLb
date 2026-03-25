@@ -103,12 +103,14 @@ const SignUp = () => {
             console.log("Response data:", data);
 
             if(!response.ok){
+                setIsSubmitting(false)
                 throw new Error(data.message || 'Registration failed')
             }
 
             const { token, user } = data
             localStorage.setItem('token', token)
             localStorage.setItem('user', JSON.stringify(user))
+            console.log('Navigating to /verify-otp')
 
             // Redirect to OTP verification
             navigate('/verify-otp')
