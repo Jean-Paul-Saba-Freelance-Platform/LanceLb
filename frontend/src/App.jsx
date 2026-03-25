@@ -18,6 +18,7 @@ import ClientProfilePage from '../pages/ClientProfilePage'
 import ClientStatsPage from '../pages/ClientStatsPage'
 import ClientSettingsPage from '../pages/ClientSettingsPage'
 import ClientJobsPage from '../pages/ClientJobsPage'
+import EditJobPage from '../pages/EditJobPage.jsx'
 import ClientApplicationsPage from '../pages/ClientApplicationsPage'
 import ClientProjectsPage from '../pages/ClientProjectsPage'
 import FreelancerProjectsPage from '../pages/FreelancerProjectsPage'
@@ -103,13 +104,21 @@ function App() {
               </ClientRoute>
             } 
           />
-          <Route 
-            path="/client/jobs" 
+          <Route
+            path="/client/jobs"
             element={
               <ClientRoute>
                 <ClientJobsPage />
               </ClientRoute>
-            } 
+            }
+          />
+          <Route
+            path="/client/jobs/:jobId/edit"
+            element={
+              <ClientRoute>
+                <EditJobPage />
+              </ClientRoute>
+            }
           />
           <Route
             path="/client/messages"

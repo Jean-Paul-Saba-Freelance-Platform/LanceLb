@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
-import { HelpCircle, Bell } from 'lucide-react'
+import { HelpCircle, Bell, Search, X } from 'lucide-react'
 import ProfileDropdown from './ProfileDropdown'
 import './TopNav.css'
 
@@ -14,6 +14,13 @@ const TopNav = ({ userName, userAvatar }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [respondingTo, setRespondingTo] = useState(null)
   const [followBackStates, setFollowBackStates] = useState({})
+  const [searchQuery, setSearchQuery] = useState('')
+  const [searchType, setSearchType] = useState('Jobs')
+  const [searchResults, setSearchResults] = useState([])
+  const [searchLoading, setSearchLoading] = useState(false)
+  const [showSearchResults, setShowSearchResults] = useState(false)
+  const searchRef = useRef(null)
+  const searchTimeoutRef = useRef(null)
   const notifRef = useRef(null)
   const mobileMenuRef = useRef(null)
   const location = useLocation()
@@ -46,6 +53,61 @@ const TopNav = ({ userName, userAvatar }) => {
   const authHeaders = () => {
     const token = localStorage.getItem('token')
     return token ? { Authorization: `Bearer ${token}` } : {}
+  }
+
+  const performSearch = async (query, type) => {
+    if (!query.trim() || query.trim().length < 2) {
+      setSearchResults([])
+      setShowSearchResults(false)
+      return
+    }
+    setSearchLoading(true)
+    setShowSearchResults(true)
+    try {
+      const token = localStorage.getItem('token')
+      const headers = token ? { Authorization: `Bearer ${token}` } : {}
+
+      if (type === 'Jobs') {
+        const res = await fetch(
+          `${API_BASE}/api/client/jobs/open?search=${encodeURIComponent(query.trim())}`,
+          { credentials: 'include', headers }
+        )
+        const data = await res.json()
+        if (data.success) {
+          setSearchResults((data.jobs || []).slice(0, 6).map(job => ({
+            id: job._id,
+            title: job.title,
+            subtitle: `${job.paymentType === 'hourly' ? 'Hourly' : 'Fixed'} · ${job.experienceLevel || ''}`,
+            type: 'job',
+            path: user?.userType === 'client'
+              ? `/client/jobs/${job._id}/applications`
+              : `/freelancer/home`,
+          })))
+        }
+      } else {
+        // Talents search
+        const res = await fetch(
+          `${API_BASE}/api/follow/explore?search=${encodeURIComponent(query.trim())}&limit=6`,
+          { credentials: 'include', headers }
+        )
+        const data = await res.json()
+        if (data.success) {
+          setSearchResults((data.users || []).slice(0, 6).map(u => ({
+            id: u._id,
+            title: u.name || 'Freelancer',
+            subtitle: u.title || u.userType || 'Freelancer',
+            type: 'talent',
+            path: user?.userType === 'client'
+              ? `/client/freelancer-profile/${u._id}`
+              : `/freelancer/freelancer-profile/${u._id}`,
+          })))
+        }
+      }
+    } catch {
+      setSearchResults([])
+    } finally {
+      setSearchLoading(false)
+    }
   }
 
   const fetchNotifications = useCallback(async () => {
@@ -85,6 +147,31 @@ const TopNav = ({ userName, userAvatar }) => {
     const handler = (e) => {
       if (notifRef.current && !notifRef.current.contains(e.target)) {
         setShowNotifications(false)
+      }
+    }
+    document.addEventListener('mousedown', handler)
+    return () => document.removeEventListener('mousedown', handler)
+  }, [])
+
+  // Debounced search
+  useEffect(() => {
+    if (searchTimeoutRef.current) clearTimeout(searchTimeoutRef.current)
+    if (!searchQuery.trim() || searchQuery.trim().length < 2) {
+      setSearchResults([])
+      setShowSearchResults(false)
+      return
+    }
+    searchTimeoutRef.current = setTimeout(() => {
+      performSearch(searchQuery, searchType)
+    }, 350)
+    return () => clearTimeout(searchTimeoutRef.current)
+  }, [searchQuery, searchType])
+
+  // Close search results on outside click
+  useEffect(() => {
+    const handler = (e) => {
+      if (searchRef.current && !searchRef.current.contains(e.target)) {
+        setShowSearchResults(false)
       }
     }
     document.addEventListener('mousedown', handler)
@@ -268,15 +355,80 @@ const TopNav = ({ userName, userAvatar }) => {
             )}
           </div>
 
-          <div className="top-nav-search">
-            <input
-              type="text"
-              placeholder="Search jobs"
-              className="top-nav-search-input"
-            />
-            <select className="top-nav-search-dropdown">
-              <option>Jobs</option>
-            </select>
+          <div className="top-nav-search-wrap" ref={searchRef}>
+            <div className="top-nav-search">
+              <Search size={14} className="top-nav-search-icon" />
+              <input
+                type="text"
+                placeholder={searchType === 'Jobs' ? 'Search jobs...' : 'Search talents...'}
+                className="top-nav-search-input"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                onFocus={() => {
+                  if (searchQuery.trim().length >= 2) setShowSearchResults(true)
+                }}
+              />
+              {searchQuery && (
+                <button
+                  className="top-nav-search-clear"
+                  onClick={() => {
+                    setSearchQuery('')
+                    setSearchResults([])
+                    setShowSearchResults(false)
+                  }}
+                  aria-label="Clear search"
+                >
+                  <X size={12} />
+                </button>
+              )}
+              <select
+                className="top-nav-search-dropdown"
+                value={searchType}
+                onChange={(e) => setSearchType(e.target.value)}
+              >
+                <option value="Jobs">Jobs</option>
+                <option value="Talents">Talents</option>
+              </select>
+            </div>
+
+            {showSearchResults && (
+              <div className="top-nav-search-results">
+                {searchLoading ? (
+                  <div className="top-nav-search-state">Searching...</div>
+                ) : searchResults.length === 0 ? (
+                  <div className="top-nav-search-state">
+                    No {searchType.toLowerCase()} found for &ldquo;{searchQuery}&rdquo;
+                  </div>
+                ) : (
+                  <>
+                    <div className="top-nav-search-results-header">
+                      {searchType} · {searchResults.length} result{searchResults.length !== 1 ? 's' : ''}
+                    </div>
+                    {searchResults.map((result) => (
+                      <button
+                        key={result.id}
+                        className="top-nav-search-result-item"
+                        onClick={() => {
+                          setShowSearchResults(false)
+                          setSearchQuery('')
+                          navigate(result.path, {
+                            state: { backRoute: location.pathname }
+                          })
+                        }}
+                      >
+                        <div className="top-nav-search-result-icon">
+                          {result.type === 'job' ? '💼' : '👤'}
+                        </div>
+                        <div className="top-nav-search-result-info">
+                          <span className="top-nav-search-result-title">{result.title}</span>
+                          <span className="top-nav-search-result-sub">{result.subtitle}</span>
+                        </div>
+                      </button>
+                    ))}
+                  </>
+                )}
+              </div>
+            )}
           </div>
 
           <div className="top-nav-icons">

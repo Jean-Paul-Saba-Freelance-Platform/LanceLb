@@ -15,14 +15,15 @@
 }
 
 .settings-page-title {
-  font-size: 2rem;
+  font-size: 1.75rem;
   font-weight: 700;
   color: #f3f4f6;
+  letter-spacing: -0.02em;
   margin: 0 0 0.5rem 0;
 }
 
 .settings-page-subtitle {
-  font-size: 1rem;
+  font-size: 0.95rem;
   color: #94a3b8;
   margin: 0;
 }
@@ -54,11 +55,11 @@
 }
 
 .settings-nav-section-title {
-  font-size: 0.75rem;
-  font-weight: 600;
-  color: #9ca3af;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #94a3b8;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.08em;
   margin: 0 0 0.5rem 0;
   padding: 0 1rem;
 }
@@ -75,10 +76,10 @@
   font-size: 0.9rem;
   color: #94a3b8;
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
   outline: none;
   text-decoration: none;
-  border-radius: 0 6px 6px 0;
+  border-radius: 0 8px 8px 0;
 }
 
 .settings-nav-item:hover {
@@ -87,10 +88,10 @@
 }
 
 .settings-nav-item.active {
-  background: rgba(0, 168, 132, 0.1);
-  color: #00a884;
-  border-left-color: #00a884;
-  font-weight: 500;
+  background: rgba(62, 181, 145, 0.1);
+  color: #3eb591;
+  border-left-color: #3eb591;
+  font-weight: 600;
 }
 
 .settings-nav-item svg {
@@ -109,10 +110,12 @@
 /* Settings Card */
 .settings-card {
   background: rgba(14, 12, 20, 0.6);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
   border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 12px;
-  padding: 1.5rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  border-radius: 22px;
+  padding: 1.75rem;
+  box-shadow: 0 18px 40px rgba(4, 4, 10, 0.6);
 }
 
 .settings-card-header {
@@ -123,9 +126,10 @@
 }
 
 .settings-card-title {
-  font-size: 1.25rem;
-  font-weight: 600;
+  font-size: 1.2rem;
+  font-weight: 700;
   color: #f3f4f6;
+  letter-spacing: -0.01em;
   margin: 0;
 }
 
@@ -135,17 +139,17 @@
   color: #94a3b8;
   cursor: pointer;
   padding: 0.5rem;
-  border-radius: 6px;
+  border-radius: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.2s ease;
+  transition: background 0.15s, color 0.15s;
   outline: none;
 }
 
 .settings-card-edit-button:hover {
-  background: rgba(255, 255, 255, 0.04);
-  color: #00a884;
+  background: rgba(62, 181, 145, 0.1);
+  color: #3eb591;
 }
 
 .settings-card-content {
@@ -162,9 +166,11 @@
 }
 
 .settings-field-label {
-  font-size: 0.85rem;
-  font-weight: 500;
+  font-size: 0.78rem;
+  font-weight: 700;
   color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
 }
 
 .settings-field-value {
@@ -174,25 +180,31 @@
 }
 
 .settings-field-hint {
-  font-size: 0.8rem;
-  color: #9ca3af;
+  font-size: 0.78rem;
+  color: #94a3b8;
   margin: 0;
 }
 
 .settings-input {
-  padding: 0.625rem 0.75rem;
+  background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 6px;
-  font-size: 0.95rem;
+  border-radius: 10px;
   color: #f3f4f6;
+  font-size: 0.92rem;
+  padding: 0.65rem 0.875rem;
+  width: 100%;
+  box-sizing: border-box;
   outline: none;
-  transition: all 0.2s ease;
-  background: rgba(14, 12, 20, 0.6);
+  transition: border-color 0.2s, box-shadow 0.2s;
 }
 
 .settings-input:focus {
-  border-color: #00a884;
-  box-shadow: 0 0 0 3px rgba(0, 168, 132, 0.1);
+  border-color: #3eb591;
+  box-shadow: 0 0 0 3px rgba(62, 181, 145, 0.15);
+}
+
+.settings-input::placeholder {
+  color: #94a3b8;
 }
 
 /* Card Actions */
@@ -200,51 +212,52 @@
   display: flex;
   gap: 0.75rem;
   justify-content: flex-end;
-  margin-top: 1rem;
-  padding-top: 1rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  margin-top: 1.25rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
 }
 
 .settings-button-primary {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  padding: 0.625rem 1.25rem;
-  background: #00a884;
+  padding: 0.65rem 1.35rem;
+  background: #3eb591;
   color: white;
   border: none;
-  border-radius: 6px;
+  border-radius: 8px;
   font-size: 0.9rem;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: background 0.15s, box-shadow 0.15s, transform 0.1s;
   outline: none;
 }
 
 .settings-button-primary:hover {
-  background: #008069;
+  background: #2d9b7a;
+  box-shadow: 0 0 12px rgba(62, 181, 145, 0.3);
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(0, 168, 132, 0.2);
 }
 
 .settings-button-secondary {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  padding: 0.625rem 1.25rem;
+  padding: 0.65rem 1.35rem;
   background: transparent;
   color: #94a3b8;
   border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 6px;
+  border-radius: 8px;
   font-size: 0.9rem;
   font-weight: 500;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
   outline: none;
 }
 
 .settings-button-secondary:hover {
-  background: rgba(255, 255, 255, 0.04);
+  background: rgba(255, 255, 255, 0.06);
+  color: #f3f4f6;
   border-color: rgba(255, 255, 255, 0.2);
 }
 
@@ -252,14 +265,14 @@
 .settings-card-footer {
   margin-top: 1.5rem;
   padding-top: 1.5rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
 }
 
 .settings-link-danger {
   background: transparent;
   border: none;
-  color: #dc2626;
-  font-size: 0.9rem;
+  color: #fca5a5;
+  font-size: 0.875rem;
   font-weight: 500;
   cursor: pointer;
   text-decoration: none;
@@ -268,7 +281,7 @@
 }
 
 .settings-link-danger:hover {
-  color: #991b1b;
+  color: #f87171;
   text-decoration: underline;
 }
 
@@ -279,9 +292,9 @@
   align-items: flex-start;
   gap: 1.5rem;
   padding: 1.25rem;
-  background: rgba(255, 255, 255, 0.04);
-  border-radius: 8px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
 }
 
 .additional-account-info {
@@ -307,7 +320,7 @@
   color: #94a3b8;
   font-size: 0.9rem;
   margin: 0;
-  padding: 2rem 0;
+  padding: 3rem 0;
   text-align: center;
 }
 
@@ -347,7 +360,8 @@
 
   .settings-nav-item.active {
     border-left: none;
-    border-bottom-color: #00a884;
+    border-bottom: 3px solid #3eb591;
+    background: rgba(62, 181, 145, 0.08);
   }
 }
 
@@ -378,4 +392,133 @@
   .settings-card-actions {
     flex-direction: column;
   }
+}
+
+/* ===================== Light Mode ===================== */
+
+[data-theme="light"] .settings-page-title {
+  color: #111b21;
+}
+
+[data-theme="light"] .settings-page-subtitle {
+  color: #667781;
+}
+
+[data-theme="light"] .settings-nav-section-title {
+  color: #667781;
+}
+
+[data-theme="light"] .settings-nav-item {
+  color: #41525d;
+}
+
+[data-theme="light"] .settings-nav-item:hover {
+  background: #f0f2f5;
+  color: #111b21;
+}
+
+[data-theme="light"] .settings-nav-item.active {
+  background: rgba(1, 117, 97, 0.08);
+  color: #017561;
+  border-left-color: #017561;
+}
+
+[data-theme="light"] .settings-card {
+  background: rgba(255, 255, 255, 0.85);
+  border-color: #e0e3e7;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+[data-theme="light"] .settings-card-title {
+  color: #111b21;
+}
+
+[data-theme="light"] .settings-card-edit-button {
+  color: #667781;
+}
+
+[data-theme="light"] .settings-card-edit-button:hover {
+  background: rgba(1, 117, 97, 0.08);
+  color: #017561;
+}
+
+[data-theme="light"] .settings-field-label {
+  color: #667781;
+}
+
+[data-theme="light"] .settings-field-value {
+  color: #111b21;
+}
+
+[data-theme="light"] .settings-field-hint {
+  color: #8696a0;
+}
+
+[data-theme="light"] .settings-input {
+  background: #f5f7f8;
+  border-color: #d8dde1;
+  color: #111b21;
+}
+
+[data-theme="light"] .settings-input::placeholder {
+  color: #8696a0;
+}
+
+[data-theme="light"] .settings-input:focus {
+  border-color: #017561;
+  box-shadow: 0 0 0 3px rgba(1, 117, 97, 0.12);
+}
+
+[data-theme="light"] .settings-card-actions {
+  border-top-color: #e0e3e7;
+}
+
+[data-theme="light"] .settings-card-footer {
+  border-top-color: #e0e3e7;
+}
+
+[data-theme="light"] .settings-button-primary {
+  background: #017561;
+}
+
+[data-theme="light"] .settings-button-primary:hover {
+  background: #015a47;
+  box-shadow: 0 0 10px rgba(1, 117, 97, 0.2);
+}
+
+[data-theme="light"] .settings-button-secondary {
+  color: #41525d;
+  border-color: #d8dde1;
+}
+
+[data-theme="light"] .settings-button-secondary:hover {
+  background: #f0f2f5;
+  color: #111b21;
+}
+
+[data-theme="light"] .settings-link-danger {
+  color: #dc2626;
+}
+
+[data-theme="light"] .settings-link-danger:hover {
+  color: #991b1b;
+}
+
+[data-theme="light"] .additional-account-block {
+  background: rgba(0, 0, 0, 0.02);
+  border-color: #e0e3e7;
+}
+
+[data-theme="light"] .additional-account-title {
+  color: #111b21;
+}
+
+[data-theme="light"] .additional-account-desc {
+  color: #667781;
+}
+
+[data-theme="light"] .settings-placeholder {
+  color: #667781;
 }

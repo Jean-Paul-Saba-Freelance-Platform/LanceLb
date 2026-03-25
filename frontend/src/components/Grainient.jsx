@@ -151,6 +151,10 @@ const Grainient = ({
     const container = containerRef.current;
     container.appendChild(canvas);
 
+    // Promote canvas to its own compositor layer to prevent flicker on scroll/resize
+    canvas.style.willChange = 'transform';
+    canvas.style.transform = 'translateZ(0)';
+
     const geometry = new Triangle(gl);
     const program = new Program(gl, {
       vertex,
@@ -188,13 +192,19 @@ const Grainient = ({
       const rect = container.getBoundingClientRect();
       const width = Math.max(1, Math.floor(rect.width));
       const height = Math.max(1, Math.floor(rect.height));
+      if (width === 0 || height === 0) return;
       renderer.setSize(width, height);
       const res = program.uniforms.iResolution.value;
       res[0] = gl.drawingBufferWidth;
       res[1] = gl.drawingBufferHeight;
     };
 
-    const ro = new ResizeObserver(setSize);
+    // Debounce resize so rapid scroll/resize events don't cause flicker
+    let resizeTimer = null;
+    const ro = new ResizeObserver(() => {
+      if (resizeTimer) clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(setSize, 100);
+    });
     ro.observe(container);
     setSize();
 
@@ -209,6 +219,7 @@ const Grainient = ({
 
     return () => {
       cancelAnimationFrame(raf);
+      if (resizeTimer) clearTimeout(resizeTimer);
       ro.disconnect();
       try {
         container.removeChild(canvas);
@@ -241,7 +252,19 @@ const Grainient = ({
     color3
   ]);
 
-  return <div ref={containerRef} className={`grainient-container ${className}`.trim()} />;
+  return (
+    <div
+      ref={containerRef}
+      className={`grainient-container ${className}`.trim()}
+      style={{
+        willChange: 'transform',
+        transform: 'translateZ(0)',
+        WebkitTransform: 'translateZ(0)',
+        backfaceVisibility: 'hidden',
+        WebkitBackfaceVisibility: 'hidden',
+      }}
+    />
+  );
 };
 
 export default Grainient;

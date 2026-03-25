@@ -17,6 +17,11 @@
   z-index: 0;
   opacity: 0.45;
   pointer-events: none;
+  will-change: transform;
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
 }
 
 .layout-content {
@@ -50,16 +55,28 @@
   transition: all 0.3s ease !important;
 }
 
+.client-layout .greeting-card {
+  border-left: 4px solid #3eb591 !important;
+  border-top: 1px solid rgba(255, 255, 255, 0.12) !important;
+  border-right: 1px solid rgba(255, 255, 255, 0.12) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12) !important;
+}
+
 .client-layout .greeting-card:hover,
 .client-layout .main-section-card:hover,
 .client-layout .sidebar-card:hover,
 .client-layout .next-steps-card:hover,
-.client-layout .category-card:hover,
 .client-layout .resource-card:hover,
 .client-layout .overview-card:hover {
   border-color: rgba(255, 255, 255, 0.2) !important;
   box-shadow: 0 12px 48px rgba(0, 0, 0, 0.4) !important;
   transform: translateY(-2px);
+}
+
+.client-layout .category-card:hover {
+  border-color: rgba(62, 181, 145, 0.45) !important;
+  box-shadow: 0 8px 28px rgba(4, 4, 10, 0.5), 0 0 0 1px rgba(62, 181, 145, 0.15) !important;
+  transform: translateY(-3px) !important;
 }
 
 .client-layout h1, 
@@ -84,17 +101,50 @@
 }
 
 .client-layout .top-nav {
-  background: #202c33 !important;
-  border: 1px solid rgba(255, 255, 255, 0.08) !important;
-  border-radius: 0 !important;
-  margin: 0 !important;
-  top: 0 !important;
+  background: rgba(14, 12, 20, 0.72) !important;
+  backdrop-filter: blur(18px) !important;
+  -webkit-backdrop-filter: blur(18px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  border-radius: 16px !important;
+  margin: 0.75rem 1.5rem 0 !important;
+  top: 0.75rem !important;
+  box-shadow: 0 4px 24px rgba(4, 4, 10, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.06) !important;
 }
 
 .client-layout .top-nav-search {
-  background: rgba(255, 255, 255, 0.05) !important;
-  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  background: rgba(255, 255, 255, 0.06) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
   border-radius: 9999px !important;
+}
+
+.client-layout .top-nav-brand {
+  color: #f3f4f6 !important;
+  font-weight: 700 !important;
+}
+
+.client-layout .top-nav-link {
+  color: rgba(255, 255, 255, 0.6) !important;
+  font-size: 0.95rem !important;
+  font-weight: 500 !important;
+}
+
+.client-layout .top-nav-link:hover {
+  color: #f3f4f6 !important;
+}
+
+.client-layout .top-nav-link.active {
+  color: #f3f4f6 !important;
+}
+
+.client-layout .top-nav-icon-button {
+  color: rgba(255, 255, 255, 0.6) !important;
+  border-radius: 9999px !important;
+  transition: background 0.15s, color 0.15s !important;
+}
+
+.client-layout .top-nav-icon-button:hover {
+  background: rgba(62, 181, 145, 0.15) !important;
+  color: #3eb591 !important;
 }
 
 .client-layout .top-nav-search-input {
@@ -641,8 +691,27 @@
 }
 
 [data-theme="light"] .client-layout .top-nav {
-  background: #ffffff !important;
-  border-color: #e0e3e7 !important;
+  background: rgba(255, 255, 255, 0.85) !important;
+  border-color: rgba(0, 0, 0, 0.08) !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08) !important;
+}
+
+[data-theme="light"] .client-layout .top-nav-brand,
+[data-theme="light"] .client-layout .top-nav-link {
+  color: #111b21 !important;
+}
+
+[data-theme="light"] .client-layout .top-nav-link:hover {
+  color: #017561 !important;
+}
+
+[data-theme="light"] .client-layout .top-nav-icon-button {
+  color: #41525d !important;
+}
+
+[data-theme="light"] .client-layout .top-nav-icon-button:hover {
+  background: rgba(1, 117, 97, 0.1) !important;
+  color: #017561 !important;
 }
 
 [data-theme="light"] .client-layout .top-nav-search {
@@ -755,4 +824,15 @@
   background: transparent !important;
   color: #017561 !important;
   border: 1px solid rgba(0, 168, 132, 0.4) !important;
+}
+
+
+/* =========================================================================
+   Mobile Responsive
+   ========================================================================= */
+@media (max-width: 640px) {
+  .client-layout .top-nav {
+    margin: 0.5rem 0.75rem 0 !important;
+    border-radius: 12px !important;
+  }
 }

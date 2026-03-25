@@ -1,4 +1,6 @@
 import { useState, useEffect } from 'react'
+import { useLocation, Link } from 'react-router-dom'
+import { Mail, Shield, Bell, MapPin, User } from 'lucide-react'
 import TopNav from '../src/components/TopNav'
 import { Edit2, Save, X, Plus } from 'lucide-react'
 import './ClientProfilePage.css'
@@ -7,6 +9,9 @@ const API_BASE = import.meta.env.VITE_API_BASE || 'http://127.0.0.1:4000'
 
 const ClientProfilePage = () => {
   const [user, setUser] = useState(null)
+  const location = useLocation()
+  const fromSettings = new URLSearchParams(location.search).get('from') === 'settings'
+
   const [loading, setLoading] = useState(true)
   const [editing, setEditing] = useState(false)
   const [saving, setSaving] = useState(false)
@@ -23,6 +28,14 @@ const ClientProfilePage = () => {
   const [showFollowModal, setShowFollowModal] = useState(null)
   const [followList, setFollowList] = useState([])
   const [followListLoading, setFollowListLoading] = useState(false)
+
+  const SETTINGS_NAV = [
+    { id: 'contact', label: 'Contact info', icon: <Mail size={18} />, path: '/client/settings' },
+    { id: 'profile', label: 'My profile', icon: <User size={18} />, path: '/client/profile?from=settings', active: true },
+    { id: 'password', label: 'Password & security', icon: <Shield size={18} />, path: '/client/settings?section=password' },
+    { id: 'notifications', label: 'Notifications', icon: <Bell size={18} />, path: '/client/settings?section=notifications' },
+    { id: 'location', label: 'Location', icon: <MapPin size={18} />, path: '/client/settings?section=location' },
+  ]
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -215,235 +228,266 @@ const ClientProfilePage = () => {
     <div className="client-profile-page">
       <TopNav userName={userName} />
 
-      <div className="client-profile-container">
-        {banner.message && (
-          <div className={`client-profile-banner client-profile-banner-${banner.type}`}>
-            {banner.message}
+      <div className={fromSettings ? 'client-profile-settings-container' : 'client-profile-container'}>
+        {fromSettings && (
+          <div className="client-profile-settings-header">
+            <h1 className="client-profile-settings-title">Settings</h1>
+            <p className="client-profile-settings-subtitle">Manage your account preferences and profile details.</p>
           </div>
         )}
 
-        {loading ? (
-          <div className="client-profile-skeleton">
-            <div className="client-profile-skeleton-sidebar">
-              <div className="cpsk-circle" />
-              <div className="cpsk-line cpsk-line-lg" />
-              <div className="cpsk-line cpsk-line-md" />
-            </div>
-            <div className="client-profile-skeleton-main">
-              <div className="cpsk-line cpsk-line-full" />
-              <div className="cpsk-line cpsk-line-lg" />
-              <div className="cpsk-line cpsk-line-md" />
-              <div className="cpsk-line cpsk-line-full" />
-            </div>
-          </div>
-        ) : (
-          <div className="client-profile-layout">
-            {/* Left: avatar / info card */}
-            <div className="client-profile-sidebar">
-              <div className="client-profile-avatar-card">
-                <div className="client-profile-avatar">
-                  {user?.avatar ? (
-                    <img src={user.avatar} alt={userName} className="client-profile-avatar-img" />
-                  ) : (
-                    <span className="client-profile-avatar-initial">{userInitial}</span>
-                  )}
+        <div className={fromSettings ? 'client-profile-settings-layout' : ''}>
+          {fromSettings && (
+            <div className="client-profile-settings-sidebar">
+              <nav className="client-profile-settings-nav">
+                <div className="client-profile-settings-nav-section">
+                  <h3 className="client-profile-settings-nav-title">User settings</h3>
+                  {SETTINGS_NAV.map(item => (
+                    <Link
+                      key={item.id}
+                      to={item.path}
+                      className={`client-profile-settings-nav-item${item.active ? ' active' : ''}`}
+                    >
+                      {item.icon}
+                      <span>{item.label}</span>
+                    </Link>
+                  ))}
                 </div>
-                <h2 className="client-profile-name">{userName}</h2>
-                {user?.title && (
-                  <p className="client-profile-tagline">{user.title}</p>
-                )}
-                <p className="client-profile-email">{user?.email || ''}</p>
+              </nav>
+            </div>
+          )}
 
-                <div style={{ display: 'flex', gap: '20px', marginTop: '12px',
-                  justifyContent: 'center' }}>
-                  <button
-                    onClick={() => openFollowModal('followers')}
-                    style={{ background: 'none', border: 'none', cursor: 'pointer',
-                      color: '#f3f4f6', fontSize: '0.88rem', textAlign: 'center' }}
-                  >
-                    <div style={{ fontWeight: '700', fontSize: '1.1rem' }}>{followersCount}</div>
-                    <div style={{ color: '#94a3b8', fontSize: '0.78rem' }}>followers</div>
-                  </button>
-                  <div style={{ width: '1px', background: 'rgba(255,255,255,0.1)' }} />
-                  <button
-                    onClick={() => openFollowModal('following')}
-                    style={{ background: 'none', border: 'none', cursor: 'pointer',
-                      color: '#f3f4f6', fontSize: '0.88rem', textAlign: 'center' }}
-                  >
-                    <div style={{ fontWeight: '700', fontSize: '1.1rem' }}>{followingCount}</div>
-                    <div style={{ color: '#94a3b8', fontSize: '0.78rem' }}>following</div>
-                  </button>
+          <div className={fromSettings ? 'client-profile-settings-content' : ''}>
+            {banner.message && (
+              <div className={`client-profile-banner client-profile-banner-${banner.type}`}>
+                {banner.message}
+              </div>
+            )}
+
+            {loading ? (
+              <div className="client-profile-skeleton">
+                <div className="client-profile-skeleton-sidebar">
+                  <div className="cpsk-circle" />
+                  <div className="cpsk-line cpsk-line-lg" />
+                  <div className="cpsk-line cpsk-line-md" />
                 </div>
-
-                <div className="client-profile-completeness">
-                  <div className="client-profile-completeness-label">
-                    <span>Profile completeness</span>
-                    <span className="client-profile-completeness-pct">{completeness}%</span>
-                  </div>
-                  <div className="client-profile-completeness-track">
-                    <div
-                      className="client-profile-completeness-fill"
-                      style={{ width: `${completeness}%` }}
-                    />
-                  </div>
+                <div className="client-profile-skeleton-main">
+                  <div className="cpsk-line cpsk-line-full" />
+                  <div className="cpsk-line cpsk-line-lg" />
+                  <div className="cpsk-line cpsk-line-md" />
+                  <div className="cpsk-line cpsk-line-full" />
                 </div>
               </div>
-            </div>
+            ) : (
+              <div className="client-profile-layout">
+                {/* Left: avatar / info card */}
+                <div className="client-profile-sidebar">
+                  <div className="client-profile-avatar-card">
+                    <div className="client-profile-avatar">
+                      {user?.avatar ? (
+                        <img src={user.avatar} alt={userName} className="client-profile-avatar-img" />
+                      ) : (
+                        <span className="client-profile-avatar-initial">{userInitial}</span>
+                      )}
+                    </div>
+                    <h2 className="client-profile-name">{userName}</h2>
+                    {user?.title && (
+                      <p className="client-profile-tagline">{user.title}</p>
+                    )}
+                    <p className="client-profile-email">{user?.email || ''}</p>
 
-            {/* Right: details / edit form */}
-            <div className="client-profile-main">
-              {editing ? (
-                <div className="client-profile-edit-card">
-                  <div className="client-profile-edit-header">
-                    <h2 className="client-profile-section-title">Edit Profile</h2>
-                    <div className="client-profile-edit-actions">
+                    <div style={{ display: 'flex', gap: '20px', marginTop: '12px',
+                      justifyContent: 'center' }}>
                       <button
-                        className="client-profile-btn-secondary"
-                        onClick={handleCancel}
-                        disabled={saving}
+                        onClick={() => openFollowModal('followers')}
+                        style={{ background: 'none', border: 'none', cursor: 'pointer',
+                          color: '#f3f4f6', fontSize: '0.88rem', textAlign: 'center' }}
                       >
-                        <X size={15} />
-                        Cancel
+                        <div style={{ fontWeight: '700', fontSize: '1.1rem' }}>{followersCount}</div>
+                        <div style={{ color: '#94a3b8', fontSize: '0.78rem' }}>followers</div>
                       </button>
+                      <div style={{ width: '1px', background: 'rgba(255,255,255,0.1)' }} />
                       <button
-                        className="client-profile-btn-primary"
-                        onClick={handleSave}
-                        disabled={saving}
+                        onClick={() => openFollowModal('following')}
+                        style={{ background: 'none', border: 'none', cursor: 'pointer',
+                          color: '#f3f4f6', fontSize: '0.88rem', textAlign: 'center' }}
                       >
-                        <Save size={15} />
-                        {saving ? 'Saving...' : 'Save'}
+                        <div style={{ fontWeight: '700', fontSize: '1.1rem' }}>{followingCount}</div>
+                        <div style={{ color: '#94a3b8', fontSize: '0.78rem' }}>following</div>
                       </button>
                     </div>
-                  </div>
 
-                  <div className="client-profile-form">
-                    <div className="client-profile-field">
-                      <label className="client-profile-field-label">Company / Position Title</label>
-                      <input
-                        type="text"
-                        className="client-profile-input"
-                        placeholder="e.g., CEO at Acme Inc."
-                        value={formTitle}
-                        onChange={(e) => setFormTitle(e.target.value)}
-                        maxLength={120}
-                      />
-                    </div>
-
-                    <div className="client-profile-field">
-                      <label className="client-profile-field-label">Bio</label>
-                      <textarea
-                        className="client-profile-input client-profile-textarea"
-                        placeholder="Tell freelancers about yourself or your company..."
-                        value={formBio}
-                        onChange={(e) => setFormBio(e.target.value)}
-                        maxLength={800}
-                        rows={4}
-                      />
-                      <span className="client-profile-field-hint">{formBio.length}/800</span>
-                    </div>
-
-                    <div className="client-profile-field">
-                      <label className="client-profile-field-label">Interests / Skills needed</label>
-                      <div className="client-profile-skills-editor">
-                        <div className="client-profile-skills-tags">
-                          {formSkills.map((skill, i) => (
-                            <span key={i} className="client-profile-skill-tag">
-                              {skill}
-                              <button
-                                className="client-profile-skill-remove"
-                                onClick={() => removeSkill(skill)}
-                                aria-label={`Remove ${skill}`}
-                                type="button"
-                              >
-                                <X size={11} />
-                              </button>
-                            </span>
-                          ))}
-                        </div>
-                        <div className="client-profile-skill-add-row">
-                          <input
-                            type="text"
-                            className="client-profile-input"
-                            placeholder="Add interest or skill..."
-                            value={newSkill}
-                            onChange={(e) => setNewSkill(e.target.value)}
-                            onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); addSkill() } }}
-                          />
-                          <button
-                            className="client-profile-btn-secondary"
-                            onClick={addSkill}
-                            type="button"
-                          >
-                            <Plus size={15} />
-                            Add
-                          </button>
-                        </div>
+                    <div className="client-profile-completeness">
+                      <div className="client-profile-completeness-label">
+                        <span>Profile completeness</span>
+                        <span className="client-profile-completeness-pct">{completeness}%</span>
+                      </div>
+                      <div className="client-profile-completeness-track">
+                        <div
+                          className="client-profile-completeness-fill"
+                          style={{ width: `${completeness}%` }}
+                        />
                       </div>
                     </div>
                   </div>
                 </div>
-              ) : (
-                <>
-                  {/* Title card */}
-                  <div className="client-profile-detail-card">
-                    <div className="client-profile-detail-header">
-                      <h2 className="client-profile-section-title">
-                        {user?.title || <span className="client-profile-empty-hint">No title set</span>}
-                      </h2>
-                      <button
-                        className="client-profile-edit-icon-btn"
-                        onClick={handleEditClick}
-                        aria-label="Edit profile"
-                      >
-                        <Edit2 size={17} />
-                      </button>
-                    </div>
-                  </div>
 
-                  {/* Bio card */}
-                  <div className="client-profile-detail-card">
-                    <div className="client-profile-detail-header">
-                      <h3 className="client-profile-section-title">About</h3>
-                      <button
-                        className="client-profile-edit-icon-btn"
-                        onClick={handleEditClick}
-                        aria-label="Edit bio"
-                      >
-                        <Edit2 size={17} />
-                      </button>
-                    </div>
-                    <p className="client-profile-bio-text">
-                      {user?.bio || <span className="client-profile-empty-hint">No bio yet. Click edit to add one.</span>}
-                    </p>
-                  </div>
+                {/* Right: details / edit form */}
+                <div className="client-profile-main">
+                  {editing ? (
+                    <div className="client-profile-edit-card">
+                      <div className="client-profile-edit-header">
+                        <h2 className="client-profile-section-title">Edit Profile</h2>
+                        <div className="client-profile-edit-actions">
+                          <button
+                            className="client-profile-btn-secondary"
+                            onClick={handleCancel}
+                            disabled={saving}
+                          >
+                            <X size={15} />
+                            Cancel
+                          </button>
+                          <button
+                            className="client-profile-btn-primary"
+                            onClick={handleSave}
+                            disabled={saving}
+                          >
+                            <Save size={15} />
+                            {saving ? 'Saving...' : 'Save'}
+                          </button>
+                        </div>
+                      </div>
 
-                  {/* Skills / Interests card */}
-                  <div className="client-profile-detail-card">
-                    <div className="client-profile-detail-header">
-                      <h3 className="client-profile-section-title">Interests & Skills Needed</h3>
-                      <button
-                        className="client-profile-edit-icon-btn"
-                        onClick={handleEditClick}
-                        aria-label="Edit interests"
-                      >
-                        <Edit2 size={17} />
-                      </button>
+                      <div className="client-profile-form">
+                        <div className="client-profile-field">
+                          <label className="client-profile-field-label">Company / Position Title</label>
+                          <input
+                            type="text"
+                            className="client-profile-input"
+                            placeholder="e.g., CEO at Acme Inc."
+                            value={formTitle}
+                            onChange={(e) => setFormTitle(e.target.value)}
+                            maxLength={120}
+                          />
+                        </div>
+
+                        <div className="client-profile-field">
+                          <label className="client-profile-field-label">Bio</label>
+                          <textarea
+                            className="client-profile-input client-profile-textarea"
+                            placeholder="Tell freelancers about yourself or your company..."
+                            value={formBio}
+                            onChange={(e) => setFormBio(e.target.value)}
+                            maxLength={800}
+                            rows={4}
+                          />
+                          <span className="client-profile-field-hint">{formBio.length}/800</span>
+                        </div>
+
+                        <div className="client-profile-field">
+                          <label className="client-profile-field-label">Interests / Skills needed</label>
+                          <div className="client-profile-skills-editor">
+                            <div className="client-profile-skills-tags">
+                              {formSkills.map((skill, i) => (
+                                <span key={i} className="client-profile-skill-tag">
+                                  {skill}
+                                  <button
+                                    className="client-profile-skill-remove"
+                                    onClick={() => removeSkill(skill)}
+                                    aria-label={`Remove ${skill}`}
+                                    type="button"
+                                  >
+                                    <X size={11} />
+                                  </button>
+                                </span>
+                              ))}
+                            </div>
+                            <div className="client-profile-skill-add-row">
+                              <input
+                                type="text"
+                                className="client-profile-input"
+                                placeholder="Add interest or skill..."
+                                value={newSkill}
+                                onChange={(e) => setNewSkill(e.target.value)}
+                                onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); addSkill() } }}
+                              />
+                              <button
+                                className="client-profile-btn-secondary"
+                                onClick={addSkill}
+                                type="button"
+                              >
+                                <Plus size={15} />
+                                Add
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
                     </div>
-                    <div className="client-profile-skills-view">
-                      {user?.skills?.length > 0 ? (
-                        user.skills.map((skill, i) => (
-                          <span key={i} className="client-profile-skill-tag-view">{skill}</span>
-                        ))
-                      ) : (
-                        <span className="client-profile-empty-hint">No interests added yet.</span>
-                      )}
-                    </div>
-                  </div>
-                </>
-              )}
-            </div>
+                  ) : (
+                    <>
+                      {/* Title card */}
+                      <div className="client-profile-detail-card">
+                        <div className="client-profile-detail-header">
+                          <h2 className="client-profile-section-title">
+                            {user?.title || <span className="client-profile-empty-hint">No title set</span>}
+                          </h2>
+                          <button
+                            className="client-profile-edit-icon-btn"
+                            onClick={handleEditClick}
+                            aria-label="Edit profile"
+                          >
+                            <Edit2 size={17} />
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* Bio card */}
+                      <div className="client-profile-detail-card">
+                        <div className="client-profile-detail-header">
+                          <h3 className="client-profile-section-title">About</h3>
+                          <button
+                            className="client-profile-edit-icon-btn"
+                            onClick={handleEditClick}
+                            aria-label="Edit bio"
+                          >
+                            <Edit2 size={17} />
+                          </button>
+                        </div>
+                        <p className="client-profile-bio-text">
+                          {user?.bio || <span className="client-profile-empty-hint">No bio yet. Click edit to add one.</span>}
+                        </p>
+                      </div>
+
+                      {/* Skills / Interests card */}
+                      <div className="client-profile-detail-card">
+                        <div className="client-profile-detail-header">
+                          <h3 className="client-profile-section-title">Interests & Skills Needed</h3>
+                          <button
+                            className="client-profile-edit-icon-btn"
+                            onClick={handleEditClick}
+                            aria-label="Edit interests"
+                          >
+                            <Edit2 size={17} />
+                          </button>
+                        </div>
+                        <div className="client-profile-skills-view">
+                          {user?.skills?.length > 0 ? (
+                            user.skills.map((skill, i) => (
+                              <span key={i} className="client-profile-skill-tag-view">{skill}</span>
+                            ))
+                          ) : (
+                            <span className="client-profile-empty-hint">No interests added yet.</span>
+                          )}
+                        </div>
+                      </div>
+                    </>
+                  )}
+                </div>
+              </div>
+            )}
           </div>
-        )}
+        </div>
       </div>
 
       {showFollowModal && (
