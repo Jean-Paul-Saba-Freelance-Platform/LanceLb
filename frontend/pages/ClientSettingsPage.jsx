@@ -189,7 +189,7 @@ const ClientSettingsPage = () => {
                   <Mail size={18} />
                   <span>Contact info</span>
                 </button>
-                <Link to="/client/profile" className="settings-nav-item">
+                <Link to="/client/profile?from=settings" className="settings-nav-item">
                   <User size={18} />
                   <span>My profile</span>
                 </Link>

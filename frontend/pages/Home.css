@@ -1165,9 +1165,7 @@
   background: linear-gradient(135deg, #f0f4f8 0%, #eef9f5 50%, #f0f2f5 100%);
 }
 
-[data-theme="light"] .landing-dither {
-  opacity: 0;
-}
+
 
 [data-theme="light"] .hero-title {
   color: #111b21;

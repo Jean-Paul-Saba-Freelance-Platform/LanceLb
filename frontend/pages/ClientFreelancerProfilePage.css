@@ -1,6 +1,17 @@
+/* ── Design tokens + page base ─────────────────────────── */
 .cfp-page {
+  --cfp-accent:         #3eb591;
+  --cfp-glass-bg:       rgba(14, 12, 20, 0.6);
+  --cfp-glass-border:   rgba(255, 255, 255, 0.12);
+  --cfp-glass-shadow:   0 18px 40px rgba(4, 4, 10, 0.6);
+  --cfp-glass-radius:   22px;
+  --cfp-blur:           18px;
+  --cfp-text-primary:   #f3f4f6;
+  --cfp-text-secondary: #cbd5f5;
+  --cfp-text-muted:     #94a3b8;
+
   min-height: 100vh;
-  background: var(--color-bg, #111b21);
+  background: transparent;
   padding: 2rem 1rem;
 }
 
@@ -9,90 +20,104 @@
   margin: 0 auto;
 }
 
+/* ── Back button ───────────────────────────────────────── */
 .cfp-back {
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
   background: none;
   border: none;
-  color: var(--color-text-muted, #8696a0);
+  color: var(--cfp-text-muted);
   font-size: 0.875rem;
   cursor: pointer;
   padding: 0.25rem 0;
   margin-bottom: 1.5rem;
   transition: color 0.15s;
 }
-.cfp-back:hover { color: var(--color-text, #e9edef); }
+.cfp-back:hover { color: var(--cfp-accent); }
 
-/* Loading skeleton */
+/* ── Loading skeleton ──────────────────────────────────── */
 .cfp-skeleton {
   display: flex;
   gap: 1.25rem;
   align-items: flex-start;
-  padding: 1.5rem;
-  background: var(--color-card, #1b2730);
-  border-radius: 12px;
-  border: 1px solid var(--color-border, #2a3942);
+  padding: 1.75rem;
+  background: var(--cfp-glass-bg);
+  backdrop-filter: blur(var(--cfp-blur));
+  -webkit-backdrop-filter: blur(var(--cfp-blur));
+  border: 1px solid var(--cfp-glass-border);
+  border-radius: var(--cfp-glass-radius);
 }
+
 .cfp-skeleton-avatar {
   width: 72px;
   height: 72px;
   border-radius: 50%;
-  background: var(--color-border, #2a3942);
+  background: rgba(255, 255, 255, 0.08);
   flex-shrink: 0;
   animation: cfp-pulse 1.4s ease-in-out infinite;
 }
+
 .cfp-skeleton-lines { flex: 1; display: flex; flex-direction: column; gap: 0.65rem; padding-top: 0.5rem; }
+
 .cfp-skeleton-line {
   height: 14px;
   border-radius: 6px;
-  background: var(--color-border, #2a3942);
+  background: rgba(255, 255, 255, 0.06);
   width: 60%;
   animation: cfp-pulse 1.4s ease-in-out infinite;
 }
-.cfp-skeleton-line--wide { width: 80%; height: 18px; }
+.cfp-skeleton-line--wide   { width: 80%; height: 18px; }
 .cfp-skeleton-line--narrow { width: 35%; }
 
 @keyframes cfp-pulse {
   0%, 100% { opacity: 0.5; }
-  50% { opacity: 1; }
+  50%       { opacity: 1; }
 }
 
-/* Error */
+/* ── Error ─────────────────────────────────────────────── */
 .cfp-error {
+  color: #fca5a5;
+  background: rgba(248, 113, 113, 0.08);
+  border: 1px solid rgba(248, 113, 113, 0.2);
+  border-radius: var(--cfp-glass-radius);
   padding: 2rem;
   text-align: center;
-  color: var(--color-danger, #f87171);
   font-size: 0.9rem;
 }
 
-/* Card */
+/* ── Main card ─────────────────────────────────────────── */
 .cfp-card {
-  background: var(--color-card, #1b2730);
-  border: 1px solid var(--color-border, #2a3942);
-  border-radius: 12px;
-  padding: 1.75rem;
+  background: var(--cfp-glass-bg);
+  backdrop-filter: blur(var(--cfp-blur));
+  -webkit-backdrop-filter: blur(var(--cfp-blur));
+  border: 1px solid var(--cfp-glass-border);
+  border-radius: var(--cfp-glass-radius);
+  box-shadow: var(--cfp-glass-shadow);
+  padding: 2rem;
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
 }
 
-/* Header row */
+/* ── Header row ────────────────────────────────────────── */
 .cfp-header {
   display: flex;
   gap: 1.25rem;
   align-items: flex-start;
 }
 
+/* ── Avatar ────────────────────────────────────────────── */
 .cfp-avatar {
-  width: 72px;
-  height: 72px;
+  width: 80px;
+  height: 80px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #00a884 0%, #008f71 100%);
+  background: linear-gradient(135deg, var(--cfp-accent), #2d9b7a);
+  border: 2px solid rgba(62, 181, 145, 0.3);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.75rem;
+  font-size: 2rem;
   font-weight: 700;
   color: #fff;
   flex-shrink: 0;
@@ -102,18 +127,19 @@
 
 .cfp-identity { flex: 1; }
 
+/* ── Identity text ─────────────────────────────────────── */
 .cfp-name {
-  font-size: 1.25rem;
+  font-size: 1.35rem;
   font-weight: 700;
-  color: var(--color-text, #e9edef);
+  color: var(--cfp-text-primary);
   margin: 0 0 0.25rem;
-  letter-spacing: -0.01em;
+  letter-spacing: -0.02em;
 }
 
 .cfp-title {
   font-size: 0.875rem;
-  color: var(--color-text-muted, #8696a0);
-  margin: 0 0 0.5rem;
+  color: var(--cfp-text-muted);
+  margin: 0 0 0.6rem;
 }
 
 .cfp-meta-row {
@@ -122,6 +148,7 @@
   flex-wrap: wrap;
 }
 
+/* ── Badges ────────────────────────────────────────────── */
 .cfp-badge {
   font-size: 0.75rem;
   font-weight: 600;
@@ -130,14 +157,14 @@
   letter-spacing: 0.01em;
 }
 .cfp-badge--exp {
-  background: rgba(0, 168, 132, 0.15);
-  color: #00a884;
-  border: 1px solid rgba(0, 168, 132, 0.3);
+  background: rgba(62, 181, 145, 0.12);
+  color: var(--cfp-accent);
+  border: 1px solid rgba(62, 181, 145, 0.3);
 }
 .cfp-badge--type {
-  background: rgba(134, 150, 160, 0.12);
-  color: var(--color-text-muted, #8696a0);
-  border: 1px solid var(--color-border, #2a3942);
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--cfp-text-muted);
+  border: 1px solid var(--cfp-glass-border);
 }
 
 .cfp-actions {
@@ -145,41 +172,125 @@
   padding-top: 0.15rem;
 }
 
-/* Section */
+/* ── Section ───────────────────────────────────────────── */
 .cfp-section { display: flex; flex-direction: column; gap: 0.75rem; }
 
 .cfp-section-title {
-  font-size: 0.82rem;
-  font-weight: 600;
-  letter-spacing: 0.06em;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--color-text-muted, #8696a0);
+  color: var(--cfp-text-muted);
   margin: 0;
 }
 
+/* ── Bio ───────────────────────────────────────────────── */
 .cfp-bio {
   font-size: 0.9rem;
-  color: var(--color-text, #e9edef);
-  line-height: 1.65;
+  color: var(--cfp-text-secondary);
+  line-height: 1.7;
   margin: 0;
 }
 
-/* Skills */
+/* ── Skill pills ───────────────────────────────────────── */
 .cfp-skills { display: flex; flex-wrap: wrap; gap: 0.5rem; }
 
 .cfp-skill-pill {
   font-size: 0.8rem;
   font-weight: 500;
-  padding: 0.3rem 0.75rem;
+  padding: 0.3rem 0.875rem;
   border-radius: 999px;
-  background: rgba(0, 168, 132, 0.1);
-  color: #00a884;
-  border: 1px solid rgba(0, 168, 132, 0.25);
+  background: rgba(62, 181, 145, 0.1);
+  color: var(--cfp-accent);
+  border: 1px solid rgba(62, 181, 145, 0.25);
+  transition: background 0.15s, border-color 0.15s;
+}
+.cfp-skill-pill:hover {
+  background: rgba(62, 181, 145, 0.18);
+  border-color: rgba(62, 181, 145, 0.4);
 }
 
-/* Footer */
-.cfp-footer { padding-top: 0.25rem; border-top: 1px solid var(--color-border, #2a3942); }
+/* ── Footer ────────────────────────────────────────────── */
+.cfp-footer {
+  padding-top: 1rem;
+  border-top: 1px solid var(--cfp-glass-border);
+}
 .cfp-member-since {
   font-size: 0.78rem;
-  color: var(--color-text-muted, #8696a0);
+  color: var(--cfp-text-muted);
+}
+
+/* ── Light mode ────────────────────────────────────────── */
+[data-theme="light"] .cfp-page { background: transparent; }
+
+[data-theme="light"] .cfp-back { color: #667781; }
+[data-theme="light"] .cfp-back:hover { color: #017561; }
+
+[data-theme="light"] .cfp-card {
+  background: rgba(255, 255, 255, 0.85);
+  border-color: #e0e3e7;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+[data-theme="light"] .cfp-skeleton {
+  background: rgba(255, 255, 255, 0.85);
+  border-color: #e0e3e7;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+[data-theme="light"] .cfp-skeleton-avatar { background: #e0e3e7; }
+[data-theme="light"] .cfp-skeleton-line   { background: #e0e3e7; }
+
+[data-theme="light"] .cfp-name  { color: #111b21; }
+[data-theme="light"] .cfp-title { color: #667781; }
+
+[data-theme="light"] .cfp-badge--type {
+  background: rgba(0, 0, 0, 0.04);
+  border-color: #e0e3e7;
+  color: #667781;
+}
+
+[data-theme="light"] .cfp-section-title { color: #667781; }
+
+[data-theme="light"] .cfp-bio { color: #374151; }
+
+[data-theme="light"] .cfp-skill-pill {
+  background: rgba(1, 117, 97, 0.08);
+  color: #017561;
+  border-color: rgba(1, 117, 97, 0.2);
+}
+
+[data-theme="light"] .cfp-footer       { border-top-color: #e0e3e7; }
+[data-theme="light"] .cfp-member-since { color: #667781; }
+
+[data-theme="light"] .cfp-error {
+  color: #dc2626;
+  background: rgba(239, 68, 68, 0.06);
+  border-color: rgba(239, 68, 68, 0.2);
+}
+
+/* ── Mobile (640px) ────────────────────────────────────── */
+@media (max-width: 640px) {
+  .cfp-page { padding: 1rem 0.875rem; }
+
+  .cfp-card { padding: 1.25rem; }
+
+  .cfp-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .cfp-avatar {
+    width: 64px;
+    height: 64px;
+    font-size: 1.5rem;
+  }
+
+  .cfp-name { font-size: 1.15rem; }
+
+  .cfp-actions { width: 100%; }
+  .cfp-actions > * { width: 100%; }
 }

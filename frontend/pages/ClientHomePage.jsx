@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { motion } from 'motion/react'
+import { Code2, Palette, TrendingUp, Headphones, PenTool, DollarSign, Phone, CreditCard, Mail, BarChart2, Briefcase, Wrench } from 'lucide-react'
 import TopNav from '../src/components/TopNav.jsx'
 import RightSidebarCard from '../src/components/RightSidebarCard.jsx'
 import { nextStepsData, categoriesData, resourcesData, defaultDashboardSummary } from './client/mockClientDashboardData.js'
@@ -189,6 +191,40 @@ const ClientHomePage = () => {
     navigate(route)
   }
 
+  const STEP_ICONS = {
+    1: <Phone size={24} color="#3eb591" />,
+    2: <CreditCard size={24} color="#3eb591" />,
+    3: <Mail size={24} color="#3eb591" />,
+  }
+
+  const CATEGORY_ICONS = {
+    'Development': <Code2 size={28} color="#00a884" />,
+    'Design': <Palette size={28} color="#00a884" />,
+    'Writing': <PenTool size={28} color="#00a884" />,
+    'Marketing': <TrendingUp size={28} color="#00a884" />,
+    'Data & AI': <BarChart2 size={28} color="#00a884" />,
+    'Business': <Briefcase size={28} color="#00a884" />,
+    'Admin & Support': <Headphones size={28} color="#00a884" />,
+    'Finance & Accounting': <DollarSign size={28} color="#00a884" />,
+    'Development & IT': <Code2 size={28} color="#00a884" />,
+    'Design & Creative': <Palette size={28} color="#00a884" />,
+  }
+
+  const fadeUp = {
+    hidden: { opacity: 0, y: 24 },
+    visible: (i = 0) => ({
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.5, ease: 'easeOut', delay: i * 0.08 }
+    })
+  }
+
+  const springButton = {
+    whileHover: { scale: 1.04 },
+    whileTap: { scale: 0.97 },
+    transition: { type: 'spring', stiffness: 400, damping: 17 }
+  }
+
   const firstName = getUserFirstName()
   const nextSteps = getNextSteps()
 
@@ -200,23 +236,30 @@ const ClientHomePage = () => {
         {/* Main Content */}
         <div className="client-main-content">
           {/* A) Greeting + Primary Action */}
-          <div className="greeting-card">
+          <motion.div className="greeting-card"
+            variants={fadeUp} initial="hidden" animate="visible" custom={0}>
             <div className="greeting-content">
               <h2 className="greeting-text">{getGreeting()}, {firstName}.</h2>
               <p className="greeting-subtitle">Ready to find the perfect talent for your project?</p>
             </div>
-            <button className="primary-action-button" onClick={handlePostJob}>
+            <motion.button className="primary-action-button" onClick={handlePostJob}
+              whileHover={springButton.whileHover} whileTap={springButton.whileTap} transition={springButton.transition}>
               Post a Job
-            </button>
-          </div>
+            </motion.button>
+          </motion.div>
 
           {/* B) Next Steps Cards */}
           <div className="next-steps-section">
-            <h2 className="section-title">Next steps to start hiring</h2>
+            <motion.h2 className="section-title"
+              variants={fadeUp} initial="hidden" animate="visible" custom={1}>
+              Next steps to start hiring
+            </motion.h2>
             <div className="next-steps-grid">
-              {nextSteps.map(step => (
-                <div key={step.id} className={`next-steps-card ${step.completed ? 'completed' : ''}`}>
-                  <div className="next-steps-icon">{step.icon}</div>
+              {nextSteps.map((step, index) => (
+                <motion.div key={step.id} className={`next-steps-card ${step.completed ? 'completed' : ''}`}
+                  variants={fadeUp} initial="hidden" animate="visible" custom={index + 2}
+                  whileHover={{ y: -4, transition: { duration: 0.2 } }}>
+                  <div className="next-steps-icon">{STEP_ICONS[step.id] || step.icon}</div>
                   <h3 className="next-steps-title">{step.title}</h3>
                   <p className="next-steps-description">{step.description}</p>
                   {!step.completed && (
@@ -228,15 +271,16 @@ const ClientHomePage = () => {
                     </button>
                   )}
                   {step.completed && (
-                    <span className="next-steps-completed">✓ Completed</span>
+                    <span className="completed-badge">✓ Done</span>
                   )}
-                </div>
+                </motion.div>
               ))}
             </div>
           </div>
 
           {/* C) Overview / Activity Panel */}
-          <div className="overview-section">
+          <motion.div className="overview-section"
+            variants={fadeUp} initial="hidden" animate="visible" custom={5}>
             <div className="overview-header">
               <h2 className="section-title">Overview</h2>
               <div className="segmented-control">
@@ -311,22 +355,22 @@ const ClientHomePage = () => {
                 </div>
               )}
             </div>
-          </div>
+          </motion.div>
 
           {/* D) Explore Categories */}
           <div className="categories-section">
             <h2 className="section-title">Find experts by category</h2>
             <div className="categories-grid">
-              {categoriesData.map(category => (
-                <div 
-                  key={category.id} 
+              {categoriesData.map((category, index) => (
+                <motion.div
+                  key={category.id}
                   className="category-card"
                   onClick={() => handleCategoryClick(category.route)}
-                >
-                  <div className="category-icon">{category.icon}</div>
+                  variants={fadeUp} initial="hidden" animate="visible" custom={index * 0.5 + 6}
+                  whileHover={{ y: -4, scale: 1.02, transition: { duration: 0.2 } }}>
+                  <div className="category-icon">{CATEGORY_ICONS[category.title] || <Code2 size={28} color="#00a884" />}</div>
                   <h3 className="category-title">{category.title}</h3>
-                  <p className="category-description">{category.description}</p>
-                </div>
+                </motion.div>
               ))}
             </div>
           </div>
@@ -334,36 +378,20 @@ const ClientHomePage = () => {
           {/* People You May Know */}
           {peopleToFollow.length > 0 && (
             <div className="categories-section">
-              <h2 className="section-title">People You May Know</h2>
-              <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
-                {peopleToFollow.map((person) => (
-                  <div key={person._id} style={{
-                    background: 'rgba(14,12,20,0.6)', border: '1px solid rgba(255,255,255,0.1)',
-                    borderRadius: '12px', padding: '16px', display: 'flex', flexDirection: 'column',
-                    alignItems: 'center', gap: '8px', width: '140px', textAlign: 'center'
-                  }}>
-                    <div style={{
-                      width: '48px', height: '48px', borderRadius: '50%', background: '#00a884',
-                      color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center',
-                      fontWeight: '600', fontSize: '1.1rem'
-                    }}>
+              <h2 className="people-section-title section-title">People You May Know</h2>
+              <div className="people-grid">
+                {peopleToFollow.map((person, index) => (
+                  <motion.div key={person._id} className="person-card"
+                    variants={fadeUp} initial="hidden" animate="visible" custom={index + 8}
+                    whileHover={{ y: -3, transition: { duration: 0.2 } }}>
+                    <div className="person-avatar">
                       {(person.name || '?').charAt(0).toUpperCase()}
                     </div>
-                    <div style={{ fontSize: '0.82rem', fontWeight: '600', color: '#f3f4f6' }}>
-                      {person.name}
-                    </div>
-                    <div style={{ fontSize: '0.72rem', color: '#94a3b8' }}>
-                      {person.title || 'Freelancer'}
-                    </div>
+                    <div className="person-name">{person.name}</div>
+                    <div className="person-role">{person.title || 'Freelancer'}</div>
                     <button
                       onClick={() => handleWidgetFollow(person._id)}
-                      style={{
-                        fontSize: '0.72rem', padding: '4px 10px',
-                        background: followStates[person._id] ? 'transparent' : '#00a884',
-                        color: followStates[person._id] ? '#94a3b8' : 'white',
-                        border: followStates[person._id] ? '1px solid rgba(255,255,255,0.15)' : 'none',
-                        borderRadius: '6px', cursor: 'pointer', marginTop: '4px', width: '100%'
-                      }}
+                      className={`person-follow-btn ${followStates[person._id] ? 'following' : 'active'}`}
                     >
                       {followStates[person._id] === 'accepted' ? 'Following'
                         : followStates[person._id] === 'requested' ? 'Requested'
@@ -371,25 +399,17 @@ const ClientHomePage = () => {
                     </button>
                     <button
                       onClick={() => navigate(`/client/freelancer-profile/${person._id}`, { state: { backRoute: '/client/home' } })}
-                      style={{
-                        fontSize: '0.72rem', padding: '4px 10px', background: 'transparent',
-                        color: '#00a884', border: '1px solid #00a884', borderRadius: '6px',
-                        cursor: 'pointer', width: '100%'
-                      }}
+                      className="person-view-btn"
                     >
                       View Profile
                     </button>
-                  </div>
+                  </motion.div>
                 ))}
-                <div style={{ display: 'flex', alignItems: 'flex-end', paddingBottom: '4px' }}>
-                  <button
-                    onClick={() => navigate('/client/explore')}
-                    style={{ fontSize: '0.82rem', color: '#00a884', background: 'none',
-                      border: 'none', cursor: 'pointer', padding: 0 }}
-                  >
-                    See all →
-                  </button>
-                </div>
+              </div>
+              <div className="people-see-all-wrap">
+                <button onClick={() => navigate('/client/explore')} className="people-see-all-btn">
+                  See all →
+                </button>
               </div>
             </div>
           )}
@@ -398,8 +418,10 @@ const ClientHomePage = () => {
           <div className="resources-section">
             <h2 className="section-title">Help & resources</h2>
             <div className="resources-grid">
-              {resourcesData.map(resource => (
-                <div key={resource.id} className="resource-card">
+              {resourcesData.map((resource, index) => (
+                <motion.div key={resource.id} className="resource-card"
+                  variants={fadeUp} initial="hidden" animate="visible" custom={index + 10}
+                  whileHover={{ y: -3, transition: { duration: 0.2 } }}>
                   <h3 className="resource-title">{resource.title}</h3>
                   <p className="resource-description">{resource.description}</p>
                   <button 
@@ -408,7 +430,7 @@ const ClientHomePage = () => {
                   >
                     {resource.actionText} →
                   </button>
-                </div>
+                </motion.div>
               ))}
             </div>
           </div>

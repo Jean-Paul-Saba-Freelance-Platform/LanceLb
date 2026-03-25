@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
+import { motion } from 'motion/react'
 import TopNav from '../src/components/TopNav.jsx'
 import './ClientProjectsPage.css'
 
@@ -93,6 +94,14 @@ const ClientProjectsPage = () => {
     }
   }
 
+  const fadeUp = {
+    hidden: { opacity: 0, y: 20 },
+    visible: (i = 0) => ({
+      opacity: 1, y: 0,
+      transition: { duration: 0.45, ease: 'easeOut', delay: i * 0.06 }
+    })
+  }
+
   const statusColor = (status) => {
     if (status === 'active') return '#10b981'
     if (status === 'completed') return '#38bdf8'
@@ -107,16 +116,17 @@ const ClientProjectsPage = () => {
     <div className="cp-page">
       <TopNav userName={getUserName()} />
       <div className="cp-container">
-        <div className="cp-header">
+        <motion.div className="cp-header" variants={fadeUp} initial="hidden" animate="visible" custom={0}>
           <h1 className="cp-title">Projects</h1>
           <button className="cp-new-btn" onClick={() => setShowForm(f => !f)}>
             {showForm ? '✕ Cancel' : '+ New Project'}
           </button>
-        </div>
+        </motion.div>
 
         {/* Create project form */}
         {showForm && (
-          <form className="cp-form" onSubmit={handleCreate}>
+          <motion.form className="cp-form" variants={fadeUp} initial="hidden" animate="visible" custom={1}
+            onSubmit={handleCreate}>
             <h3 className="cp-form-title">Create New Project</h3>
 
             <div className="cp-field">
@@ -166,7 +176,7 @@ const ClientProjectsPage = () => {
             <button className="cp-submit-btn" type="submit" disabled={creating}>
               {creating ? 'Creating...' : 'Create Project'}
             </button>
-          </form>
+          </motion.form>
         )}
 
         {error && <p className="cp-error">{error}</p>}
@@ -179,15 +189,20 @@ const ClientProjectsPage = () => {
           </div>
         ) : (
           <div className="cp-list">
-            {projects.map(proj => {
+            {projects.map((proj, index) => {
               const totalTasks = proj.tasks?.length || 0
               const doneTasks = proj.tasks?.filter(t => t.validatedByClient).length || 0
               const progress = totalTasks ? Math.round((doneTasks / totalTasks) * 100) : 0
 
               return (
-                <div
+                <motion.div
                   key={proj._id}
                   className="cp-card"
+                  variants={fadeUp}
+                  initial="hidden"
+                  animate="visible"
+                  custom={index + 1}
+                  whileHover={{ y: -3, transition: { duration: 0.2 } }}
                   onClick={() => navigate(`/client/projects/${proj._id}`)}
                 >
                   <div className="cp-card-top">
@@ -224,7 +239,7 @@ const ClientProjectsPage = () => {
                       <span className="cp-progress-label">{doneTasks}/{totalTasks}</span>
                     </div>
                   )}
-                </div>
+                </motion.div>
               )
             })}
           </div>

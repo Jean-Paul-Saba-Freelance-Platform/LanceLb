@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
+import { motion } from 'motion/react'
 import TopNav from '../src/components/TopNav.jsx'
 import './ClientApplicationsPage.css'
 
@@ -203,15 +204,25 @@ const ClientApplicationsPage = () => {
     )
   }
 
+  const fadeUp = {
+    hidden: { opacity: 0, y: 20 },
+    visible: (i = 0) => ({
+      opacity: 1, y: 0,
+      transition: { duration: 0.45, ease: 'easeOut', delay: i * 0.06 }
+    })
+  }
+
   return (
     <div className="client-apps-page">
       <TopNav userName={getUserName()} />
       <div className="client-apps-container">
-        <button className="client-apps-back" onClick={() => navigate(-1)}>
+        <motion.button className="client-apps-back" onClick={() => navigate(-1)}
+          variants={fadeUp} initial="hidden" animate="visible" custom={0}>
           ← Back
-        </button>
+        </motion.button>
 
-        <div className="client-apps-header">
+        <motion.div className="client-apps-header"
+          variants={fadeUp} initial="hidden" animate="visible" custom={1}>
           <h1 className="client-apps-title">
             Applications{job ? ` for "${job.title}"` : ''}
           </h1>
@@ -226,7 +237,7 @@ const ClientApplicationsPage = () => {
               + Create Project ({acceptedCount} accepted)
             </button>
           )}
-        </div>
+        </motion.div>
 
         {error && <p className="client-apps-error">{error}</p>}
 
@@ -236,12 +247,14 @@ const ClientApplicationsPage = () => {
           </div>
         ) : (
           <div className="client-apps-list">
-            {applications.map((app) => {
+            {applications.map((app, index) => {
               const freelancer = app.freelancerId || {}
               const isExpanded = expandedId === app._id
 
               return (
-                <div key={app._id} className="app-card">
+                <motion.div key={app._id} className="app-card"
+                  variants={fadeUp} initial="hidden" animate="visible" custom={index + 2}
+                  whileHover={{ y: -2, transition: { duration: 0.2 } }}>
                   <div
                     className="app-card-header"
                     onClick={() => setExpandedId(isExpanded ? null : app._id)}
@@ -462,7 +475,7 @@ const ClientApplicationsPage = () => {
                       )}
                     </div>
                   )}
-                </div>
+                </motion.div>
               )
             })}
           </div>

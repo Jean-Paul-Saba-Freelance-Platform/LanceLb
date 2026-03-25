@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { motion } from 'motion/react'
 import TopNav from '../src/components/TopNav.jsx'
 import ConfirmDeleteModal from '../src/components/ConfirmDeleteModal.jsx'
 import './ClientJobsPage.css'
@@ -133,11 +134,19 @@ const ClientJobsPage = () => {
     return status
   }
 
+  const fadeUp = {
+    hidden: { opacity: 0, y: 20 },
+    visible: (i = 0) => ({
+      opacity: 1, y: 0,
+      transition: { duration: 0.45, ease: 'easeOut', delay: i * 0.06 }
+    })
+  }
+
   return (
     <div className="client-jobs-page">
       <TopNav userName={getUserName()} />
       <div className="client-jobs-container">
-        <div className="manage-header">
+        <motion.div className="manage-header" variants={fadeUp} initial="hidden" animate="visible" custom={0}>
           <div>
             <h1 className="manage-title">Manage Jobs</h1>
             <p className="manage-subtitle">View and manage all your posted jobs.</p>
@@ -148,7 +157,7 @@ const ClientJobsPage = () => {
           >
             + Post a New Job
           </button>
-        </div>
+        </motion.div>
 
         {success && (
           <div className="manage-success">
@@ -157,7 +166,7 @@ const ClientJobsPage = () => {
           </div>
         )}
 
-        <div className="manage-toolbar">
+        <motion.div className="manage-toolbar" variants={fadeUp} initial="hidden" animate="visible" custom={1}>
           <div className="manage-search-wrap">
             <svg className="manage-search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <circle cx="11" cy="11" r="8" />
@@ -182,7 +191,7 @@ const ClientJobsPage = () => {
               </button>
             ))}
           </div>
-        </div>
+        </motion.div>
 
         {loading && (
           <div className="manage-loading">
@@ -221,10 +230,12 @@ const ClientJobsPage = () => {
 
         {!loading && !error && filteredJobs.length > 0 && (
           <div className="manage-jobs-list">
-            {filteredJobs.map(job => {
+            {filteredJobs.map((job, index) => {
               const jobId = job.id || job._id
               return (
-                <div key={jobId} className="manage-job-card">
+                <motion.div key={jobId} className="manage-job-card"
+                  variants={fadeUp} initial="hidden" animate="visible" custom={index + 2}
+                  whileHover={{ y: -3, transition: { duration: 0.2 } }}>
                   <div className="manage-job-top">
                     <div className="manage-job-info">
                       <h3 className="manage-job-title">{job.title}</h3>
@@ -264,7 +275,7 @@ const ClientJobsPage = () => {
                     </button>
                     <button
                       className="manage-action-btn secondary"
-                      onClick={() => navigate('/client/home')}
+                      onClick={() => navigate(`/client/jobs/${jobId}/applications`)}
                     >
                       View
                     </button>
@@ -275,7 +286,7 @@ const ClientJobsPage = () => {
                       Delete
                     </button>
                   </div>
-                </div>
+                </motion.div>
               )
             })}
           </div>
