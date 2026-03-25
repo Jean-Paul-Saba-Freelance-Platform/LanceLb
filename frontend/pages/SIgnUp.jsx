@@ -20,6 +20,7 @@ const SignUp = () => {
     })
     const [errors, setErrors] = useState({})
     const [touched, setTouched] = useState({})
+    const [isSubmitting, setIsSubmitting] = useState(false)
 
     const validateField = (name, value, allFields = formData) => {
         switch (name) {
@@ -81,6 +82,7 @@ const SignUp = () => {
         setErrors(errs)
         if (Object.keys(errs).length > 0) return
 
+        setIsSubmitting(true)
         try{
             const response = await fetch(`${API_BASE}/api/auth/register`, {
                 method: 'POST',
@@ -95,26 +97,27 @@ const SignUp = () => {
                     userType: formData.userType
                 })
             })
-            
+
             console.log("Response status:", response.status);
             const data = await response.json()
             console.log("Response data:", data);
-            
+
             if(!response.ok){
                 throw new Error(data.message || 'Registration failed')
             }
-            
+
             const { token, user } = data
             localStorage.setItem('token', token)
             localStorage.setItem('user', JSON.stringify(user))
-            
+
             // Redirect to OTP verification
             navigate('/verify-otp')
         } catch (error) {
             console.error('Registration error:', error)
             setErrors({ submit: error.message })
+            setIsSubmitting(false)
         }
-        
+
     }
 
     return (
@@ -237,8 +240,8 @@ const SignUp = () => {
                         </label>
                     </div>
 
-                    <button type="submit" className="auth-button-primary">
-                        Create Account
+                    <button type="submit" className="auth-button-primary" disabled={isSubmitting}>
+                        {isSubmitting ? 'Creating Account...' : 'Create Account'}
                     </button>
                 </form>
 
