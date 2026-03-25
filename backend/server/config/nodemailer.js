@@ -7,13 +7,12 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 dotenv.config({ path: path.join(__dirname, '..', '.env') });
 
-const smtpUser = process.env.SMTP_USER || process.env.SMPTP_USER;
-const smtpPass = process.env.SMTP_PASS || process.env.SMPTP_PASS;
+const smtpUser = process.env.SMTP_USER;
+const smtpPass = process.env.SMTP_PASS;
 
-if (process.env.NODE_ENV !== 'production') {
-    console.log('[mail] SMTP_USER set:', Boolean(smtpUser));
-    console.log('[mail] SMTP_PASS set:', Boolean(smtpPass));
-}
+console.log('[mail] SMTP_USER set:', Boolean(smtpUser));
+console.log('[mail] SMTP_PASS set:', Boolean(smtpPass));
+console.log('[mail] SENDER_EMAIL:', process.env.SENDER_EMAIL || 'NOT SET');
 
 const transporter = nodemailer.createTransport({
     host: 'smtp-relay.brevo.com',
