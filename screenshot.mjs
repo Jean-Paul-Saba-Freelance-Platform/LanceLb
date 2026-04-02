@@ -33,8 +33,14 @@ function loadAuth() {
   }
 }
 
-const [,, url, label] = process.argv
-if (!url) { console.error('Usage: node screenshot.mjs <url> [label]'); process.exit(1) }
+const args = process.argv.slice(2)
+const url = args.find(a => a.startsWith('http'))
+const label = args.find(a => !a.startsWith('http') && !a.startsWith('--'))
+const widthArg = args.find(a => a.startsWith('--width='))
+const heightArg = args.find(a => a.startsWith('--height='))
+if (widthArg) VIEWPORT.width = parseInt(widthArg.split('=')[1])
+if (heightArg) VIEWPORT.height = parseInt(heightArg.split('=')[1])
+if (!url) { console.error('Usage: node screenshot.mjs <url> [label] [--width=N] [--height=N]'); process.exit(1) }
 
 const auth = loadAuth()
 const browser = await puppeteer.launch({ headless: true, args: ['--no-sandbox', '--disable-setuid-sandbox'] })

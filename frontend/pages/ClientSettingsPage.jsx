@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import TopNav from '../src/components/TopNav'
 import { Edit2, Save, X, User, Mail, MapPin, Shield, Bell } from 'lucide-react'
 import './FreelancerSettingsPage.css'
@@ -8,7 +8,9 @@ const API_BASE = import.meta.env.VITE_API_BASE || 'http://127.0.0.1:4000'
 
 const ClientSettingsPage = () => {
   const [user, setUser] = useState(null)
-  const [activeSection, setActiveSection] = useState('contact')
+  const location = useLocation()
+  const initialSection = new URLSearchParams(location.search).get('section') || 'contact'
+  const [activeSection, setActiveSection] = useState(initialSection)
   const [isEditingContact, setIsEditingContact] = useState(false)
   const [isEditingLocation, setIsEditingLocation] = useState(false)
   const [contactSaveMsg, setContactSaveMsg] = useState('')
@@ -49,6 +51,11 @@ const ClientSettingsPage = () => {
       console.error('Error loading user:', err)
     }
   }, [])
+
+  useEffect(() => {
+    const section = new URLSearchParams(location.search).get('section')
+    if (section) setActiveSection(section)
+  }, [location.search])
 
   const userName = user?.name || user?.firstName || 'Client'
   const userId = user?._id || user?.id || user?.userId

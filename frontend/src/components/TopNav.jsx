@@ -239,20 +239,29 @@ const TopNav = ({ userName, userAvatar }) => {
         headers: { 'Content-Type': 'application/json', ...authHeaders() },
       })
       const data = await res.json()
-      if (data.success) {
+
+      if (res.ok && data.success) {
         setFollowBackStates(prev => ({ ...prev, [notifId]: 'requested' }))
-        // Delete the notification from DB so it doesn't reappear on re-fetch
         await fetch(`${API_BASE}/api/notifications/${notifId}`, {
           method: 'DELETE',
           credentials: 'include',
           headers: authHeaders(),
         })
-        // Remove from local state after short delay so user sees "Request sent ✓"
         setTimeout(() => {
           setNotifications(prev => prev.filter(n => n._id !== notifId))
-        }, 2000)
+        }, 1500)
+      } else if (res.status === 409) {
+        const existingStatus = data.status || 'requested'
+        setFollowBackStates(prev => ({ ...prev, [notifId]: existingStatus }))
+        await fetch(`${API_BASE}/api/notifications/${notifId}`, {
+          method: 'DELETE',
+          credentials: 'include',
+          headers: authHeaders(),
+        })
+        setTimeout(() => {
+          setNotifications(prev => prev.filter(n => n._id !== notifId))
+        }, 1500)
       } else {
-        // Reset on failure
         setFollowBackStates(prev => ({ ...prev, [notifId]: null }))
       }
     } catch {
@@ -524,7 +533,10 @@ const TopNav = ({ userName, userAvatar }) => {
                                 </button>
                               </div>
                             )}
-                            {n.type === 'follow_back_suggestion' && !followBackStates[n._id] && (
+                            {n.type === 'follow_back_suggestion' &&
+                             followBackStates[n._id] !== 'requested' &&
+                             followBackStates[n._id] !== 'accepted' &&
+                             followBackStates[n._id] !== 'loading' && (
                               <div style={{ marginTop: '6px' }}>
                                 <button
                                   onClick={() => handleFollowBack(n.senderId, n._id)}

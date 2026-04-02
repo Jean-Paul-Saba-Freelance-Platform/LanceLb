@@ -47,18 +47,13 @@ export default function OtpForm() {
         throw new Error(data.message || 'Verification failed');
       }
 
-      // Update user in localStorage
+      // Update user in localStorage and redirect based on role
       const userStr = localStorage.getItem('user');
-      if (userStr) {
-        const user = JSON.parse(userStr);
-        user.isAccountVerified = true;
-        localStorage.setItem('user', JSON.stringify(user));
-      }
+      const user = userStr ? JSON.parse(userStr) : {};
+      user.isAccountVerified = true;
+      localStorage.setItem('user', JSON.stringify(user));
 
-      // Redirect to the correct home based on user type
-      
-      const userType = userStr ? JSON.parse(userStr).userType : 'freelancer';
-      navigate(userType === 'client' ? '/client/home' : '/freelancer/home');
+      navigate(user.userType === 'client' ? '/client/home' : '/freelancer/home');
     } catch (err) {
       console.error('OTP verification error:', err);
       setError(err.message);
@@ -157,12 +152,26 @@ export default function OtpForm() {
         <div className="auth-footer">
           <p>
             Didn't receive the code?{' '}
-            <button 
+            <button
               onClick={handleResendOtp}
               className="auth-link"
               style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}
             >
               Resend OTP
+            </button>
+          </p>
+          <p style={{ marginTop: '0.5rem' }}>
+            Wrong email?{' '}
+            <button
+              onClick={() => {
+                localStorage.removeItem('token')
+                localStorage.removeItem('user')
+                navigate('/signup')
+              }}
+              className="auth-link"
+              style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}
+            >
+              Start over
             </button>
           </p>
         </div>

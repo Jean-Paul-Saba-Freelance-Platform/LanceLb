@@ -41,7 +41,6 @@
   background: transparent !important;
 }
 
-.freelancer-layout .greeting-card,
 .freelancer-layout .jobs-search-input,
 .freelancer-layout .main-section-card,
 .freelancer-layout .sidebar-card,
@@ -53,6 +52,19 @@
   backdrop-filter: blur(18px) !important;
   -webkit-backdrop-filter: blur(18px) !important;
   border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  color: #f3f4f6 !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3) !important;
+  transition: all 0.3s ease !important;
+}
+
+.freelancer-layout .greeting-card {
+  background: rgba(14, 12, 20, 0.6) !important;
+  backdrop-filter: blur(18px) !important;
+  -webkit-backdrop-filter: blur(18px) !important;
+  border-left: 4px solid #3eb591 !important;
+  border-top: 1px solid rgba(255, 255, 255, 0.12) !important;
+  border-right: 1px solid rgba(255, 255, 255, 0.12) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12) !important;
   color: #f3f4f6 !important;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3) !important;
   transition: all 0.3s ease !important;
@@ -117,11 +129,34 @@
 
 /* Component specific overrides */
 .freelancer-layout .top-nav {
-  background: #202c33 !important;
-  border: 1px solid rgba(255, 255, 255, 0.08) !important;
-  border-radius: 0 !important;
-  margin: 0 !important;
-  top: 0 !important;
+  background: rgba(14, 12, 20, 0.72) !important;
+  backdrop-filter: blur(18px) !important;
+  -webkit-backdrop-filter: blur(18px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  border-radius: 18px !important;
+  margin: 0.75rem 1.5rem 0 !important;
+  top: 0.75rem !important;
+  padding: 0 0.25rem !important;
+  box-shadow: 0 4px 24px rgba(4, 4, 10, 0.6), 0 0 0 1px rgba(255,255,255,0.06) !important;
+}
+
+.freelancer-layout .top-nav-brand {
+  color: #f3f4f6 !important;
+  font-weight: 700 !important;
+}
+.freelancer-layout .top-nav-link {
+  color: rgba(255, 255, 255, 0.6) !important;
+}
+.freelancer-layout .top-nav-link:hover {
+  color: #f3f4f6 !important;
+}
+.freelancer-layout .top-nav-icon-button {
+  color: rgba(255, 255, 255, 0.6) !important;
+  border-radius: 9999px !important;
+}
+.freelancer-layout .top-nav-icon-button:hover {
+  background: rgba(62, 181, 145, 0.15) !important;
+  color: #3eb591 !important;
 }
 
 .freelancer-layout .top-nav-search {
@@ -143,14 +178,20 @@
 }
 
 .freelancer-layout .job-card {
-  background: rgba(255, 255, 255, 0.03) !important;
+  background: rgba(14, 12, 20, 0.6) !important;
   backdrop-filter: blur(10px) !important;
   -webkit-backdrop-filter: blur(10px) !important;
-  border: 1px solid rgba(255, 255, 255, 0.08) !important;
-  border-radius: 12px !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  border-radius: 22px !important;
   padding: 1.5rem !important;
   margin-bottom: 1rem !important;
   transition: all 0.3s ease !important;
+  box-shadow: 0 18px 40px rgba(4, 4, 10, 0.6) !important;
+}
+
+.freelancer-layout .job-card:hover {
+  border-color: rgba(62, 181, 145, 0.4) !important;
+  box-shadow: 0 12px 36px rgba(4, 4, 10, 0.5) !important;
 }
 
 .freelancer-layout .job-title {
@@ -159,9 +200,10 @@
 
 .freelancer-layout .job-tag,
 .freelancer-layout .skill-tag {
-  background: rgba(255, 255, 255, 0.05) !important;
-  border: 1px solid rgba(255, 255, 255, 0.1) !important;
-  color: #cbd5f5 !important;
+  background: rgba(62, 181, 145, 0.1) !important;
+  border: 1px solid rgba(62, 181, 145, 0.25) !important;
+  color: #4be2be !important;
+  border-radius: 8px !important;
 }
 
 .freelancer-layout .online-indicator {
@@ -249,8 +291,24 @@
 }
 
 [data-theme="light"] .freelancer-layout .top-nav {
-  background: #ffffff !important;
-  border-color: #e0e3e7 !important;
+  background: rgba(255, 255, 255, 0.85) !important;
+  border-color: rgba(0, 0, 0, 0.08) !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08) !important;
+}
+
+[data-theme="light"] .freelancer-layout .top-nav-brand,
+[data-theme="light"] .freelancer-layout .top-nav-link {
+  color: #111b21 !important;
+}
+[data-theme="light"] .freelancer-layout .top-nav-link:hover {
+  color: #017561 !important;
+}
+[data-theme="light"] .freelancer-layout .top-nav-icon-button {
+  color: #41525d !important;
+}
+[data-theme="light"] .freelancer-layout .top-nav-icon-button:hover {
+  background: rgba(1, 117, 97, 0.1) !important;
+  color: #017561 !important;
 }
 
 [data-theme="light"] .freelancer-layout .top-nav-search {

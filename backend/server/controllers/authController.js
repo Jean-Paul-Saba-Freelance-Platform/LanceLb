@@ -128,6 +128,15 @@ export const login = async (req, res) => {
             return res.status(401).json({ success: false, message: 'Invalid password' });
         }
 
+        // Block login for unverified accounts
+        if (!user.isAccountVerified) {
+            return res.status(403).json({
+                success: false,
+                message: 'Please verify your email before logging in.',
+                needsVerification: true,
+            });
+        }
+
         // Issue a fresh JWT and store it in a cookie (same options as register)
         const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '7d' });
         res.cookie('token', token, cookieOptions);

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import TopNav from '../src/components/TopNav'
 import { Edit2, Save, X, User, Mail, MapPin, Phone, Globe, CreditCard, Shield, Bell } from 'lucide-react'
 import './FreelancerSettingsPage.css'
@@ -8,7 +8,9 @@ const API_BASE = import.meta.env.VITE_API_BASE || 'http://127.0.0.1:4000'
 
 const FreelancerSettingsPage = () => {
   const [user, setUser] = useState(null)
-  const [activeSection, setActiveSection] = useState('contact')
+  const location = useLocation()
+  const initialSection = new URLSearchParams(location.search).get('section') || 'contact'
+  const [activeSection, setActiveSection] = useState(initialSection)
   const [isEditingContact, setIsEditingContact] = useState(false)
   const [isEditingLocation, setIsEditingLocation] = useState(false)
   const [contactSaveMsg, setContactSaveMsg] = useState('')
@@ -48,6 +50,11 @@ const FreelancerSettingsPage = () => {
       console.error('Error loading user:', error)
     }
   }, [])
+
+  useEffect(() => {
+    const section = new URLSearchParams(location.search).get('section')
+    if (section) setActiveSection(section)
+  }, [location.search])
 
   const userName = user?.name || user?.firstName || 'Freelancer'
   const userId = user?._id || user?.id || user?.userId
@@ -173,19 +180,12 @@ const FreelancerSettingsPage = () => {
                   <span>Contact info</span>
                 </button>
                 <Link
-                  to="/freelancer/profile"
+                  to="/freelancer/profile?from=settings"
                   className="settings-nav-item"
                 >
                   <User size={18} />
                   <span>My profile</span>
                 </Link>
-                <button
-                  className={`settings-nav-item ${activeSection === 'profile' ? 'active' : ''}`}
-                  onClick={() => setActiveSection('profile')}
-                >
-                  <User size={18} />
-                  <span>Profile settings</span>
-                </button>
                 <button
                   className={`settings-nav-item ${activeSection === 'password' ? 'active' : ''}`}
                   onClick={() => setActiveSection('password')}
@@ -451,15 +451,6 @@ const FreelancerSettingsPage = () => {
                 <h2 className="settings-card-title">Billing & Payments</h2>
                 <div className="settings-card-content">
                   <p className="settings-placeholder">Billing settings coming soon.</p>
-                </div>
-              </div>
-            )}
-
-            {activeSection === 'profile' && (
-              <div className="settings-card">
-                <h2 className="settings-card-title">Profile Settings</h2>
-                <div className="settings-card-content">
-                  <p className="settings-placeholder">Profile settings coming soon.</p>
                 </div>
               </div>
             )}

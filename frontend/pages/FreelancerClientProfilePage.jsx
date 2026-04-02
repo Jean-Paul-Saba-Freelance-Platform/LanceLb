@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react'
 import { useNavigate, useParams, useLocation } from 'react-router-dom'
-import { motion } from 'framer-motion'
+import { motion } from 'motion/react'
 import FollowButton from '../src/components/FollowButton.jsx'
+import TopNav from '../src/components/TopNav.jsx'
 import './FreelancerClientProfilePage.css'
 
 const API_BASE = import.meta.env.VITE_API_BASE || 'http://127.0.0.1:4000'
@@ -58,8 +59,14 @@ const FreelancerClientProfilePage = () => {
     return currentUser?.userType === 'client' ? '/client/explore' : '/freelancer/explore'
   })()
 
+  const currentUser = (() => {
+    try { return JSON.parse(localStorage.getItem('user') || '{}') } catch { return {} }
+  })()
+  const currentUserName = currentUser?.name || currentUser?.firstName || 'Freelancer'
+
   return (
     <div className="fcp-page">
+      <TopNav userName={currentUserName} />
       <div className="fcp-container">
         <button className="fcp-back" onClick={() => navigate(backRoute)}>
           ← Back
@@ -105,12 +112,14 @@ const FreelancerClientProfilePage = () => {
                   <span className="fcp-badge fcp-badge--type">Client</span>
                 </div>
                 {/* Follower / Following counts */}
-                <div style={{ display: 'flex', gap: '16px', marginTop: '6px' }}>
-                  <span style={{ fontSize: '0.82rem', color: '#94a3b8' }}>
-                    <strong style={{ color: '#f3f4f6' }}>{client.followersCount ?? 0}</strong> followers
+                <div className="fcp-follow-counts">
+                  <span className="fcp-follow-item">
+                    <strong className="fcp-follow-num">{client.followersCount ?? 0}</strong>
+                    <span className="fcp-follow-label">followers</span>
                   </span>
-                  <span style={{ fontSize: '0.82rem', color: '#94a3b8' }}>
-                    <strong style={{ color: '#f3f4f6' }}>{client.followingCount ?? 0}</strong> following
+                  <span className="fcp-follow-item">
+                    <strong className="fcp-follow-num">{client.followingCount ?? 0}</strong>
+                    <span className="fcp-follow-label">following</span>
                   </span>
                 </div>
               </div>

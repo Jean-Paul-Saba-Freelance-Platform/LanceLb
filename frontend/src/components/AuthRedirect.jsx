@@ -20,6 +20,10 @@ const AuthRedirect = ({ children }) => {
 
   // Both user object and token must exist to be considered logged in
   if (user && token) {
+    // Unverified users should go to OTP, not the dashboard
+    if (!user.isAccountVerified) {
+      return <Navigate to="/verify-otp" replace />
+    }
     const destination =
       user.userType === 'client' ? '/client/home' : '/freelancer/home'
     return <Navigate to={destination} replace />

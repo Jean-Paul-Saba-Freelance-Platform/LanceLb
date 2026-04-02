@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react'
 import { useNavigate, useParams, useLocation } from 'react-router-dom'
-import { motion } from 'framer-motion'
+import { motion } from 'motion/react'
 import FollowButton from '../src/components/FollowButton.jsx'
+import TopNav from '../src/components/TopNav.jsx'
 import './ClientFreelancerProfilePage.css'
 
 const API_BASE = import.meta.env.VITE_API_BASE || 'http://127.0.0.1:4000'
@@ -57,8 +58,14 @@ const FreelancerFreelancerProfilePage = () => {
 
   const backRoute = location.state?.backRoute || '/freelancer/explore'
 
+  const currentUser = (() => {
+    try { return JSON.parse(localStorage.getItem('user') || '{}') } catch { return {} }
+  })()
+  const currentUserName = currentUser?.name || currentUser?.firstName || 'Freelancer'
+
   return (
     <div className="cfp-page">
+      <TopNav userName={currentUserName} />
       <div className="cfp-container">
         <button className="cfp-back" onClick={() => navigate(backRoute)}>
           ← Back
@@ -112,12 +119,14 @@ const FreelancerFreelancerProfilePage = () => {
                   </span>
                 </div>
                 {/* Follower / Following counts */}
-                <div style={{ display: 'flex', gap: '16px', marginTop: '6px' }}>
-                  <span style={{ fontSize: '0.82rem', color: '#94a3b8' }}>
-                    <strong style={{ color: '#f3f4f6' }}>{freelancer.followersCount ?? 0}</strong> followers
+                <div className="cfp-follow-counts">
+                  <span className="cfp-follow-item">
+                    <strong className="cfp-follow-num">{freelancer.followersCount ?? 0}</strong>
+                    <span className="cfp-follow-label">followers</span>
                   </span>
-                  <span style={{ fontSize: '0.82rem', color: '#94a3b8' }}>
-                    <strong style={{ color: '#f3f4f6' }}>{freelancer.followingCount ?? 0}</strong> following
+                  <span className="cfp-follow-item">
+                    <strong className="cfp-follow-num">{freelancer.followingCount ?? 0}</strong>
+                    <span className="cfp-follow-label">following</span>
                   </span>
                 </div>
               </div>

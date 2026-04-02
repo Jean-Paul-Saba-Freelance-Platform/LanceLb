@@ -25,6 +25,9 @@ const FreelancerRoute = ({ children }) => {
     return <Navigate to="/login" replace />
   }
 
+  // Block unverified accounts from accessing protected routes
+  if (!user.isAccountVerified) return <Navigate to="/verify-otp" replace />
+
   // If user is not a freelancer (e.g. client), redirect to their home
   // Note: field is userType, not role — align with how ClientRoute and auth store it
   if (user.userType !== 'freelancer') {

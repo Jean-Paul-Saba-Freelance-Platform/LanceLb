@@ -1,11 +1,20 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { motion } from 'motion/react'
 import TopNav from '../src/components/TopNav.jsx'
 import JobCard from '../src/components/JobCard.jsx'
 import RightSidebarCard from '../src/components/RightSidebarCard.jsx'
 import './FreelancerHomePage.css'
 
 const API_BASE = import.meta.env.VITE_API_BASE || 'http://127.0.0.1:4000'
+
+const fadeUp = {
+  hidden: { opacity: 0, y: 20 },
+  visible: (i = 0) => ({
+    opacity: 1, y: 0,
+    transition: { duration: 0.45, ease: 'easeOut', delay: i * 0.06 }
+  })
+}
 
 const FreelancerHomePage = () => {
   const navigate = useNavigate()
@@ -14,14 +23,24 @@ const FreelancerHomePage = () => {
   const [loadingJobs, setLoadingJobs] = useState(true)
   const [activeTab, setActiveTab] = useState('bestMatches')
   const [searchQuery, setSearchQuery] = useState('')
-  const [profileProgress, setProfileProgress] = useState(40)
+  const [profileProgress, setProfileProgress] = useState(0)
   const [peopleToFollow, setPeopleToFollow] = useState([])
   const [followStates, setFollowStates] = useState({})
 
   useEffect(() => {
     try {
       const userStr = localStorage.getItem('user')
-      if (userStr) setUser(JSON.parse(userStr))
+      if (userStr) {
+        const u = JSON.parse(userStr)
+        setUser(u)
+        // Calculate real profile completeness
+        let score = 0
+        if (u.name || u.firstName) score += 25      // name always exists if registered
+        if (u.bio) score += 25
+        if (u.skills?.length > 0) score += 25
+        if (u.title) score += 25
+        setProfileProgress(score)
+      }
     } catch (error) {
       console.error('Error loading user:', error)
     }
@@ -175,56 +194,41 @@ const FreelancerHomePage = () => {
         {/* Main Content */}
         <div className="freelancer-main-content">
           {/* Greeting Card */}
-          <div className="greeting-card">
+          <motion.div className="greeting-card" variants={fadeUp} initial="hidden" animate="visible" custom={0}>
             <div className="greeting-content">
               <div className="greeting-date">{getCurrentDate()}</div>
               <h2 className="greeting-text">{getGreeting()}, {userName}.</h2>
             </div>
-            <div className="greeting-illustration">
-              <div className="illustration-placeholder">
-                <svg width="80" height="80" viewBox="0 0 100 100" fill="none">
-                  <circle cx="50" cy="50" r="40" fill="#00a884" opacity="0.2"/>
-                  <path d="M30 50 L45 65 L70 35" stroke="#00a884" strokeWidth="4" strokeLinecap="round"/>
-                </svg>
-              </div>
-            </div>
-          </div>
-
-          {/* Search Bar */}
-          <div className="jobs-search-bar">
-            <input
-              type="text"
-              placeholder="Search for jobs"
-              className="jobs-search-input"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
-          </div>
+          </motion.div>
 
           {/* Section Title */}
-          <h2 className="section-title">Jobs you might like</h2>
+          <motion.h2 className="section-title" variants={fadeUp} initial="hidden" animate="visible" custom={2}>
+            Jobs you might like
+          </motion.h2>
 
           {/* Tabs */}
-          <div className="jobs-tabs">
-            <button
-              className={`tab-button ${activeTab === 'bestMatches' ? 'active' : ''}`}
-              onClick={() => setActiveTab('bestMatches')}
-            >
-              Best Matches
-            </button>
-            <button
-              className={`tab-button ${activeTab === 'recent' ? 'active' : ''}`}
-              onClick={() => setActiveTab('recent')}
-            >
-              Most Recent
-            </button>
-            <button
-              className={`tab-button ${activeTab === 'saved' ? 'active' : ''}`}
-              onClick={() => setActiveTab('saved')}
-            >
-              Saved Jobs
-            </button>
-          </div>
+          <motion.div className="jobs-tabs-wrap" variants={fadeUp} initial="hidden" animate="visible" custom={3}>
+            <div className="jobs-tabs">
+              <button
+                className={`tab-button ${activeTab === 'bestMatches' ? 'active' : ''}`}
+                onClick={() => setActiveTab('bestMatches')}
+              >
+                Best Matches
+              </button>
+              <button
+                className={`tab-button ${activeTab === 'recent' ? 'active' : ''}`}
+                onClick={() => setActiveTab('recent')}
+              >
+                Most Recent
+              </button>
+              <button
+                className={`tab-button ${activeTab === 'saved' ? 'active' : ''}`}
+                onClick={() => setActiveTab('saved')}
+              >
+                Saved Jobs
+              </button>
+            </div>
+          </motion.div>
 
           {/* Jobs Feed */}
           <div className="jobs-feed">
@@ -244,80 +248,55 @@ const FreelancerHomePage = () => {
               </div>
             )}
           </div>
-        </div>
 
-        {/* Right Sidebar */}
-        <div className="freelancer-sidebar">
-          {/* People You May Know Card */}
-          <RightSidebarCard title="People You May Know">
-            {peopleToFollow.length === 0 ? (
-              <p className="sidebar-text">No suggestions right now.</p>
-            ) : (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+          {/* People You May Know */}
+          {peopleToFollow.length > 0 && (
+            <div className="fh-people-section">
+              <h2 className="section-title">People You May Know</h2>
+              <div className="fh-people-grid">
                 {peopleToFollow.map((person) => (
-                  <div key={person._id} style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                    <div style={{
-                      width: '36px', height: '36px', borderRadius: '50%',
-                      background: '#00a884', color: 'white', display: 'flex',
-                      alignItems: 'center', justifyContent: 'center',
-                      fontWeight: '600', fontSize: '0.9rem', flexShrink: 0
-                    }}>
+                  <div key={person._id} className="fh-person-card">
+                    <div className="fh-person-avatar">
                       {(person.name || '?').charAt(0).toUpperCase()}
                     </div>
-                    <div style={{ flex: 1, minWidth: 0 }}>
-                      <div style={{ fontSize: '0.85rem', fontWeight: '600', color: '#f3f4f6',
-                        whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                        {person.name}
-                      </div>
-                      <div style={{ fontSize: '0.75rem', color: '#94a3b8' }}>
-                        {person.title || person.userType}
-                      </div>
-                    </div>
-                    <div style={{ display: 'flex', gap: '6px', flexShrink: 0 }}>
+                    <div className="fh-person-name">{person.name}</div>
+                    <div className="fh-person-role">{person.title || person.userType || 'Member'}</div>
+                    <div className="fh-person-actions">
                       <button
                         onClick={() => handleWidgetFollow(person._id)}
-                        style={{
-                          fontSize: '0.72rem', padding: '3px 8px',
-                          background: followStates[person._id] ? 'transparent' : '#00a884',
-                          color: followStates[person._id] ? '#94a3b8' : 'white',
-                          border: followStates[person._id] ? '1px solid rgba(255,255,255,0.15)' : 'none',
-                          borderRadius: '6px', cursor: 'pointer'
-                        }}
+                        className={`fh-person-follow-btn ${followStates[person._id] ? 'following' : 'active'}`}
                       >
                         {followStates[person._id] === 'accepted' ? 'Following'
                           : followStates[person._id] === 'requested' ? 'Requested'
                           : 'Follow'}
                       </button>
                       <button
-                        onClick={() => {
-                          const path = user?.userType === 'client'
-                            ? `/client/freelancer-profile/${person._id}`
-                            : `/freelancer/freelancer-profile/${person._id}`
-                          navigate(path, { state: { backRoute: '/freelancer/home' } })
-                        }}
-                        style={{
-                          fontSize: '0.72rem', padding: '3px 8px', background: 'transparent',
-                          color: '#00a884', border: '1px solid #00a884', borderRadius: '6px',
-                          cursor: 'pointer'
-                        }}
+                        onClick={() => navigate(
+                          `/freelancer/freelancer-profile/${person._id}`,
+                          { state: { backRoute: '/freelancer/home' } }
+                        )}
+                        className="fh-person-view-btn"
                       >
-                        View
+                        View Profile
                       </button>
                     </div>
                   </div>
                 ))}
-                <button
-                  onClick={() => window.location.href = '/freelancer/explore'}
-                  style={{ fontSize: '0.8rem', color: '#00a884', background: 'none',
-                    border: 'none', cursor: 'pointer', textAlign: 'left', padding: 0,
-                    marginTop: '4px' }}
-                >
-                  See all →
-                </button>
+                <div className="fh-people-see-all-wrap">
+                  <button
+                    className="fh-people-see-all"
+                    onClick={() => navigate('/freelancer/explore')}
+                  >
+                    See all →
+                  </button>
+                </div>
               </div>
-            )}
-          </RightSidebarCard>
+            </div>
+          )}
+        </div>
 
+        {/* Right Sidebar */}
+        <div className="freelancer-sidebar">
           {/* Profile Strength Card */}
           <RightSidebarCard title="Profile Strength">
             <div className="profile-progress-content">
@@ -345,50 +324,43 @@ const FreelancerHomePage = () => {
             </div>
           </RightSidebarCard>
 
-          {/* Trust & Safety Card */}
-          <RightSidebarCard title="Trust & Safety">
-            <p className="sidebar-text">Add verification steps to increase trust.</p>
-            <button className="sidebar-button-primary">Verify account</button>
-          </RightSidebarCard>
-
-          {/* Promote with Ads Card */}
-          <RightSidebarCard title="Promote with ads" collapsible={true} defaultExpanded={true}>
-            <div className="promote-options">
-              <div className="promote-option">
-                <div className="promote-option-content">
-                  <span className="promote-option-label">Availability badge</span>
-                  <span className="promote-option-desc">Show clients you're available</span>
+          {/* Complete Your Profile Card */}
+          <RightSidebarCard title="Complete Your Profile">
+            <div className="complete-profile-card">
+              <div className="complete-profile-checklist">
+                <div className="complete-profile-item">
+                  <div className={`complete-profile-check ${user?.bio ? 'done' : ''}`}>
+                    {user?.bio ? '✓' : ''}
+                  </div>
+                  <span className={`complete-profile-label ${user?.bio ? 'done' : ''}`}>
+                    Add a bio
+                  </span>
                 </div>
-                <label className="toggle-switch">
-                  <input type="checkbox" />
-                  <span className="toggle-slider"></span>
-                </label>
-              </div>
-              <div className="promote-option">
-                <div className="promote-option-content">
-                  <span className="promote-option-label">Boost your profile</span>
-                  <span className="promote-option-desc">Get more visibility</span>
+                <div className="complete-profile-item">
+                  <div className={`complete-profile-check ${user?.skills?.length > 0 ? 'done' : ''}`}>
+                    {user?.skills?.length > 0 ? '✓' : ''}
+                  </div>
+                  <span className={`complete-profile-label ${user?.skills?.length > 0 ? 'done' : ''}`}>
+                    Add your skills
+                  </span>
                 </div>
-                <label className="toggle-switch">
-                  <input type="checkbox" />
-                  <span className="toggle-slider"></span>
-                </label>
+                <div className="complete-profile-item">
+                  <div className={`complete-profile-check ${user?.title ? 'done' : ''}`}>
+                    {user?.title ? '✓' : ''}
+                  </div>
+                  <span className={`complete-profile-label ${user?.title ? 'done' : ''}`}>
+                    Set your title
+                  </span>
+                </div>
               </div>
+              <button
+                className="sidebar-button-primary"
+                onClick={() => navigate('/freelancer/profile')}
+                style={{ marginTop: '0.75rem' }}
+              >
+                Go to profile
+              </button>
             </div>
-          </RightSidebarCard>
-
-          {/* Credits Card */}
-          <RightSidebarCard title="Credits">
-            <div className="credits-content">
-              <div className="credits-amount">Credits: 0</div>
-              <button className="sidebar-button-primary">Get Credits</button>
-              <a href="#" className="sidebar-link">Learn more</a>
-            </div>
-          </RightSidebarCard>
-
-          {/* Preferences Card */}
-          <RightSidebarCard title="Preferences" collapsible={true} defaultExpanded={false}>
-            <p className="sidebar-text">Manage your job preferences, notifications, and account settings.</p>
           </RightSidebarCard>
         </div>
       </div>

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { motion } from 'motion/react'
 import TopNav from '../src/components/TopNav.jsx'
 import './FreelancerProposalsPage.css'
 
@@ -93,6 +94,14 @@ const FreelancerProposalsPage = () => {
   const formatDate = (d) =>
     new Date(d).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
 
+  const fadeUp = {
+    hidden: { opacity: 0, y: 20 },
+    visible: (i = 0) => ({
+      opacity: 1, y: 0,
+      transition: { duration: 0.45, ease: 'easeOut', delay: i * 0.06 }
+    })
+  }
+
   if (loading) {
     return (
       <div className="prop-page">
@@ -109,12 +118,12 @@ const FreelancerProposalsPage = () => {
       <TopNav userName={getUserName()} />
       <div className="prop-container">
 
-        <div className="prop-header">
+        <motion.div className="prop-header" variants={fadeUp} initial="hidden" animate="visible" custom={0}>
           <h1 className="prop-title">My Proposals</h1>
           <span className="prop-count">
             {applications.length} proposal{applications.length !== 1 ? 's' : ''}
           </span>
-        </div>
+        </motion.div>
 
         {error && <p className="prop-error">{error}</p>}
 
@@ -127,12 +136,20 @@ const FreelancerProposalsPage = () => {
           </div>
         ) : (
           <div className="prop-list">
-            {applications.map((app) => {
+            {applications.map((app, index) => {
               const job        = app.jobId || {}
               const isExpanded = expandedId === app._id
 
               return (
-                <div key={app._id} className="prop-card">
+                <motion.div
+                  key={app._id}
+                  className="prop-card"
+                  variants={fadeUp}
+                  initial="hidden"
+                  animate="visible"
+                  custom={index + 1}
+                  whileHover={{ y: -2, transition: { duration: 0.2 } }}
+                >
                   <div
                     className="prop-card-header"
                     onClick={() => setExpandedId(isExpanded ? null : app._id)}
@@ -144,20 +161,57 @@ const FreelancerProposalsPage = () => {
                       </div>
                     </div>
                     <div className="prop-card-right">
+                      {/* AI Fit Score badge */}
+                      <div className="prop-score-group">
+                        <span className="prop-score-label">AI</span>
+                        {app.aiScore != null ? (
+                          <div
+                            className="prop-ai-badge"
+                            title={`AI Fit Score: ${app.aiScore}/100`}
+                            style={{ '--ai-color': atsColor(app.aiScore) }}
+                          >
+                            <svg viewBox="0 0 36 36" className="prop-ai-ring">
+                              <circle cx="18" cy="18" r="14" fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth="3" />
+                              <circle
+                                cx="18" cy="18" r="14"
+                                fill="none"
+                                stroke={atsColor(app.aiScore)}
+                                strokeWidth="3"
+                                strokeLinecap="round"
+                                strokeDasharray={`${(app.aiScore / 100) * 87.96} 87.96`}
+                                transform="rotate(-90 18 18)"
+                              />
+                            </svg>
+                            <span className="prop-ai-number" style={{ color: atsColor(app.aiScore) }}>
+                              {app.aiScore}
+                            </span>
+                          </div>
+                        ) : (
+                          <div className="prop-ai-badge prop-ai-none" title="AI score pending">
+                            <svg viewBox="0 0 36 36" className="prop-ai-ring">
+                              <circle cx="18" cy="18" r="14" fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth="3" />
+                            </svg>
+                            <span className="prop-ai-number" style={{ color: 'rgba(255,255,255,0.25)' }}>?</span>
+                          </div>
+                        )}
+                      </div>
                       {/* ATS Score badge */}
-                      {app.atsScore != null ? (
-                        <div
-                          className="prop-ats-badge"
-                          title={`ATS Score: ${app.atsScore}/100`}
-                          style={{ '--ats-color': atsColor(app.atsScore) }}
-                        >
-                          <span style={{ color: atsColor(app.atsScore) }}>{app.atsScore}</span>
-                        </div>
-                      ) : (
-                        <div className="prop-ats-badge prop-ats-none" title="No CV uploaded">
-                          <span>-</span>
-                        </div>
-                      )}
+                      <div className="prop-score-group">
+                        <span className="prop-score-label">ATS</span>
+                        {app.atsScore != null ? (
+                          <div
+                            className="prop-ats-badge"
+                            title={`ATS Score: ${app.atsScore}/100`}
+                            style={{ '--ats-color': atsColor(app.atsScore) }}
+                          >
+                            <span style={{ color: atsColor(app.atsScore) }}>{app.atsScore}</span>
+                          </div>
+                        ) : (
+                          <div className="prop-ats-badge prop-ats-none" title="No CV uploaded">
+                            <span>-</span>
+                          </div>
+                        )}
+                      </div>
                       <span className={statusBadgeClass(app.status)}>{app.status}</span>
                       <span className={`prop-expand-icon ${isExpanded ? 'open' : ''}`}>▾</span>
                     </div>
@@ -280,7 +334,7 @@ const FreelancerProposalsPage = () => {
                       )}
                     </div>
                   )}
-                </div>
+                </motion.div>
               )
             })}
           </div>

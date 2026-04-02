@@ -30,6 +30,9 @@ const ClientRoute = ({ children }) => {
     return <Navigate to="/login" replace />
   }
 
+  // Block unverified accounts from accessing protected routes
+  if (!user.isAccountVerified) return <Navigate to="/verify-otp" replace />
+
   // If user is not a client, redirect to freelancer home
   if (user.userType !== 'client') {
     return <Navigate to="/freelancer/home" replace />
