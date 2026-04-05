@@ -36,4 +36,5 @@ screenshots/
 .screenshot-auth.json
 
 # Hugging Face space (local git repo, not a submodule)
-hf-ats-space/
+hf-ats-space/__pycache__/
+*.pyc
