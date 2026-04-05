@@ -37,4 +37,5 @@ screenshots/
 
 # Hugging Face space (local git repo, not a submodule)
 hf-ats-space/__pycache__/
+**/__pycache__/
 *.pyc
