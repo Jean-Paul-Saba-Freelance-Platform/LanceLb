@@ -1269,3 +1269,12 @@
 }
 
 [data-theme="light"] .ats-tip-item { color: #374151; }
+
+.ats-job-match { margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(255,255,255,0.08); }
+.ats-job-match-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem; }
+.ats-job-match-label { font-size: 0.78rem; font-weight: 700; color: rgba(255,255,255,0.5); text-transform: uppercase; letter-spacing: 0.06em; }
+.ats-job-match-score { font-size: 1rem; font-weight: 800; }
+.ats-match-row { margin-top: 0.25rem; }
+.ats-match-tag { font-size: 0.75rem; line-height: 1.5; display: block; }
+.ats-match-tag--hit { color: #10b981; }
+.ats-match-tag--miss { color: #fbbf24; }

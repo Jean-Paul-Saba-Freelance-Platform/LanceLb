@@ -724,7 +724,7 @@ const JobCard = ({ job }) => {
                         {jobMatchScore != null && (
                           <div className="ats-job-match">
                             <div className="ats-job-match-header">
-                              <span className="ats-job-match-label">Job Match</span>
+                              <span className="ats-job-match-label">CV-JOB FIT</span>
                               <span className="ats-job-match-score" style={{ color: scoreColor(jobMatchScore) }}>
                                 {jobMatchScore}%
                               </span>
@@ -734,9 +734,9 @@ const JobCard = ({ job }) => {
                                 <span className="ats-match-tag ats-match-tag--hit">✓ Matched: {matchedKeywords.slice(0, 5).join(', ')}</span>
                               </div>
                             )}
-                            {missingKeywords.length > 0 && (
+                            {missingKeywords.filter(k => k.length > 5).length > 0 && (
                               <div className="ats-match-row">
-                                <span className="ats-match-tag ats-match-tag--miss">+ Consider adding: {missingKeywords.slice(0, 3).join(', ')}</span>
+                                <span className="ats-match-tag ats-match-tag--miss">+ Consider adding: {missingKeywords.filter(k => k.length > 5).slice(0, 3).join(', ')}</span>
                               </div>
                             )}
                           </div>
