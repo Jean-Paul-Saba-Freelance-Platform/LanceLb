@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion } from 'motion/react'
 import TopNav from '../src/components/TopNav.jsx'
@@ -21,6 +21,8 @@ const FreelancerHomePage = () => {
   const [user, setUser] = useState(null)
   const [jobs, setJobs] = useState([])
   const [loadingJobs, setLoadingJobs] = useState(true)
+  const [bestMatches, setBestMatches] = useState([])
+  const [loadingBestMatches, setLoadingBestMatches] = useState(false)
   const [activeTab, setActiveTab] = useState('bestMatches')
   const [searchQuery, setSearchQuery] = useState('')
   const [profileProgress, setProfileProgress] = useState(0)
@@ -62,6 +64,40 @@ const FreelancerHomePage = () => {
     }
     fetchJobs()
   }, [])
+
+  const hasFetchedBestMatches = useRef(false);
+
+  useEffect(() => {
+    if (activeTab !== 'bestMatches') return;
+    if (hasFetchedBestMatches.current) return;
+
+    hasFetchedBestMatches.current = true;
+
+    const fetchBestMatches = async () => {
+      setLoadingBestMatches(true);
+      try {
+        const token = localStorage.getItem('token');
+        const res = await fetch('/api/client/jobs/best-matches', {
+          method: 'GET',
+          credentials: 'include',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+        });
+        const data = await res.json();
+        if (data.success) {
+          setBestMatches(data.data);
+        }
+      } catch (err) {
+        console.error('Best matches fetch error:', err);
+      } finally {
+        setLoadingBestMatches(false);
+      }
+    };
+
+    fetchBestMatches();
+  }, [activeTab]);
 
   useEffect(() => {
     const fetchSuggestedPeople = async () => {
@@ -232,7 +268,36 @@ const FreelancerHomePage = () => {
 
           {/* Jobs Feed */}
           <div className="jobs-feed">
-            {loadingJobs ? (
+            {activeTab === 'bestMatches' ? (
+              loadingBestMatches ? (
+                renderSkeletonCards()
+              ) : bestMatches.length > 0 ? (
+                bestMatches.map(job => (
+                  <div key={job._id} style={{ position: 'relative' }}>
+                    <div style={{
+                      position: 'absolute',
+                      top: '1rem',
+                      right: '1rem',
+                      background: 'linear-gradient(135deg, #3eb591, #2d9b7a)',
+                      color: 'white',
+                      borderRadius: '20px',
+                      padding: '0.25rem 0.75rem',
+                      fontSize: '0.78rem',
+                      fontWeight: '700',
+                      zIndex: 2,
+                      boxShadow: '0 2px 8px rgba(62,181,145,0.4)',
+                    }}>
+                      {job.matchScore}% Match
+                    </div>
+                    <JobCard job={formatJob(job)} />
+                  </div>
+                ))
+              ) : (
+                <div className="no-jobs-message">
+                  <p>No matches found. Complete your profile with skills and a title to get better matches.</p>
+                </div>
+              )
+            ) : loadingJobs ? (
               renderSkeletonCards()
             ) : filteredJobs.length > 0 ? (
               filteredJobs.map(job => (

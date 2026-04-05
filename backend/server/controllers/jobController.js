@@ -18,6 +18,7 @@ import mongoose from 'mongoose';
 import Job from '../models/jobModel.js';
 import User from '../models/userModels.js';
 import Application from '../models/applicationModel.js';
+import fetch from 'node-fetch';
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -602,5 +603,57 @@ export const deleteClientJob = async (req, res) => {
             success: false,
             message: 'Server error while deleting job',
         });
+    }
+};
+
+// ---------------------------------------------------------------------------
+// GET  /api/jobs/best-matches  —  AI-ranked job matches for the logged-in freelancer
+// ---------------------------------------------------------------------------
+
+/** Fetches open jobs and asks the Flask AI service to rank them by fit for the freelancer. */
+export const getBestMatchJobs = async (req, res) => {
+    try {
+        const user = await User.findById(req.userId)
+            .select('skills title experienceLevel bio');
+
+        if (!user) {
+            return res.status(404).json({ success: false, message: 'User not found' });
+        }
+
+        const jobs = await Job.find({ status: 'open' })
+            .select('title description requiredSkills paymentType hourlyMin hourlyMax fixedBudget budget experienceLevel duration projectSize createdAt status')
+            .lean();
+
+        if (!jobs.length) {
+            return res.status(200).json({ success: true, data: [] });
+        }
+
+        const FLASK_URL = process.env.FLASK_URL || 'http://localhost:5001';
+
+        const flaskRes = await fetch(`${FLASK_URL}/match-jobs`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                freelancer: {
+                    skills: user.skills || [],
+                    title: user.title || '',
+                    experienceLevel: user.experienceLevel || 'entry',
+                    bio: user.bio || '',
+                },
+                jobs,
+            }),
+        });
+
+        if (!flaskRes.ok) {
+            throw new Error('Flask match-jobs service unavailable');
+        }
+
+        const { matches } = await flaskRes.json();
+
+        return res.status(200).json({ success: true, data: matches });
+
+    } catch (error) {
+        console.error('getBestMatchJobs error:', error.message);
+        return res.status(500).json({ success: false, message: 'Error fetching best matches' });
     }
 };

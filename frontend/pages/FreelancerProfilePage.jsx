@@ -10,180 +10,55 @@ import './FreelancerProfilePage.css'
 
 const API_BASE = import.meta.env.VITE_API_BASE || 'http://127.0.0.1:4000'
 
-const FreelancerProfilePage = () => {
-  const [user, setUser] = useState(null)
-  const [portfolioTab, setPortfolioTab] = useState('published')
-  const [availabilityBadge, setAvailabilityBadge] = useState(false)
-  const [boostProfile, setBoostProfile] = useState(false)
+// ─── ProfileContent at top level so React never remounts it on parent re-renders ───
 
-  const [editingProfile, setEditingProfile] = useState(false)
-  const [profileTitle, setProfileTitle] = useState('')
-  const [profileBio, setProfileBio] = useState('')
-  const [profileSkills, setProfileSkills] = useState([])
-  const [profileExperience, setProfileExperience] = useState('entry')
+const ProfileContent = ({
+  user,
+  userName,
+  userInitial,
+  currentTime,
+  availabilityBadge, setAvailabilityBadge,
+  boostProfile, setBoostProfile,
+  editingProfile, setEditingProfile,
+  savingProfile,
+  saveMessage,
+  onSaveProfile,
+  followersCount, followingCount,
+  portfolioTab, setPortfolioTab,
+  openFollowModal,
+}) => {
+  const [localTitle, setLocalTitle] = useState('')
+  const [localBio, setLocalBio] = useState('')
+  const [localExperience, setLocalExperience] = useState('entry')
+  const [localSkills, setLocalSkills] = useState([])
   const [newSkill, setNewSkill] = useState('')
-  const [savingProfile, setSavingProfile] = useState(false)
-  const [saveMessage, setSaveMessage] = useState('')
 
-  const [followersCount, setFollowersCount] = useState(0)
-  const [followingCount, setFollowingCount] = useState(0)
-  const [showFollowModal, setShowFollowModal] = useState(null) // null | 'followers' | 'following'
-  const [followList, setFollowList] = useState([])
-  const [followListLoading, setFollowListLoading] = useState(false)
-
+  // Sync local edit state from user data each time editing mode opens
   useEffect(() => {
-    const fetchProfile = async () => {
-      try {
-        const userStr = localStorage.getItem('user')
-        if (userStr) setUser(JSON.parse(userStr))
-
-        const token = localStorage.getItem('token')
-        if (!token) return
-
-        const res = await fetch(`${API_BASE}/api/auth/profile`, {
-          headers: { Authorization: `Bearer ${token}` },
-          credentials: 'include',
-        })
-        const data = await res.json()
-        if (data.success && data.user) {
-          setUser(data.user)
-          setProfileTitle(data.user.title || '')
-          setProfileBio(data.user.bio || '')
-          setProfileSkills(data.user.skills || [])
-          setProfileExperience(data.user.experienceLevel || 'entry')
-
-          const [followersRes, followingRes] = await Promise.all([
-            fetch(`${API_BASE}/api/follow/followers`, {
-              credentials: 'include',
-              headers: { Authorization: `Bearer ${token}` },
-            }),
-            fetch(`${API_BASE}/api/follow/following`, {
-              credentials: 'include',
-              headers: { Authorization: `Bearer ${token}` },
-            }),
-          ])
-          const followersData = await followersRes.json()
-          const followingData = await followingRes.json()
-          if (followersData.success) setFollowersCount(followersData.followers.length)
-          if (followingData.success) setFollowingCount(followingData.following.length)
-        }
-      } catch (error) {
-        console.error('Error loading profile:', error)
-      }
+    if (editingProfile) {
+      setLocalTitle(user?.title || '')
+      setLocalBio(user?.bio || '')
+      setLocalExperience(user?.experienceLevel || 'entry')
+      setLocalSkills(user?.skills || [])
+      setNewSkill('')
     }
-    fetchProfile()
-  }, [])
-
-  const handleSaveProfile = async () => {
-    setSavingProfile(true)
-    setSaveMessage('')
-    try {
-      const token = localStorage.getItem('token')
-      const res = await fetch(`${API_BASE}/api/auth/profile`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-        credentials: 'include',
-        body: JSON.stringify({
-          title: profileTitle,
-          bio: profileBio,
-          skills: profileSkills,
-          experienceLevel: profileExperience,
-        }),
-      })
-      const data = await res.json()
-      if (data.success) {
-        setUser(data.user)
-        setEditingProfile(false)
-        setSaveMessage('Profile saved!')
-        setTimeout(() => setSaveMessage(''), 3000)
-      } else {
-        setSaveMessage(data.message || 'Failed to save')
-      }
-    } catch (err) {
-      setSaveMessage('Network error')
-    } finally {
-      setSavingProfile(false)
-    }
-  }
+  }, [editingProfile])
 
   const addSkill = () => {
     const trimmed = newSkill.trim()
-    if (trimmed && !profileSkills.includes(trimmed)) {
-      setProfileSkills(prev => [...prev, trimmed])
+    if (trimmed && !localSkills.includes(trimmed)) {
+      setLocalSkills(prev => [...prev, trimmed])
     }
     setNewSkill('')
   }
 
   const removeSkill = (skillToRemove) => {
-    setProfileSkills(prev => prev.filter(s => s !== skillToRemove))
+    setLocalSkills(prev => prev.filter(s => s !== skillToRemove))
   }
-
-  // Unfollow a person directly from the modal list
-  const unfollowFromModal = async (personId) => {
-    try {
-      const token = localStorage.getItem('token')
-      const res = await fetch(`${API_BASE}/api/follow/${personId}`, {
-        method: 'DELETE',
-        credentials: 'include',
-        headers: { Authorization: `Bearer ${token}` },
-      })
-      const data = await res.json()
-      if (data.success) {
-        setFollowList(prev => prev.filter(p => p._id !== personId))
-        if (showFollowModal === 'following') {
-          setFollowingCount(prev => prev - 1)
-        } else {
-          setFollowersCount(prev => prev - 1)
-        }
-      }
-    } catch {}
-  }
-
-  // Open followers/following modal and load the list
-  const openFollowModal = async (type) => {
-    setShowFollowModal(type)
-    setFollowListLoading(true)
-    setFollowList([])
-    try {
-      const token = localStorage.getItem('token')
-      const res = await fetch(`${API_BASE}/api/follow/${type}`, {
-        credentials: 'include',
-        headers: { Authorization: `Bearer ${token}` },
-      })
-      const data = await res.json()
-      if (data.success) {
-        setFollowList(type === 'followers' ? data.followers : data.following)
-      }
-    } catch {}
-    setFollowListLoading(false)
-  }
-
-  const location = useLocation()
-  const fromSettings = new URLSearchParams(location.search).get('from') === 'settings'
-
-  const userName = user?.name || user?.firstName || 'Freelancer'
-  const userInitial = userName.charAt(0).toUpperCase()
-  const currentTime = new Date().toLocaleTimeString('en-US', {
-    hour: 'numeric',
-    minute: '2-digit',
-    hour12: true
-  })
 
   const skills = user?.skills?.length ? user.skills : []
 
-  const SETTINGS_NAV = [
-    { id: 'billing', label: 'Billing & Payments', icon: <CreditCard size={18} />, path: '/freelancer/settings?section=billing' },
-    { id: 'contact', label: 'Contact info', icon: <Mail size={18} />, path: '/freelancer/settings' },
-    { id: 'profile', label: 'My profile', icon: <User size={18} />, path: '/freelancer/profile?from=settings', active: true },
-    { id: 'password', label: 'Password & security', icon: <Shield size={18} />, path: '/freelancer/settings?section=password' },
-    { id: 'notifications', label: 'Notifications', icon: <Bell size={18} />, path: '/freelancer/settings?section=notifications' },
-    { id: 'location', label: 'Location', icon: <MapPin size={18} />, path: '/freelancer/settings?section=location' },
-  ]
-
-  const ProfileContent = () => (
+  return (
     <>
       {/* Top Profile Header */}
       <div className="profile-header fh-glass-card">
@@ -402,7 +277,7 @@ const FreelancerProfilePage = () => {
                   <button className="profile-cancel-btn fh-btn fh-btn-secondary" onClick={() => setEditingProfile(false)} disabled={savingProfile}>
                     Cancel
                   </button>
-                  <button className="profile-save-btn fh-btn fh-btn-primary" onClick={handleSaveProfile} disabled={savingProfile}>
+                  <button className="profile-save-btn fh-btn fh-btn-primary" onClick={() => onSaveProfile(localTitle, localBio, localSkills, localExperience)} disabled={savingProfile}>
                     <Save size={16} />
                     {savingProfile ? 'Saving...' : 'Save'}
                   </button>
@@ -416,8 +291,8 @@ const FreelancerProfilePage = () => {
                     type="text"
                     className="profile-edit-input"
                     placeholder="e.g., Full Stack Developer"
-                    value={profileTitle}
-                    onChange={(e) => setProfileTitle(e.target.value)}
+                    value={localTitle}
+                    onChange={(e) => setLocalTitle(e.target.value)}
                     maxLength={120}
                   />
                 </label>
@@ -426,8 +301,8 @@ const FreelancerProfilePage = () => {
                   <span className="profile-edit-label">Experience Level</span>
                   <select
                     className="profile-edit-input profile-edit-select"
-                    value={profileExperience}
-                    onChange={(e) => setProfileExperience(e.target.value)}
+                    value={localExperience}
+                    onChange={(e) => setLocalExperience(e.target.value)}
                   >
                     <option value="entry">Entry Level</option>
                     <option value="intermediate">Intermediate</option>
@@ -440,19 +315,19 @@ const FreelancerProfilePage = () => {
                   <textarea
                     className="profile-edit-input profile-edit-textarea"
                     placeholder="Tell clients about your experience and what you bring to the table..."
-                    value={profileBio}
-                    onChange={(e) => setProfileBio(e.target.value)}
+                    value={localBio}
+                    onChange={(e) => setLocalBio(e.target.value)}
                     maxLength={1000}
                     rows={5}
                   />
-                  <span className="profile-edit-hint">{profileBio.length}/1000</span>
+                  <span className="profile-edit-hint">{localBio.length}/1000</span>
                 </label>
 
                 <div className="profile-edit-field">
                   <span className="profile-edit-label">Skills</span>
                   <div className="profile-skills-editor">
                     <div className="profile-skills-tags">
-                      {profileSkills.map((skill, i) => (
+                      {localSkills.map((skill, i) => (
                         <span key={i} className="profile-skill-tag-editable">
                           {skill}
                           <button className="profile-skill-remove fh-icon-button" onClick={() => removeSkill(skill)} aria-label={`Remove ${skill}`}>
@@ -588,6 +463,174 @@ const FreelancerProfilePage = () => {
       </div>
     </>
   )
+}
+
+const FreelancerProfilePage = () => {
+  const [user, setUser] = useState(null)
+  const [portfolioTab, setPortfolioTab] = useState('published')
+  const [availabilityBadge, setAvailabilityBadge] = useState(false)
+  const [boostProfile, setBoostProfile] = useState(false)
+
+  const [editingProfile, setEditingProfile] = useState(false)
+  const [savingProfile, setSavingProfile] = useState(false)
+  const [saveMessage, setSaveMessage] = useState('')
+
+  const [followersCount, setFollowersCount] = useState(0)
+  const [followingCount, setFollowingCount] = useState(0)
+  const [showFollowModal, setShowFollowModal] = useState(null) // null | 'followers' | 'following'
+  const [followList, setFollowList] = useState([])
+  const [followListLoading, setFollowListLoading] = useState(false)
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const userStr = localStorage.getItem('user')
+        if (userStr) setUser(JSON.parse(userStr))
+
+        const token = localStorage.getItem('token')
+        if (!token) return
+
+        const res = await fetch(`${API_BASE}/api/auth/profile`, {
+          headers: { Authorization: `Bearer ${token}` },
+          credentials: 'include',
+        })
+        const data = await res.json()
+        if (data.success && data.user) {
+          setUser(data.user)
+
+          const [followersRes, followingRes] = await Promise.all([
+            fetch(`${API_BASE}/api/follow/followers`, {
+              credentials: 'include',
+              headers: { Authorization: `Bearer ${token}` },
+            }),
+            fetch(`${API_BASE}/api/follow/following`, {
+              credentials: 'include',
+              headers: { Authorization: `Bearer ${token}` },
+            }),
+          ])
+          const followersData = await followersRes.json()
+          const followingData = await followingRes.json()
+          if (followersData.success) setFollowersCount(followersData.followers.length)
+          if (followingData.success) setFollowingCount(followingData.following.length)
+        }
+      } catch (error) {
+        console.error('Error loading profile:', error)
+      }
+    }
+    fetchProfile()
+  }, [])
+
+  // Receives the edited values from ProfileContent's local state on save
+  const handleSaveProfile = async (title, bio, skills, experience) => {
+    setSavingProfile(true)
+    setSaveMessage('')
+    try {
+      const token = localStorage.getItem('token')
+      const res = await fetch(`${API_BASE}/api/auth/profile`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        credentials: 'include',
+        body: JSON.stringify({
+          title,
+          bio,
+          skills,
+          experienceLevel: experience,
+        }),
+      })
+      const data = await res.json()
+      if (data.success) {
+        setUser(data.user)
+        setEditingProfile(false)
+        setSaveMessage('Profile saved!')
+        setTimeout(() => setSaveMessage(''), 3000)
+      } else {
+        setSaveMessage(data.message || 'Failed to save')
+      }
+    } catch (err) {
+      setSaveMessage('Network error')
+    } finally {
+      setSavingProfile(false)
+    }
+  }
+
+  // Unfollow a person directly from the modal list
+  const unfollowFromModal = async (personId) => {
+    try {
+      const token = localStorage.getItem('token')
+      const res = await fetch(`${API_BASE}/api/follow/${personId}`, {
+        method: 'DELETE',
+        credentials: 'include',
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      const data = await res.json()
+      if (data.success) {
+        setFollowList(prev => prev.filter(p => p._id !== personId))
+        if (showFollowModal === 'following') {
+          setFollowingCount(prev => prev - 1)
+        } else {
+          setFollowersCount(prev => prev - 1)
+        }
+      }
+    } catch {}
+  }
+
+  // Open followers/following modal and load the list
+  const openFollowModal = async (type) => {
+    setShowFollowModal(type)
+    setFollowListLoading(true)
+    setFollowList([])
+    try {
+      const token = localStorage.getItem('token')
+      const res = await fetch(`${API_BASE}/api/follow/${type}`, {
+        credentials: 'include',
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      const data = await res.json()
+      if (data.success) {
+        setFollowList(type === 'followers' ? data.followers : data.following)
+      }
+    } catch {}
+    setFollowListLoading(false)
+  }
+
+  const location = useLocation()
+  const fromSettings = new URLSearchParams(location.search).get('from') === 'settings'
+
+  const userName = user?.name || user?.firstName || 'Freelancer'
+  const userInitial = userName.charAt(0).toUpperCase()
+  const currentTime = new Date().toLocaleTimeString('en-US', {
+    hour: 'numeric',
+    minute: '2-digit',
+    hour12: true
+  })
+
+  const SETTINGS_NAV = [
+    { id: 'billing', label: 'Billing & Payments', icon: <CreditCard size={18} />, path: '/freelancer/settings?section=billing' },
+    { id: 'contact', label: 'Contact info', icon: <Mail size={18} />, path: '/freelancer/settings' },
+    { id: 'profile', label: 'My profile', icon: <User size={18} />, path: '/freelancer/profile?from=settings', active: true },
+    { id: 'password', label: 'Password & security', icon: <Shield size={18} />, path: '/freelancer/settings?section=password' },
+    { id: 'notifications', label: 'Notifications', icon: <Bell size={18} />, path: '/freelancer/settings?section=notifications' },
+    { id: 'location', label: 'Location', icon: <MapPin size={18} />, path: '/freelancer/settings?section=location' },
+  ]
+
+  const profileContentProps = {
+    user,
+    userName,
+    userInitial,
+    currentTime,
+    availabilityBadge, setAvailabilityBadge,
+    boostProfile, setBoostProfile,
+    editingProfile, setEditingProfile,
+    savingProfile,
+    saveMessage,
+    onSaveProfile: handleSaveProfile,
+    followersCount, followingCount,
+    portfolioTab, setPortfolioTab,
+    openFollowModal,
+  }
 
   return (
     <div className="freelancer-profile-page">
@@ -628,13 +671,13 @@ const FreelancerProfilePage = () => {
               </nav>
             </div>
             <div className="fprofile-settings-content">
-              <ProfileContent />
+              <ProfileContent {...profileContentProps} />
             </div>
           </div>
         </div>
       ) : (
         <div className="profile-page-container">
-          <ProfileContent />
+          <ProfileContent {...profileContentProps} />
         </div>
       )}
 

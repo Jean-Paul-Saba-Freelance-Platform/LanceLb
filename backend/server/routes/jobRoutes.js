@@ -23,6 +23,7 @@ import {
     getClientJobs,
     updateClientJob,
     deleteClientJob,
+    getBestMatchJobs,
 } from '../controllers/jobController.js';
 import {userAuth,isVerified} from '../middleware/userAuth.js';
 
@@ -42,6 +43,7 @@ jobRouter.delete('/:jobId', userAuth, isVerified, deleteClientJob);
 
 // --- Public parameterised route (must come AFTER static segments) ---------
 
+jobRouter.get('/best-matches', userAuth, getBestMatchJobs);
 jobRouter.get('/:id', getJobById);
 
 export default jobRouter;
