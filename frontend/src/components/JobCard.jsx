@@ -435,7 +435,7 @@ const JobCard = ({ job }) => {
             </div>
 
             {/* AI Fit Score Panel */}
-            {!success && (
+            {!success && (fitLoading || fitError || !fitProfileComplete || fitScore != null || tipsSummary || detailedTips.length > 0 || tipsError) && (
               <div className="fit-score-panel">
                 {fitLoading ? (
                   <div className="fit-score-loading">
