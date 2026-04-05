@@ -203,6 +203,136 @@ POWER_KEYWORDS = [
     "csat", "nps", "workforce management",
 ]
 
+# ── Domain clusters for smarter keyword scoring ───────────────
+
+KEYWORD_DOMAINS = {
+    'tech': [
+        "python", "java", "javascript", "typescript", "c++", "c#",
+        "sql", "nosql", "mongodb", "postgresql", "mysql",
+        "react", "node", "express", "django", "flask", "spring",
+        "aws", "azure", "google cloud", "docker", "kubernetes",
+        "ci/cd", "devops", "git", "github", "rest api", "graphql",
+        "microservices", "cloud computing", "cybersecurity", "linux",
+        "machine learning", "deep learning", "data science", "nlp",
+        "tensorflow", "pytorch", "data analysis", "big data",
+        "tableau", "power bi", "excel", "api", "database",
+        "software development", "system design", "testing", "debugging",
+        "html", "css", "responsive design", "mobile development",
+    ],
+    'business': [
+        "project management", "stakeholder", "kpi", "roi", "revenue",
+        "budget", "forecasting", "strategic planning", "operations",
+        "risk management", "compliance", "process improvement",
+        "agile", "scrum", "kanban", "reporting", "cross functional",
+        "business development", "growth", "cost reduction",
+        "management consulting", "business analysis", "gap analysis",
+        "process mapping", "implementation", "client engagement",
+        "deliverables", "powerpoint", "data driven", "insights",
+        "recommendations", "frameworks", "best practices",
+    ],
+    'soft': [
+        "leadership", "communication", "teamwork", "problem solving",
+        "critical thinking", "time management", "adaptability",
+        "attention to detail", "collaboration", "interpersonal skills",
+        "self motivated", "strategic thinking", "negotiation",
+    ],
+    'finance': [
+        "financial analysis", "financial reporting", "accounting",
+        "auditing", "gaap", "ifrs", "investment", "portfolio management",
+        "risk assessment", "sap", "cost accounting", "reconciliation",
+    ],
+    'marketing': [
+        "digital marketing", "seo", "sem", "google analytics",
+        "social media", "content marketing", "email marketing",
+        "brand management", "campaign management", "copywriting",
+        "market research", "competitive analysis",
+    ],
+    'hr': [
+        "talent acquisition", "recruitment", "onboarding", "employee relations",
+        "performance appraisal", "compensation", "training",
+        "learning and development", "diversity", "inclusion",
+    ],
+    'design': [
+        "adobe photoshop", "illustrator", "figma", "sketch",
+        "ux", "ui", "user experience", "wireframing", "prototyping",
+        "branding", "graphic design",
+    ],
+    'general': [
+        "bachelor", "master", "degree", "certified", "certification",
+        "professional", "experienced", "qualified", "portfolio",
+        "volunteer", "internship", "years of experience",
+        "customer service", "sales", "crm", "b2b", "b2c",
+    ],
+}
+
+
+def score_keywords(text):
+    text_lower = text.lower()
+
+    # Find which domain the resume best matches
+    domain_hits = {}
+    for domain, keywords in KEYWORD_DOMAINS.items():
+        hits = [kw for kw in keywords if kw in text_lower]
+        domain_hits[domain] = hits
+
+    # Score: best domain coverage + general keywords + secondary domains
+    all_found = [kw for kw in POWER_KEYWORDS if kw in text_lower]
+
+    # Primary score: top domain hit ratio (max 15 pts)
+    best_domain = max(domain_hits, key=lambda d: len(domain_hits[d]))
+    best_hits   = len(domain_hits[best_domain])
+    best_size   = len(KEYWORD_DOMAINS[best_domain])
+    primary_ratio = best_hits / best_size if best_size else 0
+    primary_score = round(primary_ratio * 15)
+
+    # Secondary score: general + other domain hits (max 10 pts)
+    other_hits = sum(
+        len(hits) for domain, hits in domain_hits.items()
+        if domain != best_domain
+    )
+    secondary_score = min(other_hits, 10)
+
+    score = min(primary_score + secondary_score, 25)
+
+    # Feedback based on primary domain coverage
+    feedback = []
+    missing_from_domain = [
+        kw for kw in KEYWORD_DOMAINS[best_domain]
+        if kw not in text_lower
+    ]
+
+    if primary_ratio < 0.25:
+        feedback.append(
+            f"⚠️  Low keyword coverage in your main field ({best_hits}/{best_size} {best_domain} keywords). "
+            f"Consider adding: {', '.join(missing_from_domain[:5])}."
+        )
+    elif primary_ratio < 0.5:
+        feedback.append(
+            f"✅ Moderate keyword coverage ({best_hits}/{best_size} {best_domain} keywords detected). "
+            f"You could strengthen it with: {', '.join(missing_from_domain[:3])}."
+        )
+    else:
+        feedback.append(
+            f"✅ Strong keyword coverage ({best_hits}/{best_size} {best_domain} keywords found). "
+            f"Great job matching industry terminology!"
+        )
+
+    return score, feedback
+
+
+def score_readability(text):
+    try:
+        flesch = textstat.flesch_reading_ease(text)
+    except:
+        flesch = 50
+
+    # Resume bullet points naturally score 20-50 on Flesch due to
+    # technical terms and dense phrasing — adjust bands accordingly
+    if   flesch >= 50  : return 10, ["✅ Readability is excellent — clear and professional."]
+    elif flesch >= 30  : return  8, ["✅ Readability is good. Language is appropriately professional."]
+    elif flesch >= 10  : return  5, ["⚠️  Readability is moderate. Consider simplifying some sentences."]
+    else               : return  3, ["❌ Readability is poor. Use shorter sentences and clearer language."]
+
 # ── In scorer.py — replace your ACTION_VERBS list with this ──
 
 ACTION_VERBS = [
@@ -357,40 +487,6 @@ def score_sections(text):
     return min(score, 25), feedback
 
 
-# ── In scorer.py — replace score_keywords() with this ────────
-
-def score_keywords(text):
-    text_lower = text.lower()
-    found      = [kw for kw in POWER_KEYWORDS if kw in text_lower]
-    missing    = [kw for kw in POWER_KEYWORDS if kw not in text_lower]
-    ratio      = len(found) / len(POWER_KEYWORDS)
-    score      = round(ratio * 25)
-
-    feedback = []
-    if ratio < 0.05:
-        feedback.append(
-            f" Very few ATS keywords detected ({len(found)}/{len(POWER_KEYWORDS)}). "
-            f"Add more industry-relevant terms to your resume."
-        )
-    elif ratio < 0.15:
-        feedback.append(
-            f"  Low keyword coverage ({len(found)}/{len(POWER_KEYWORDS)}). "
-            f"Consider adding: {', '.join(missing[:6])}."
-        )
-    elif ratio < 0.25:
-        feedback.append(
-            f" Moderate keyword coverage ({len(found)}/{len(POWER_KEYWORDS)} keywords found). "
-            f"You can still improve by adding: {', '.join(missing[:4])}."
-        )
-    else:
-        feedback.append(
-            f" Strong keyword coverage ({len(found)}/{len(POWER_KEYWORDS)} keywords found). "
-            f"Great job matching industry terminology!"
-        )
-
-    return min(score, 25), feedback
-
-
 def score_quantified_impact(text):
     patterns = [
         r'\b\d+\s*%',
@@ -454,18 +550,6 @@ def score_action_verbs(text):
         )
 
     return score, feedback
-
-
-def score_readability(text):
-    try:
-        flesch = textstat.flesch_reading_ease(text)
-    except:
-        flesch = 50
-
-    if   60 <= flesch <= 80 : return 10, ["✅ Readability is excellent — clear and professional."]
-    elif 40 <= flesch <  60 : return  7, ["⚠️  Readability is moderate. Simplify some sentences."]
-    elif 80 <  flesch <= 90 : return  7, ["⚠️  Text may be too simple. Add more technical depth."]
-    else                    : return  4, ["❌ Readability is poor. Use shorter sentences and clearer language."]
 
 
 def score_contact_info(text):
