@@ -729,9 +729,9 @@ const JobCard = ({ job }) => {
                                 {jobMatchScore}%
                               </span>
                             </div>
-                            {matchedKeywords.length > 0 && (
+                            {matchedKeywords.filter(k => k.length > 5 && !k.includes(' ')).length > 0 && (
                               <div className="ats-match-row">
-                                <span className="ats-match-tag ats-match-tag--hit">✓ Matched: {matchedKeywords.slice(0, 5).join(', ')}</span>
+                                <span className="ats-match-tag ats-match-tag--hit">✓ Matched: {matchedKeywords.filter(k => k.length > 5 && !k.includes(' ')).slice(0, 5).join(', ')}</span>
                               </div>
                             )}
                             {missingKeywords.filter(k => k.length > 5 && !k.includes(' ')).length > 0 && (
