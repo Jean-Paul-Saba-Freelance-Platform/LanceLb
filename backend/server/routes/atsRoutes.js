@@ -29,7 +29,8 @@ atsRouter.post('/evaluate', userAuth, upload.single('resume'), async (req, res) 
             return res.status(503).json({ success: false, message: 'ATS scoring service is currently unavailable.' });
         }
 
-        const result = await evaluateResumeWithFlask(req.file.buffer, req.file.originalname);
+        const jobDescription = req.body.job_description || '';
+        const result = await evaluateResumeWithFlask(req.file.buffer, req.file.originalname, jobDescription);
 
         return res.status(200).json({ success: true, ...result });
     } catch (error) {

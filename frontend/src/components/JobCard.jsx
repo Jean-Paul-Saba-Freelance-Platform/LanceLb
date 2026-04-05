@@ -72,6 +72,9 @@ const JobCard = ({ job }) => {
   const [atsResult, setAtsResult] = useState(null)
   const [atsLoading, setAtsLoading] = useState(false)
   const [atsError, setAtsError] = useState('')
+  const [jobMatchScore, setJobMatchScore] = useState(null)
+  const [matchedKeywords, setMatchedKeywords] = useState([])
+  const [missingKeywords, setMissingKeywords] = useState([])
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState('')
   const [success, setSuccess] = useState(false)
@@ -220,6 +223,9 @@ const JobCard = ({ job }) => {
     const token = localStorage.getItem('token')
     const formData = new FormData()
     formData.append('resume', file)
+    if (job.description) {
+      formData.append('job_description', job.description)
+    }
 
     try {
       const res = await fetch(`${API_BASE}/api/ats/evaluate`, {
@@ -231,6 +237,9 @@ const JobCard = ({ job }) => {
       const data = await res.json()
       if (res.ok && data.success) {
         setAtsResult(data)
+        setJobMatchScore(data.job_match_score ?? null)
+        setMatchedKeywords(data.matched_keywords || [])
+        setMissingKeywords(data.missing_keywords || [])
       } else {
         setAtsError(data.message || 'ATS scoring failed.')
       }
@@ -311,6 +320,9 @@ const JobCard = ({ job }) => {
     setAtsResult(null)
     setAtsLoading(false)
     setAtsError('')
+    setJobMatchScore(null)
+    setMatchedKeywords([])
+    setMissingKeywords([])
     setError('')
     setSuccess(false)
     setQuestions([])
@@ -684,14 +696,6 @@ const JobCard = ({ job }) => {
                                 {stripEmoji(atsResult.grade)}
                               </span>
                             )}
-                            <div className="ats-tags">
-                              {atsResult.predicted_category && (
-                                <span className="ats-tag ats-tag--category">{atsResult.predicted_category}</span>
-                              )}
-                              {atsResult.confidence && (
-                                <span className="ats-tag ats-tag--confidence">{atsResult.confidence}% confidence</span>
-                              )}
-                            </div>
                             {atsResult.breakdown && (
                               <div className="ats-breakdown">
                                 {Object.entries(atsResult.breakdown).map(([label, val]) => (
@@ -715,6 +719,26 @@ const JobCard = ({ job }) => {
                             {atsResult.feedback.map((tip, i) => (
                               <p key={i} className="ats-tip-item">{stripEmoji(tip)}</p>
                             ))}
+                          </div>
+                        )}
+                        {jobMatchScore != null && (
+                          <div className="ats-job-match">
+                            <div className="ats-job-match-header">
+                              <span className="ats-job-match-label">Job Match</span>
+                              <span className="ats-job-match-score" style={{ color: scoreColor(jobMatchScore) }}>
+                                {jobMatchScore}%
+                              </span>
+                            </div>
+                            {matchedKeywords.length > 0 && (
+                              <div className="ats-match-row">
+                                <span className="ats-match-tag ats-match-tag--hit">✓ Matched: {matchedKeywords.slice(0, 5).join(', ')}</span>
+                              </div>
+                            )}
+                            {missingKeywords.length > 0 && (
+                              <div className="ats-match-row">
+                                <span className="ats-match-tag ats-match-tag--miss">+ Consider adding: {missingKeywords.slice(0, 3).join(', ')}</span>
+                              </div>
+                            )}
                           </div>
                         )}
                       </div>

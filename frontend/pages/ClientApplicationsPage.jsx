@@ -6,6 +6,11 @@ import './ClientApplicationsPage.css'
 
 const API_BASE = import.meta.env.VITE_API_BASE || 'http://127.0.0.1:4000'
 
+function stripEmoji(str) {
+  if (!str) return str
+  return str.replace(/[\u{1F300}-\u{1FFFF}]|[\u{2600}-\u{27BF}]|[\u{2702}-\u{27B0}]|[\uFE00-\uFEFF]|●|•/gu, '').replace(/\s+/g, ' ').trim()
+}
+
 const DEFAULT_MESSAGES = {
   accepted: (jobTitle, freelancerName) =>
     `Hi ${freelancerName},\n\nWe're thrilled to let you know that your application for "${jobTitle}" has been accepted! We were impressed by your profile and look forward to working with you.\n\nWe'll be in touch shortly with next steps.\n\nBest regards`,
@@ -271,7 +276,7 @@ const ClientApplicationsPage = () => {
                     <div className="app-card-right">
                       {app.atsGrade && (
                         <div className="app-ats-grade-badge" style={{ '--ats-color': atsGradeColor(app.atsGrade) }}>
-                          <span className="app-ats-grade-val" style={{ color: atsGradeColor(app.atsGrade) }}>{app.atsGrade}</span>
+                          <span className="app-ats-grade-val" style={{ color: atsGradeColor(app.atsGrade) }}>{stripEmoji(app.atsGrade)}</span>
                         </div>
                       )}
                       {app.aiScore != null ? (
@@ -379,14 +384,14 @@ const ClientApplicationsPage = () => {
                               {app.atsScore}/100
                             </span>
                             <span className="app-ats-grade" style={{ color: atsGradeColor(app.atsGrade) }}>
-                              Grade {app.atsGrade}
+                              Grade {stripEmoji(app.atsGrade)}
                             </span>
                             {app.atsCategory && (
                               <span className="app-ats-category">{app.atsCategory}</span>
                             )}
                             {app.atsConfidence != null && (
                               <span className="app-ats-confidence">
-                                {Math.round(app.atsConfidence * 100)}% confidence
+                                {Math.round(app.atsConfidence)}% confidence
                               </span>
                             )}
                           </div>
