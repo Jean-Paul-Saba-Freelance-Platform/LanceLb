@@ -33,7 +33,7 @@ const connectDB = async () => {
         // A typical URI is mongodb+srv://<user>:<pass>@<cluster>/<database>?<options>
         // We look for the part between the last / and the first ?
         const dbNameMatch = mongoUri.match(/\/([^\/\?]+)(\?|$)/);
-        if (!dbNameMatch || dbNameMatch[1] === 'test') {
+        if (!dbNameMatch) {
             const baseUrl = mongoUri.split('?')[0].replace(/\/$/, '');
             const options = mongoUri.includes('?') ? '?' + mongoUri.split('?')[1] : '';
             connectionString = `${baseUrl}/freelance-project${options}`;

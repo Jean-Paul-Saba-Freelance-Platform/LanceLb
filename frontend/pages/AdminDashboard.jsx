@@ -7,6 +7,9 @@ import {
   Building2,
   BarChart2,
   ArrowLeft,
+  Clock,
+  ShieldCheck,
+  FolderOpen,
 } from 'lucide-react'
 import './AdminDashboard.css'
 
@@ -44,7 +47,7 @@ const AdminDashboard = () => {
   useEffect(() => {
     const fetchAll = async () => {
       try {
-        const token = localStorage.getItem('token')
+        const token = localStorage.getItem('adminToken')
         const headers = {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`,
@@ -81,6 +84,12 @@ const AdminDashboard = () => {
 
     fetchAll()
   }, [])
+
+  const adminToken = localStorage.getItem('adminToken')
+  if (!adminToken) {
+    navigate('/admin/login')
+    return null
+  }
 
   if (loading) {
     return (
@@ -136,6 +145,15 @@ const AdminDashboard = () => {
             <div className="adm-avatar">
               {(user?.name?.[0] || 'A').toUpperCase()}
             </div>
+            <button
+              className="adm-logout-btn"
+              onClick={() => {
+                localStorage.removeItem('adminToken')
+                navigate('/admin/login')
+              }}
+            >
+              Logout
+            </button>
           </div>
         </header>
 
@@ -168,6 +186,24 @@ const AdminDashboard = () => {
                 value={stats.totalApplications}
                 Icon={FileText}
                 accent="#a78bfa"
+              />
+              <KpiCard
+                label="Active Projects"
+                value={stats.activeProjects}
+                Icon={FolderOpen}
+                accent="#10b981"
+              />
+              <KpiCard
+                label="Pending Applications"
+                value={stats.pendingApplications}
+                Icon={Clock}
+                accent="#fbbf24"
+              />
+              <KpiCard
+                label="Verified Users"
+                value={stats.totalVerifiedUsers}
+                Icon={ShieldCheck}
+                accent="#3b82f6"
               />
             </div>
           </section>

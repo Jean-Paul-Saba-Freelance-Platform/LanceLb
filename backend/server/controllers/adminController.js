@@ -1,7 +1,27 @@
+import jwt from 'jsonwebtoken'
 import User from '../models/userModels.js'
 import Job from '../models/jobModel.js'
 import Application from '../models/applicationModel.js'
 import Project from '../models/projectModel.js'
+
+// Authenticates admin credentials and returns a signed JWT with isAdmin: true
+export const adminLogin = async (req, res) => {
+  try {
+    const { username, password } = req.body
+
+    console.log('ADMIN_USERNAME:', process.env.ADMIN_USERNAME, '| ADMIN_PASSWORD:', process.env.ADMIN_PASSWORD)
+
+    if (username !== process.env.ADMIN_USERNAME || password !== process.env.ADMIN_PASSWORD) {
+      return res.status(401).json({ success: false, message: 'Invalid admin credentials' })
+    }
+
+    const token = jwt.sign({ isAdmin: true }, process.env.ADMIN_JWT_SECRET, { expiresIn: '7d' })
+
+    return res.json({ success: true, token })
+  } catch (error) {
+    return res.status(500).json({ success: false, message: error.message })
+  }
+}
 
 // Returns platform-wide KPI counts in a single parallel query
 export const getStats = async (req, res) => {
@@ -14,6 +34,9 @@ export const getStats = async (req, res) => {
       totalApplications,
       totalProjects,
       hiredApplications,
+      pendingApplications,
+      totalVerifiedUsers,
+      activeProjects,
     ] = await Promise.all([
       User.countDocuments({ userType: 'freelancer' }),
       User.countDocuments({ userType: 'client' }),
@@ -22,6 +45,9 @@ export const getStats = async (req, res) => {
       Application.countDocuments(),
       Project.countDocuments(),
       Application.countDocuments({ status: 'accepted' }),
+      Application.countDocuments({ status: 'pending' }),
+      User.countDocuments({ isAccountVerified: true }),
+      Project.countDocuments({ status: 'active' }),
     ])
 
     return res.json({
@@ -34,6 +60,9 @@ export const getStats = async (req, res) => {
         totalApplications,
         totalProjects,
         hiredApplications,
+        pendingApplications,
+        totalVerifiedUsers,
+        activeProjects,
       },
     })
   } catch (error) {

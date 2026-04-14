@@ -703,6 +703,413 @@
 [data-theme="light"] .pd-task-due { color: rgba(0,0,0,0.35); }
 [data-theme="light"] .pd-check-btn { color: rgba(0,0,0,0.3); }
 
+/* ─── Deliveries ─── */
+
+.pd-delivery-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.pd-delivery-card {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.pd-delivery-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.pd-delivery-date {
+  font-size: 0.78rem;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.pd-delivery-badge {
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  border: 1px solid;
+}
+
+.pd-delivery-badge-pending {
+  background: rgba(251, 191, 36, 0.15);
+  color: #fbbf24;
+  border-color: rgba(251, 191, 36, 0.3);
+}
+
+.pd-delivery-badge-approved {
+  background: rgba(16, 185, 129, 0.15);
+  color: #10b981;
+  border-color: rgba(16, 185, 129, 0.3);
+}
+
+.pd-delivery-badge-revision_requested {
+  background: rgba(248, 113, 113, 0.15);
+  color: #f87171;
+  border-color: rgba(248, 113, 113, 0.3);
+}
+
+.pd-delivery-message {
+  font-size: 0.88rem;
+  color: rgba(255, 255, 255, 0.75);
+  margin: 0;
+  line-height: 1.55;
+}
+
+.pd-delivery-files {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.pd-delivery-file-link {
+  font-size: 0.78rem;
+  color: #4be2be;
+  background: rgba(0, 168, 132, 0.1);
+  border: 1px solid rgba(0, 168, 132, 0.2);
+  border-radius: 6px;
+  padding: 0.2rem 0.6rem;
+  text-decoration: none;
+  transition: background 0.15s;
+}
+.pd-delivery-file-link:hover { background: rgba(0, 168, 132, 0.2); }
+
+.pd-revision-note-box {
+  background: rgba(248, 113, 113, 0.08);
+  border: 1px solid rgba(248, 113, 113, 0.2);
+  border-radius: 8px;
+  padding: 0.75rem;
+  color: #f87171;
+  font-size: 0.85rem;
+  margin-top: 0.5rem;
+  line-height: 1.5;
+}
+
+.pd-delivery-actions {
+  display: flex;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+  padding-top: 0.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.pd-approve-btn {
+  padding: 0.45rem 1rem;
+  border-radius: 8px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  background: #10b981;
+  color: white;
+  border: none;
+  transition: opacity 0.15s;
+}
+.pd-approve-btn:hover:not(:disabled) { opacity: 0.85; }
+.pd-approve-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.pd-revision-btn {
+  padding: 0.45rem 1rem;
+  border-radius: 8px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  background: transparent;
+  color: #f87171;
+  border: 1px solid rgba(248, 113, 113, 0.4);
+  transition: background 0.15s, border-color 0.15s;
+}
+.pd-revision-btn:hover:not(:disabled) { background: rgba(248, 113, 113, 0.08); border-color: rgba(248, 113, 113, 0.6); }
+.pd-revision-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.pd-submit-delivery-btn {
+  margin-top: 1rem;
+  padding: 0.75rem 1.5rem;
+  border-radius: 10px;
+  font-size: 0.92rem;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  background: #3eb591;
+  color: #0e0c14;
+  border: none;
+  transition: opacity 0.15s;
+}
+.pd-submit-delivery-btn:hover { opacity: 0.88; }
+
+/* ─── File upload ─── */
+
+.pd-file-upload-area {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}
+
+.pd-file-upload-label {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.75rem 1rem;
+  border: 2px dashed rgba(255, 255, 255, 0.15);
+  border-radius: 10px;
+  color: #8696a0;
+  font-size: 0.88rem;
+  cursor: pointer;
+  transition: border-color 0.2s, color 0.2s;
+}
+
+.pd-file-upload-label:hover {
+  border-color: #3eb591;
+  color: #3eb591;
+}
+
+.pd-file-upload-icon {
+  font-size: 1.1rem;
+}
+
+.pd-file-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.pd-file-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  padding: 0.4rem 0.75rem;
+  font-size: 0.82rem;
+  color: #e9edef;
+}
+
+.pd-file-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.pd-file-remove {
+  background: transparent;
+  border: none;
+  color: #f87171;
+  font-size: 1.1rem;
+  cursor: pointer;
+  padding: 0 0.25rem;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.pd-file-remove:hover {
+  color: #ff4444;
+}
+
+/* ─── Modals ─── */
+
+.pd-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.pd-modal-card {
+  background: rgba(14, 12, 20, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 20px;
+  padding: 2rem;
+  width: 100%;
+  max-width: 480px;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.pd-modal-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #fff;
+  margin: 0;
+}
+
+.pd-modal-textarea {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 10px;
+  padding: 0.75rem 1rem;
+  color: #f3f4f6;
+  font-size: 0.9rem;
+  font-family: inherit;
+  min-height: 120px;
+  resize: vertical;
+  box-sizing: border-box;
+  transition: border-color 0.15s;
+}
+.pd-modal-textarea:focus { border-color: #3eb591; outline: none; }
+.pd-modal-textarea::placeholder { color: rgba(255, 255, 255, 0.3); }
+
+.pd-modal-error {
+  font-size: 0.85rem;
+  color: #f87171;
+  margin: 0;
+}
+
+.pd-modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.6rem;
+  padding-top: 0.25rem;
+}
+
+/* ─── Reviews ─── */
+
+.pd-review-card {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.pd-review-prompt {
+  font-size: 0.92rem;
+  color: #8696a0;
+  margin: 0;
+}
+
+.pd-stars-picker {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.pd-star-btn {
+  background: transparent;
+  border: none;
+  font-size: 2rem;
+  color: rgba(255, 255, 255, 0.15);
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+  transition: color 0.15s, transform 0.1s;
+}
+
+.pd-star-btn.active {
+  color: #fbbf24;
+}
+
+.pd-star-btn:hover {
+  transform: scale(1.2);
+}
+
+.pd-rating-label {
+  font-size: 0.85rem;
+  color: #fbbf24;
+  font-weight: 600;
+  margin-left: 0.5rem;
+}
+
+.pd-submit-review-btn {
+  background: #3eb591;
+  color: #0e0c14;
+  font-weight: 700;
+  border: none;
+  border-radius: 10px;
+  padding: 0.75rem 1.5rem;
+  font-size: 0.9rem;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background 0.2s;
+  align-self: flex-start;
+}
+
+.pd-submit-review-btn:hover:not(:disabled) {
+  background: #34c88a;
+}
+
+.pd-submit-review-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.pd-review-submitted {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  background: rgba(16, 185, 129, 0.08);
+  border: 1px solid rgba(16, 185, 129, 0.2);
+  border-radius: 14px;
+  padding: 1.25rem 1.5rem;
+}
+
+.pd-review-submitted-icon {
+  font-size: 1.25rem;
+  color: #10b981;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.pd-review-submitted-title {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #10b981;
+  margin: 0 0 0.4rem;
+}
+
+.pd-review-stars-display {
+  display: flex;
+  gap: 0.15rem;
+}
+
+.pd-star-display {
+  font-size: 1.1rem;
+  color: rgba(255, 255, 255, 0.15);
+}
+
+.pd-star-display.filled {
+  color: #fbbf24;
+}
+
+.pd-review-submitted-comment {
+  font-size: 0.85rem;
+  color: #8696a0;
+  margin: 0.4rem 0 0;
+  font-style: italic;
+}
+
+.pd-review-error {
+  color: #f87171;
+  font-size: 0.85rem;
+  margin: 0;
+}
+
 /* ─── Responsive ─── */
 
 @media (max-width: 640px) {

@@ -7,7 +7,7 @@
 .adm-shell {
   display: flex;
   min-height: 100vh;
-  background-color: #111B21;
+  background-color: #0e0c14;
   color: #e9edef;
   font-family: system-ui, -apple-system, sans-serif;
 }
@@ -19,8 +19,10 @@
   left: 0;
   width: 220px;
   height: 100vh;
-  background-color: #0d1418;
-  border-right: 1px solid #2a3942;
+  background: rgba(14, 12, 20, 0.85);
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
   display: flex;
   flex-direction: column;
   z-index: 100;
@@ -33,9 +35,9 @@
 
 .adm-sidebar-brand {
   display: block;
-  font-size: 1.1rem;
+  font-size: 1.2rem;
   font-weight: 700;
-  color: #e9edef;
+  color: #3eb591;
   letter-spacing: -0.01em;
 }
 
@@ -87,21 +89,22 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  padding: 1rem 1.25rem;
-  border-top: 1px solid #2a3942;
-  background: none;
-  border-left: none;
-  border-right: none;
-  border-bottom: none;
+  margin: 0 0.75rem 1rem;
+  padding: 0.6rem 1rem;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
   color: #8696a0;
   font-size: 0.85rem;
   cursor: pointer;
-  transition: color 0.15s;
+  transition: color 0.15s, border-color 0.15s, background 0.15s;
   text-align: left;
 }
 
 .adm-back-btn:hover {
   color: #e9edef;
+  border-color: rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.04);
 }
 
 /* ---- Body ---- */
@@ -111,13 +114,16 @@
   display: flex;
   flex-direction: column;
   min-width: 0;
+  background-color: #0e0c14;
 }
 
 /* ---- Top navbar ---- */
 .adm-topbar {
   height: 56px;
-  background-color: #1b2730;
-  border-bottom: 1px solid #2a3942;
+  background: rgba(14, 12, 20, 0.7);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -158,6 +164,22 @@
   flex-shrink: 0;
 }
 
+.adm-logout-btn {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #f87171;
+  background: rgba(248, 113, 113, 0.1);
+  border: 1px solid rgba(248, 113, 113, 0.25);
+  border-radius: 6px;
+  padding: 0.3rem 0.75rem;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+.adm-logout-btn:hover {
+  background: rgba(248, 113, 113, 0.2);
+  border-color: rgba(248, 113, 113, 0.5);
+}
+
 /* ---- Main content ---- */
 .adm-main {
   padding: 2rem;
@@ -170,19 +192,21 @@
 
 /* ---- Section ---- */
 .adm-section-title {
-  font-size: 0.78rem;
+  font-size: 0.72rem;
   font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.07em;
+  letter-spacing: 0.1em;
   color: #8696a0;
   margin: 0 0 1rem 0;
 }
 
 /* ---- Base card ---- */
 .adm-card {
-  background-color: #1b2730;
-  border: 1px solid #2a3942;
-  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 16px;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   padding: 1.5rem;
 }
 
@@ -251,9 +275,11 @@
 }
 
 .adm-kpi-card {
-  background-color: #1b2730;
-  border: 1px solid #2a3942;
-  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 16px;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   padding: 1.25rem;
   display: flex;
   flex-direction: column;
@@ -264,8 +290,8 @@
 }
 
 .adm-kpi-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 6px 24px color-mix(in srgb, var(--accent) 20%, transparent);
+  transform: translateY(-4px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
 }
 
 .adm-kpi-top {

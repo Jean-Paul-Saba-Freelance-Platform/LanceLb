@@ -164,6 +164,26 @@ const ProjectDetailPage = () => {
   const [starting, setStarting] = useState(false)
   const [startLaunchDate, setStartLaunchDate] = useState('')
 
+  // Review flow
+  const [myReview, setMyReview] = useState(null)
+  const [reviewRating, setReviewRating] = useState(0)
+  const [reviewComment, setReviewComment] = useState('')
+  const [reviewHover, setReviewHover] = useState(0)
+  const [submittingReview, setSubmittingReview] = useState(false)
+  const [reviewError, setReviewError] = useState('')
+  const [reviewSuccess, setReviewSuccess] = useState(false)
+
+  // Delivery flow
+  const [deliveries, setDeliveries] = useState([])
+  const [showDeliveryModal, setShowDeliveryModal] = useState(false)
+  const [deliveryMessage, setDeliveryMessage] = useState('')
+  const [deliveryFiles, setDeliveryFiles] = useState([])
+  const [submittingDelivery, setSubmittingDelivery] = useState(false)
+  const [deliveryError, setDeliveryError] = useState('')
+  const [revisionModalId, setRevisionModalId] = useState(null)
+  const [revisionNote, setRevisionNote] = useState('')
+  const [submittingAction, setSubmittingAction] = useState(false)
+
   const authHeaders = () => {
     const token = localStorage.getItem('token')
     return token ? { Authorization: `Bearer ${token}` } : {}
@@ -186,6 +206,15 @@ const ProjectDetailPage = () => {
       const data = await res.json()
       if (data.success) {
         setProject(data.project)
+        setDeliveries(data.project.deliveries || [])
+        try {
+          const reviewRes = await fetch(`${API_BASE}/api/reviews/project/${projectId}/mine`, {
+            headers: authHeaders(),
+            credentials: 'include',
+          })
+          const reviewData = await reviewRes.json()
+          if (reviewData.success) setMyReview(reviewData.review)
+        } catch {}
         setLaunchDateInput(
           data.project.launchDate
             ? new Date(data.project.launchDate).toISOString().slice(0, 10)
@@ -326,6 +355,106 @@ const ProjectDetailPage = () => {
       const data = await res.json()
       if (data.success) await fetchProject()
     } catch {}
+  }
+
+  // Submit a star review after project completion
+  const handleSubmitReview = async () => {
+    if (reviewRating === 0) return
+    setSubmittingReview(true)
+    setReviewError('')
+    try {
+      const res = await fetch(`${API_BASE}/api/reviews`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', ...authHeaders() },
+        credentials: 'include',
+        body: JSON.stringify({
+          projectId,
+          rating: reviewRating,
+          comment: reviewComment.trim(),
+        }),
+      })
+      const data = await res.json()
+      if (!data.success) throw new Error(data.message)
+      setMyReview(data.review)
+      setReviewSuccess(true)
+    } catch (err) {
+      setReviewError(err.message)
+    }
+    setSubmittingReview(false)
+  }
+
+  // Freelancer submits a delivery
+  const handleSubmitDelivery = async () => {
+    if (!deliveryMessage.trim()) return
+    setSubmittingDelivery(true)
+    setDeliveryError('')
+    try {
+      const res = await fetch(`${API_BASE}/api/projects/${projectId}/deliveries`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', ...authHeaders() },
+        credentials: 'include',
+        body: JSON.stringify({
+          message: deliveryMessage.trim(),
+          files: deliveryFiles,
+        }),
+      })
+      const data = await res.json()
+      if (!data.success) throw new Error(data.message)
+      setDeliveries((prev) => [...prev, data.delivery])
+      setShowDeliveryModal(false)
+      setDeliveryMessage('')
+      setDeliveryFiles([])
+    } catch (err) {
+      setDeliveryError(err.message)
+    }
+    setSubmittingDelivery(false)
+  }
+
+  // Client approves a delivery
+  const handleApproveDelivery = async (dId) => {
+    setSubmittingAction(true)
+    try {
+      const res = await fetch(`${API_BASE}/api/projects/${projectId}/deliveries/${dId}/approve`, {
+        method: 'PATCH',
+        headers: authHeaders(),
+        credentials: 'include',
+      })
+      const data = await res.json()
+      if (data.success) await fetchProject()
+    } catch {}
+    setSubmittingAction(false)
+  }
+
+  // Client requests revision on a delivery
+  const handleRequestRevision = async (dId) => {
+    setSubmittingAction(true)
+    try {
+      const res = await fetch(`${API_BASE}/api/projects/${projectId}/deliveries/${dId}/revision`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json', ...authHeaders() },
+        credentials: 'include',
+        body: JSON.stringify({ revisionNote }),
+      })
+      const data = await res.json()
+      if (data.success) {
+        await fetchProject()
+        setRevisionModalId(null)
+        setRevisionNote('')
+      }
+    } catch {}
+    setSubmittingAction(false)
+  }
+
+  // Handle file input — convert to base64
+  const handleFileChange = (e) => {
+    const files = Array.from(e.target.files)
+    files.forEach((file) => {
+      const reader = new FileReader()
+      reader.onload = (ev) => {
+        setDeliveryFiles((prev) => [...prev, { name: file.name, url: ev.target.result }])
+      }
+      reader.readAsDataURL(file)
+    })
   }
 
   const taskStatus = (task) => {
@@ -642,7 +771,220 @@ const ProjectDetailPage = () => {
             </div>
           )}
         </div>
+        {/* Delivery history */}
+        <div className="pd-section">
+          <h2 className="pd-section-title">Delivery History</h2>
+
+          {deliveries.length === 0 ? (
+            <p className="pd-tasks-empty">No deliveries submitted yet.</p>
+          ) : (
+            <div className="pd-delivery-list">
+              {deliveries.map((d) => (
+                <div key={d._id} className="pd-delivery-card">
+                  <div className="pd-delivery-top">
+                    <span className="pd-delivery-date">{formatDate(d.createdAt)}</span>
+                    <span className={`pd-delivery-badge pd-delivery-badge-${d.status}`}>
+                      {d.status === 'pending' ? 'Pending Review' : d.status === 'approved' ? 'Approved' : 'Revision Requested'}
+                    </span>
+                  </div>
+
+                  {d.message && <p className="pd-delivery-message">{d.message}</p>}
+
+                  {d.files?.length > 0 && (
+                    <div className="pd-delivery-files">
+                      {d.files.map((f, i) => (
+                        <a key={i} href={f.url} download={f.name} className="pd-delivery-file-link">
+                          {f.name}
+                        </a>
+                      ))}
+                    </div>
+                  )}
+
+                  {d.status === 'revision_requested' && d.revisionNote && (
+                    <div className="pd-revision-note-box">{d.revisionNote}</div>
+                  )}
+
+                  {isClient && d.status === 'pending' && (
+                    <div className="pd-delivery-actions">
+                      <button
+                        className="pd-approve-btn"
+                        disabled={submittingAction}
+                        onClick={() => handleApproveDelivery(d._id)}
+                      >
+                        Approve
+                      </button>
+                      <button
+                        className="pd-revision-btn"
+                        disabled={submittingAction}
+                        onClick={() => setRevisionModalId(d._id)}
+                      >
+                        Request Revision
+                      </button>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
+
+          {!isClient && project.status === 'active' && (
+            <button className="pd-submit-delivery-btn" onClick={() => setShowDeliveryModal(true)}>
+              Submit Delivery
+            </button>
+          )}
+        </div>
+
+        {/* Leave a Review — only shown once project is completed */}
+        {project.status === 'completed' && (
+          <section className="pd-section">
+            <h2 className="pd-section-title">Leave a Review</h2>
+
+            {reviewSuccess || myReview ? (
+              <div className="pd-review-submitted">
+                <span className="pd-review-submitted-icon">✓</span>
+                <div>
+                  <p className="pd-review-submitted-title">Review submitted</p>
+                  <div className="pd-review-stars-display">
+                    {[1, 2, 3, 4, 5].map((s) => (
+                      <span key={s} className={`pd-star-display ${s <= (myReview?.rating || reviewRating) ? 'filled' : ''}`}>★</span>
+                    ))}
+                  </div>
+                  {myReview?.comment && <p className="pd-review-submitted-comment">"{myReview.comment}"</p>}
+                </div>
+              </div>
+            ) : (
+              <div className="pd-review-card">
+                <p className="pd-review-prompt">How was your experience working on this project?</p>
+
+                <div className="pd-stars-picker">
+                  {[1, 2, 3, 4, 5].map((star) => (
+                    <button
+                      key={star}
+                      className={`pd-star-btn ${star <= (reviewHover || reviewRating) ? 'active' : ''}`}
+                      onMouseEnter={() => setReviewHover(star)}
+                      onMouseLeave={() => setReviewHover(0)}
+                      onClick={() => setReviewRating(star)}
+                      aria-label={`Rate ${star} stars`}
+                    >★</button>
+                  ))}
+                  {reviewRating > 0 && (
+                    <span className="pd-rating-label">
+                      {['', 'Poor', 'Fair', 'Good', 'Very Good', 'Excellent'][reviewRating]}
+                    </span>
+                  )}
+                </div>
+
+                <textarea
+                  className="pd-modal-textarea"
+                  placeholder="Share your experience (optional)..."
+                  value={reviewComment}
+                  onChange={(e) => setReviewComment(e.target.value)}
+                  rows={3}
+                />
+
+                {reviewError && <p className="pd-review-error">{reviewError}</p>}
+
+                <button
+                  className="pd-submit-review-btn"
+                  onClick={handleSubmitReview}
+                  disabled={reviewRating === 0 || submittingReview}
+                >
+                  {submittingReview ? 'Submitting...' : 'Submit Review'}
+                </button>
+              </div>
+            )}
+          </section>
+        )}
+
       </div>
+
+      {/* Delivery modal */}
+      {showDeliveryModal && (
+        <div className="pd-modal-overlay" onClick={() => setShowDeliveryModal(false)}>
+          <div className="pd-modal-card" onClick={(e) => e.stopPropagation()}>
+            <h3 className="pd-modal-title">Submit Delivery</h3>
+
+            <textarea
+              className="pd-modal-textarea"
+              placeholder="Describe what you've completed..."
+              value={deliveryMessage}
+              onChange={(e) => setDeliveryMessage(e.target.value)}
+            />
+
+            <div className="pd-file-upload-area">
+              <label className="pd-file-upload-label" htmlFor="pd-file-input">
+                <span className="pd-file-upload-icon">📎</span>
+                <span>{deliveryFiles.length > 0 ? `${deliveryFiles.length} file(s) selected` : 'Attach files (optional)'}</span>
+                <input
+                  id="pd-file-input"
+                  type="file"
+                  multiple
+                  onChange={handleFileChange}
+                  style={{ display: 'none' }}
+                />
+              </label>
+              {deliveryFiles.length > 0 && (
+                <ul className="pd-file-list">
+                  {deliveryFiles.map((f, i) => (
+                    <li key={i} className="pd-file-item">
+                      <span className="pd-file-name">{f.name}</span>
+                      <button
+                        className="pd-file-remove"
+                        onClick={() => setDeliveryFiles(prev => prev.filter((_, idx) => idx !== i))}
+                      >×</button>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+
+            {deliveryError && <p className="pd-modal-error">{deliveryError}</p>}
+
+            <div className="pd-modal-actions">
+              <button className="pd-cancel-btn" onClick={() => setShowDeliveryModal(false)}>
+                Cancel
+              </button>
+              <button
+                className="pd-task-submit"
+                disabled={submittingDelivery || !deliveryMessage.trim()}
+                onClick={handleSubmitDelivery}
+              >
+                {submittingDelivery ? 'Submitting...' : 'Submit'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Revision modal */}
+      {revisionModalId && (
+        <div className="pd-modal-overlay" onClick={() => setRevisionModalId(null)}>
+          <div className="pd-modal-card" onClick={(e) => e.stopPropagation()}>
+            <h3 className="pd-modal-title">Request Revision</h3>
+
+            <textarea
+              className="pd-modal-textarea"
+              placeholder="Explain what needs to be changed..."
+              value={revisionNote}
+              onChange={(e) => setRevisionNote(e.target.value)}
+            />
+
+            <div className="pd-modal-actions">
+              <button className="pd-cancel-btn" onClick={() => setRevisionModalId(null)}>
+                Cancel
+              </button>
+              <button
+                className="pd-task-submit"
+                disabled={submittingAction}
+                onClick={() => handleRequestRevision(revisionModalId)}
+              >
+                {submittingAction ? 'Sending...' : 'Send'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
     </div>
   )
 }

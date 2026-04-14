@@ -81,6 +81,40 @@ const projectJobSchema = new mongoose.Schema(
   { _id: false }
 );
 
+const deliverySchema = new mongoose.Schema(
+  {
+    submittedBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+      required: true,
+    },
+    message: {
+      type: String,
+      trim: true,
+      maxlength: 2000,
+      default: '',
+    },
+    files: [
+      {
+        name: { type: String },
+        url: { type: String },
+      },
+    ],
+    status: {
+      type: String,
+      enum: ['pending', 'approved', 'revision_requested'],
+      default: 'pending',
+    },
+    revisionNote: {
+      type: String,
+      trim: true,
+      maxlength: 1000,
+      default: '',
+    },
+  },
+  { timestamps: true }
+)
+
 const projectSchema = new mongoose.Schema(
   {
     title: {
@@ -117,6 +151,7 @@ const projectSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "Crew",
     },
+    deliveries: [deliverySchema],
   },
   { timestamps: true }
 );

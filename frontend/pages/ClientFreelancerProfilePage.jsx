@@ -32,6 +32,7 @@ const ClientFreelancerProfilePage = () => {
   const [freelancer, setFreelancer] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
+  const [reviews, setReviews] = useState([])
 
   useEffect(() => {
     if (!freelancerId) return
@@ -45,6 +46,12 @@ const ClientFreelancerProfilePage = () => {
         const data = await res.json()
         if (!res.ok || !data.success) throw new Error(data.message || 'Failed to load profile')
         setFreelancer(data.user)
+
+        try {
+          const res = await fetch(`${API_BASE}/api/reviews/user/${freelancerId}`)
+          const data = await res.json()
+          if (data.success) setReviews(data.reviews)
+        } catch {}
       } catch (err) {
         setError(err.message)
       } finally {
@@ -109,6 +116,19 @@ const ClientFreelancerProfilePage = () => {
                   )}
                   <span className="cfp-badge cfp-badge--type">Freelancer</span>
                 </div>
+                {reviews.length > 0 && (
+                  <div className="cfp-rating-row">
+                    <span className="cfp-rating-stars">
+                      {[1,2,3,4,5].map((s) => (
+                        <span key={s} style={{ color: s <= Math.round(reviews.reduce((sum,r) => sum + r.rating, 0) / reviews.length) ? '#fbbf24' : 'rgba(255,255,255,0.2)', fontSize: '1rem' }}>★</span>
+                      ))}
+                    </span>
+                    <span className="cfp-rating-score">
+                      {(reviews.reduce((sum,r) => sum + r.rating, 0) / reviews.length).toFixed(1)}
+                    </span>
+                    <span className="cfp-rating-count">({reviews.length} review{reviews.length !== 1 ? 's' : ''})</span>
+                  </div>
+                )}
                 {/* Follower / Following counts */}
                 <div style={{ display: 'flex', gap: '16px', marginTop: '6px' }}>
                   <span style={{ fontSize: '0.82rem', color: '#94a3b8' }}>
@@ -139,6 +159,42 @@ const ClientFreelancerProfilePage = () => {
                 <div className="cfp-skills">
                   {freelancer.skills.map((skill) => (
                     <span key={skill} className="cfp-skill-pill">{skill}</span>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Reviews */}
+            {reviews.length > 0 && (
+              <div className="cfp-section">
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1rem' }}>
+                  <h2 className="cfp-section-title" style={{ margin: 0 }}>Reviews</h2>
+                  <span style={{ fontSize: '0.82rem', color: '#fbbf24', fontWeight: 600 }}>
+                    ★ {(reviews.reduce((s, r) => s + r.rating, 0) / reviews.length).toFixed(1)} · {reviews.length} review{reviews.length !== 1 ? 's' : ''}
+                  </span>
+                </div>
+                <div className="fp-reviews-list">
+                  {reviews.map((r) => (
+                    <div key={r._id} className="fp-review-item">
+                      <div className="fp-review-header">
+                        <div className="fp-review-avatar">
+                          {r.reviewerId?.name?.[0]?.toUpperCase() || '?'}
+                        </div>
+                        <div className="fp-review-meta">
+                          <span className="fp-review-name">{r.reviewerId?.name || 'Anonymous'}</span>
+                          <span className="fp-review-project">{r.projectId?.title || 'Project'}</span>
+                        </div>
+                        <div className="fp-review-stars">
+                          {[1, 2, 3, 4, 5].map((s) => (
+                            <span key={s} style={{ color: s <= r.rating ? '#fbbf24' : 'rgba(255,255,255,0.15)', fontSize: '0.95rem' }}>★</span>
+                          ))}
+                        </div>
+                      </div>
+                      {r.comment && <p className="fp-review-comment">{r.comment}</p>}
+                      <span className="fp-review-date">
+                        {new Date(r.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                      </span>
+                    </div>
                   ))}
                 </div>
               </div>

@@ -1,6 +1,7 @@
 import express from 'express'
 import adminAuth from '../middleware/adminAuth.js'
 import {
+  adminLogin,
   getStats,
   getUserGrowth,
   getJobCategories,
@@ -8,6 +9,8 @@ import {
 } from '../controllers/adminController.js'
 
 const router = express.Router()
+
+router.post('/login', adminLogin)
 
 // Protect all admin routes — requires valid JWT with isAdmin === true
 router.use(adminAuth)

@@ -26,6 +26,7 @@ const ProfileContent = ({
   followersCount, followingCount,
   portfolioTab, setPortfolioTab,
   openFollowModal,
+  reviews,
 }) => {
   const [localTitle, setLocalTitle] = useState('')
   const [localBio, setLocalBio] = useState('')
@@ -459,6 +460,42 @@ const ProfileContent = ({
               Showcase your best work with a project catalog. Add projects to help clients understand your expertise.
             </p>
           </div>
+
+          {/* Reviews */}
+          {reviews.length > 0 && (
+            <div className="freelancer-profile-page section-card">
+              <div className="section-header">
+                <h2 className="section-title">Reviews</h2>
+                <span className="section-rate">
+                  ★ {(reviews.reduce((s, r) => s + r.rating, 0) / reviews.length).toFixed(1)} · {reviews.length} review{reviews.length !== 1 ? 's' : ''}
+                </span>
+              </div>
+              <div className="fp-reviews-list">
+                {reviews.map((r) => (
+                  <div key={r._id} className="fp-review-item">
+                    <div className="fp-review-header">
+                      <div className="fp-review-avatar">
+                        {r.reviewerId?.name?.[0]?.toUpperCase() || '?'}
+                      </div>
+                      <div className="fp-review-meta">
+                        <span className="fp-review-name">{r.reviewerId?.name || 'Anonymous'}</span>
+                        <span className="fp-review-project">{r.projectId?.title || 'Project'}</span>
+                      </div>
+                      <div className="fp-review-stars">
+                        {[1, 2, 3, 4, 5].map((s) => (
+                          <span key={s} style={{ color: s <= r.rating ? '#fbbf24' : 'rgba(255,255,255,0.15)', fontSize: '0.95rem' }}>★</span>
+                        ))}
+                      </div>
+                    </div>
+                    {r.comment && <p className="fp-review-comment">{r.comment}</p>}
+                    <span className="fp-review-date">
+                      {new Date(r.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </>
@@ -467,6 +504,7 @@ const ProfileContent = ({
 
 const FreelancerProfilePage = () => {
   const [user, setUser] = useState(null)
+  const [reviews, setReviews] = useState([])
   const [portfolioTab, setPortfolioTab] = useState('published')
   const [availabilityBadge, setAvailabilityBadge] = useState(false)
   const [boostProfile, setBoostProfile] = useState(false)
@@ -513,6 +551,13 @@ const FreelancerProfilePage = () => {
           if (followersData.success) setFollowersCount(followersData.followers.length)
           if (followingData.success) setFollowingCount(followingData.following.length)
         }
+
+        try {
+          const user = JSON.parse(localStorage.getItem('user') || '{}')
+          const res = await fetch(`${API_BASE}/api/reviews/user/${user._id || user.id}`)
+          const data = await res.json()
+          if (data.success) setReviews(data.reviews)
+        } catch {}
       } catch (error) {
         console.error('Error loading profile:', error)
       }
@@ -630,6 +675,7 @@ const FreelancerProfilePage = () => {
     followersCount, followingCount,
     portfolioTab, setPortfolioTab,
     openFollowModal,
+    reviews,
   }
 
   return (

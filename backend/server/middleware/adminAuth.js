@@ -1,25 +1,20 @@
 import jwt from 'jsonwebtoken'
-import User from '../models/userModels.js'
 
-// Middleware to protect admin-only routes — verifies JWT and checks isAdmin flag
+// Stateless admin auth middleware — verifies ADMIN_JWT_SECRET and checks isAdmin in payload
 const adminAuth = async (req, res, next) => {
   try {
-    const token = req.cookies?.token || req.headers.authorization?.split(' ')[1]
+    const token = req.headers.authorization?.split(' ')[1]
 
     if (!token) {
-      return res.status(401).json({ success: false, message: 'Not authorized' })
+      return res.status(401).json({ success: false, message: 'No admin token provided' })
     }
 
-    const decoded = jwt.verify(token, process.env.JWT_SECRET)
-    const { userId } = decoded
+    const decoded = jwt.verify(token, process.env.ADMIN_JWT_SECRET)
 
-    const user = await User.findById(userId).select('isAdmin')
-
-    if (!user || user.isAdmin !== true) {
+    if (decoded.isAdmin !== true) {
       return res.status(403).json({ success: false, message: 'Admin access required' })
     }
 
-    req.userId = userId
     next()
   } catch (error) {
     return res.status(401).json({ success: false, message: error.message })

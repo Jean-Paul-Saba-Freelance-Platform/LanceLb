@@ -1,10 +1,9 @@
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
-import cookieParser from "cookie-parser";
 import path from "path";
 import { fileURLToPath } from "url";
-
+import cookieParser from "cookie-parser";
 import connectDB from "./config/mongodb.js";
 import authRouter from "./routes/authRoutes.js";
 import webhookRouter from "./routes/webhookRoutes.js";
@@ -22,15 +21,12 @@ import freelancerRouter from "./routes/freelancerRoutes.js";
 import adminRouter from "./routes/adminRoutes.js";
 import publicStatsRouter from "./routes/publicStatsRoutes.js";
 import followRouter from "./routes/followRoutes.js";
+import reviewRouter from "./routes/reviewRoutes.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-
-dotenv.config({ path: path.join(__dirname, ".env") });
-if (!process.env.MONGO_URI) {
-  dotenv.config({ path: path.join(__dirname, "..", ".env") });
-}
+dotenv.config({ path: path.resolve(__dirname, '../.env') });
 
 
 const PORT = process.env.PORT || 4000;
@@ -92,6 +88,7 @@ app.use("/api/projects", projectRouter);
 app.use("/api/freelancer", freelancerRouter);
 app.use("/api/public", publicStatsRouter);
 app.use("/api/follow", followRouter);
+app.use("/api/reviews", reviewRouter);
 
 // Start
 connectDB();

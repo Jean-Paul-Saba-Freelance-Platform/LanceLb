@@ -10,6 +10,9 @@ import {
   updateTask,
   completeTask,
   validateTask,
+  submitDelivery,
+  approveDelivery,
+  requestRevision,
 } from "../controllers/projectController.js";
 
 const router = express.Router();
@@ -23,5 +26,9 @@ router.post("/:id/tasks", userAuth, isVerified, addTask);
 router.patch("/:id/tasks/:taskId", userAuth, isVerified, updateTask);
 router.patch("/:id/tasks/:taskId/complete", userAuth, isVerified, completeTask);
 router.patch("/:id/tasks/:taskId/validate", userAuth, isVerified, validateTask);
+
+router.post('/:id/deliveries', userAuth, isVerified, submitDelivery)
+router.patch('/:id/deliveries/:dId/approve', userAuth, isVerified, approveDelivery)
+router.patch('/:id/deliveries/:dId/revision', userAuth, isVerified, requestRevision)
 
 export default router;

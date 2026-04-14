@@ -374,3 +374,147 @@ export const validateTask = async (req, res) => {
     return res.status(500).json({ success: false, message: "Server error" });
   }
 };
+
+// ── POST /api/projects/:id/deliveries ── Freelancer submits a delivery
+export const submitDelivery = async (req, res) => {
+  try {
+    const { id } = req.params
+    const { message, files } = req.body
+
+    const project = await Project.findById(id)
+    if (!project) {
+      return res.status(404).json({ success: false, message: 'Project not found' })
+    }
+    if (project.status !== 'active') {
+      return res.status(400).json({ success: false, message: 'Project is not active' })
+    }
+
+    // Must be an assigned freelancer on this project
+    const isMember = project.jobs.some((j) =>
+      j.freelancerIds.some((fid) => fid.toString() === req.userId)
+    )
+    if (!isMember) {
+      return res.status(403).json({ success: false, message: 'Access denied' })
+    }
+
+    const delivery = {
+      submittedBy: req.userId,
+      message: message?.trim() || '',
+      files: Array.isArray(files) ? files : [],
+      status: 'pending',
+    }
+
+    project.deliveries.push(delivery)
+    await project.save()
+
+    const newDelivery = project.deliveries[project.deliveries.length - 1]
+
+    // Notify the client
+    const freelancer = await User.findById(req.userId).select('name')
+    const notif = await Notification.create({
+      userId: project.clientId.toString(),
+      type: 'delivery_submitted',
+      title: 'Work delivered',
+      message: `${freelancer?.name || 'A freelancer'} submitted a delivery for "${project.title}". Please review and approve.`,
+      relatedId: project._id,
+      relatedType: 'project',
+    })
+    io.to(`user:${project.clientId}`).emit('notification', notif.toObject())
+
+    return res.status(201).json({ success: true, delivery: newDelivery })
+  } catch (error) {
+    console.error('Error submitting delivery:', error)
+    return res.status(500).json({ success: false, message: error.message })
+  }
+}
+
+// ── PATCH /api/projects/:id/deliveries/:dId/approve ── Client approves delivery
+export const approveDelivery = async (req, res) => {
+  try {
+    const { id, dId } = req.params
+
+    const project = await Project.findOne({ _id: id, clientId: req.userId })
+    if (!project) {
+      return res.status(404).json({ success: false, message: 'Project not found' })
+    }
+
+    const delivery = project.deliveries.id(dId)
+    if (!delivery) {
+      return res.status(404).json({ success: false, message: 'Delivery not found' })
+    }
+    if (delivery.status !== 'pending') {
+      return res.status(400).json({ success: false, message: 'Delivery already reviewed' })
+    }
+
+    delivery.status = 'approved'
+    project.status = 'completed'
+    await project.save()
+
+    // Notify all freelancers on the project
+    const allFreelancerIds = [
+      ...new Set(project.jobs.flatMap((j) => j.freelancerIds.map((fid) => fid.toString())))
+    ]
+    for (const freelancerId of allFreelancerIds) {
+      const notif = await Notification.create({
+        userId: freelancerId,
+        type: 'delivery_approved',
+        title: 'Delivery approved',
+        message: `Your delivery for "${project.title}" has been approved. Project is now complete!`,
+        relatedId: project._id,
+        relatedType: 'project',
+      })
+      io.to(`user:${freelancerId}`).emit('notification', notif.toObject())
+    }
+
+    return res.status(200).json({ success: true, delivery, projectStatus: project.status })
+  } catch (error) {
+    console.error('Error approving delivery:', error)
+    return res.status(500).json({ success: false, message: error.message })
+  }
+}
+
+// ── PATCH /api/projects/:id/deliveries/:dId/revision ── Client requests revision
+export const requestRevision = async (req, res) => {
+  try {
+    const { id, dId } = req.params
+    const { revisionNote } = req.body
+
+    const project = await Project.findOne({ _id: id, clientId: req.userId })
+    if (!project) {
+      return res.status(404).json({ success: false, message: 'Project not found' })
+    }
+
+    const delivery = project.deliveries.id(dId)
+    if (!delivery) {
+      return res.status(404).json({ success: false, message: 'Delivery not found' })
+    }
+    if (delivery.status !== 'pending') {
+      return res.status(400).json({ success: false, message: 'Delivery already reviewed' })
+    }
+
+    delivery.status = 'revision_requested'
+    delivery.revisionNote = revisionNote?.trim() || ''
+    await project.save()
+
+    // Notify all freelancers on the project
+    const allFreelancerIds = [
+      ...new Set(project.jobs.flatMap((j) => j.freelancerIds.map((fid) => fid.toString())))
+    ]
+    for (const freelancerId of allFreelancerIds) {
+      const notif = await Notification.create({
+        userId: freelancerId,
+        type: 'revision_requested',
+        title: 'Revision requested',
+        message: `The client requested a revision on your delivery for "${project.title}".${revisionNote ? ` Feedback: ${revisionNote}` : ''}`,
+        relatedId: project._id,
+        relatedType: 'project',
+      })
+      io.to(`user:${freelancerId}`).emit('notification', notif.toObject())
+    }
+
+    return res.status(200).json({ success: true, delivery })
+  } catch (error) {
+    console.error('Error requesting revision:', error)
+    return res.status(500).json({ success: false, message: error.message })
+  }
+}
