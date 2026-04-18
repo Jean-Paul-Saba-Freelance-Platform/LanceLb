@@ -60,11 +60,7 @@ const FreelancerClientProfilePage = () => {
     fetchProfile()
   }, [clientId])
 
-  const backRoute = location.state?.backRoute || (() => {
-    const userStr = localStorage.getItem('user')
-    const currentUser = userStr ? JSON.parse(userStr) : null
-    return currentUser?.userType === 'client' ? '/client/explore' : '/freelancer/explore'
-  })()
+  const backRoute = location.state?.backRoute || '/freelancer/find-work'
 
   const currentUser = (() => {
     try { return JSON.parse(localStorage.getItem('user') || '{}') } catch { return {} }
