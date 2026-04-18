@@ -365,6 +365,19 @@ const ProfileContent = ({
                         {user.experienceLevel === 'entry' ? 'Entry Level' : user.experienceLevel === 'intermediate' ? 'Intermediate' : 'Expert'}
                       </span>
                     )}
+                    {reviews.length > 0 && (
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', marginTop: '0.35rem' }}>
+                        {[1,2,3,4,5].map((s) => (
+                          <span key={s} style={{ color: s <= Math.round(reviews.reduce((sum,r) => sum + r.rating, 0) / reviews.length) ? '#fbbf24' : 'rgba(255,255,255,0.2)', fontSize: '1.1rem' }}>★</span>
+                        ))}
+                        <span style={{ fontSize: '0.88rem', fontWeight: 700, color: '#fbbf24' }}>
+                          {(reviews.reduce((sum,r) => sum + r.rating, 0) / reviews.length).toFixed(1)}
+                        </span>
+                        <span style={{ fontSize: '0.82rem', color: '#8696a0' }}>
+                          ({reviews.length} review{reviews.length !== 1 ? 's' : ''})
+                        </span>
+                      </div>
+                    )}
                   </div>
                   <button className="section-edit-button fh-icon-button" onClick={() => setEditingProfile(true)} aria-label="Edit profile title">
                     <Edit2 size={18} />

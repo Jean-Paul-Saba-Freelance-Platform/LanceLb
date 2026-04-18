@@ -118,6 +118,21 @@ const FreelancerClientProfilePage = () => {
                 <div className="fcp-meta-row">
                   <span className="fcp-badge fcp-badge--type">Client</span>
                 </div>
+                {reviews.length > 0 && (
+                  <div className="fcp-rating-row">
+                    <span>
+                      {[1,2,3,4,5].map((s) => (
+                        <span key={s} style={{ color: s <= Math.round(reviews.reduce((sum,r) => sum + r.rating, 0) / reviews.length) ? '#fbbf24' : 'rgba(255,255,255,0.2)', fontSize: '1rem' }}>★</span>
+                      ))}
+                    </span>
+                    <span style={{ fontSize: '0.88rem', fontWeight: 700, color: '#fbbf24' }}>
+                      {(reviews.reduce((sum,r) => sum + r.rating, 0) / reviews.length).toFixed(1)}
+                    </span>
+                    <span style={{ fontSize: '0.82rem', color: '#8696a0' }}>
+                      ({reviews.length} review{reviews.length !== 1 ? 's' : ''})
+                    </span>
+                  </div>
+                )}
                 {/* Follower / Following counts */}
                 <div className="fcp-follow-counts">
                   <span className="fcp-follow-item">

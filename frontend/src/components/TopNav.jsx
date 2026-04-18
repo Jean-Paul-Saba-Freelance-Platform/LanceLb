@@ -85,9 +85,9 @@ const TopNav = ({ userName, userAvatar }) => {
           })))
         }
       } else {
-        // Talents search
+        // Talents search — /search returns all users regardless of follow status
         const res = await fetch(
-          `${API_BASE}/api/follow/explore?search=${encodeURIComponent(query.trim())}&limit=6`,
+          `${API_BASE}/api/follow/search?search=${encodeURIComponent(query.trim())}&limit=6`,
           { credentials: 'include', headers }
         )
         const data = await res.json()

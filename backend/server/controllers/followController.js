@@ -284,6 +284,39 @@ export const getFollowers = async (req, res) => {
 };
 
 // ---------------------------------------------------------------------------
+// GET /api/follow/search — TopNav search bar: all matching users, no follow filter
+// ---------------------------------------------------------------------------
+
+/**
+ * searchUsers
+ *
+ * Returns users matching a name/title/bio/skills query with no follow-status
+ * exclusions. Used exclusively by the TopNav search dropdown.
+ */
+export const searchUsers = async (req, res) => {
+  try {
+    const { search, limit = 6 } = req.query;
+
+    const query = { _id: { $ne: req.userId } };
+
+    if (search) {
+      const re = new RegExp(search.trim(), 'i');
+      query.$or = [{ name: re }, { title: re }, { bio: re }, { skills: re }];
+    }
+
+    const users = await User.find(query)
+      .select('name title bio skills experienceLevel profilePicture userType createdAt')
+      .sort({ createdAt: -1 })
+      .limit(Number(limit))
+      .lean();
+
+    return res.json({ success: true, users, total: users.length });
+  } catch (error) {
+    return res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+// ---------------------------------------------------------------------------
 // GET /api/follow/explore — Browse all users with search + filters
 // ---------------------------------------------------------------------------
 

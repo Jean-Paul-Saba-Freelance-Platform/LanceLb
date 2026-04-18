@@ -10,6 +10,7 @@ import {
   getFollowers,
   getPublicProfile,
   exploreUsers,
+  searchUsers,
 } from "../controllers/followController.js";
 
 const followRouter = express.Router();
@@ -30,5 +31,8 @@ followRouter.get("/followers", userAuth, getFollowers);
 
 // People directory
 followRouter.get("/explore", userAuth, exploreUsers);
+
+// TopNav search — no follow-status filtering
+followRouter.get("/search", userAuth, searchUsers);
 
 export default followRouter;
