@@ -269,3 +269,41 @@ Rules:
     };
   }
 }
+
+export async function chatWithSupport(history, mode = 'user', stats = null) {
+  const userSystemPrompt = `You are LanceLB Support Assistant — a helpful, friendly AI for the LanceLB freelance marketplace platform (Lebanese-focused, like Fiverr/Upwork).
+
+You help with:
+- Platform how-to: posting jobs, applying, messaging, projects, delivery flow, ratings
+- Freelancer tips: writing a strong bio, which skills to add, how to improve ATS score, writing cover letters
+- Client tips: writing better job posts to attract quality freelancers, evaluating proposals
+
+Keep answers concise and actionable. Use bullet points for lists. Be warm but professional. If asked something outside the platform scope, gently redirect.`
+
+  const adminSystemPrompt = `You are LanceLB Platform Analyst — an AI advisor for the LanceLB admin team.
+
+Current platform statistics:
+${stats ? JSON.stringify(stats, null, 2) : 'Stats not available'}
+
+You can:
+- Analyze platform growth, job fill rates, user ratios
+- Identify trends and suggest platform improvements
+- Generate summary reports of platform health
+- Answer questions about the data above
+
+Be analytical and data-driven. Reference specific numbers when answering. Keep answers clear and structured.`
+
+  const systemPrompt = mode === 'admin' ? adminSystemPrompt : userSystemPrompt
+
+  const response = await client.chat.completions.create({
+    model: MODEL,
+    messages: [
+      { role: 'system', content: systemPrompt },
+      ...history,
+    ],
+    temperature: 0.5,
+    max_tokens: 600,
+  })
+
+  return response.choices[0].message.content
+}

@@ -12,6 +12,7 @@ import {
   FolderOpen,
 } from 'lucide-react'
 import './AdminDashboard.css'
+import AdminAIAssistant from '../src/components/AdminAIAssistant'
 
 const API_BASE = 'http://127.0.0.1:4000'
 const MONTH_NAMES = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
@@ -321,6 +322,16 @@ const AdminDashboard = () => {
                 </div>
               )}
             </div>
+          </section>
+
+          {/* AI Platform Analyst */}
+          <section className="adm-section">
+            <h2 className="adm-section-title">AI Platform Analyst</h2>
+            <AdminAIAssistant
+              stats={stats}
+              growth={growth}
+              categories={categories}
+            />
           </section>
 
         </main>

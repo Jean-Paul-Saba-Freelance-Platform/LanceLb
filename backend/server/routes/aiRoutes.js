@@ -2,7 +2,7 @@ import express from 'express';
 import userAuth from '../middleware/userAuth.js';
 import User from '../models/userModels.js';
 import Job from '../models/jobModel.js';
-import { analyzeProfileFit, generateApplicationTips } from '../services/aiService.js';
+import { analyzeProfileFit, generateApplicationTips, chatWithSupport } from '../services/aiService.js';
 
 const aiRouter = express.Router();
 
@@ -88,5 +88,24 @@ aiRouter.get('/application-tips/:jobId', userAuth, async (req, res) => {
     return res.status(500).json({ success: false, message: 'Error generating application tips' });
   }
 });
+
+aiRouter.post('/chat', async (req, res) => {
+  try {
+    const { message, history = [], mode = 'user', stats = null } = req.body
+
+    if (!message?.trim()) {
+      return res.status(400).json({ success: false, message: 'Message is required' })
+    }
+
+    const fullHistory = [...history, { role: 'user', content: message }].slice(-20)
+
+    const reply = await chatWithSupport(fullHistory, mode, stats)
+
+    return res.json({ success: true, reply })
+  } catch (error) {
+    console.error('AI chat error:', error)
+    return res.status(500).json({ success: false, message: 'AI service error' })
+  }
+})
 
 export default aiRouter;

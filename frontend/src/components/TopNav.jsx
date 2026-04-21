@@ -1,13 +1,15 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
-import { HelpCircle, Bell, Search, X } from 'lucide-react'
+import { Bot, Bell, Search, X } from 'lucide-react'
 import ProfileDropdown from './ProfileDropdown'
+import AIChatPanel from './AIChatPanel'
 import './TopNav.css'
 
 const API_BASE = import.meta.env.VITE_API_BASE || 'http://127.0.0.1:4000'
 
 const TopNav = ({ userName, userAvatar }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
+  const [aiChatOpen, setAiChatOpen] = useState(false)
   const [showNotifications, setShowNotifications] = useState(false)
   const [notifications, setNotifications] = useState([])
   const [unreadCount, setUnreadCount] = useState(0)
@@ -445,8 +447,9 @@ const TopNav = ({ userName, userAvatar }) => {
               className="top-nav-icon-button"
               aria-label="Help & Support"
               title="Help & Support"
+              onClick={() => setAiChatOpen(true)}
             >
-              <HelpCircle size={20} />
+              <Bot size={20} />
             </button>
 
             {/* Notification bell with badge + panel */}
@@ -595,6 +598,7 @@ const TopNav = ({ userName, userAvatar }) => {
           </div>
         </div>
       </div>
+      <AIChatPanel isOpen={aiChatOpen} onClose={() => setAiChatOpen(false)} />
     </nav>
   )
 }
