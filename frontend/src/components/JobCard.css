@@ -559,6 +559,10 @@
   color: var(--text-primary);
 }
 
+.job-icon-button--saved {
+  color: var(--accent-color, #3eb591);
+}
+
 /* ─── AI Fit Score Panel ─── */
 
 .fit-score-panel {

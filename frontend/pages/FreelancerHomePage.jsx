@@ -28,6 +28,10 @@ const FreelancerHomePage = () => {
   const [profileProgress, setProfileProgress] = useState(0)
   const [peopleToFollow, setPeopleToFollow] = useState([])
   const [followStates, setFollowStates] = useState({})
+  const [savedJobIds, setSavedJobIds] = useState(new Set())
+  const [savedJobs, setSavedJobs] = useState([])
+  const [loadingSaved, setLoadingSaved] = useState(false)
+  const hasFetchedSaved = useRef(false)
 
   useEffect(() => {
     try {
@@ -131,6 +135,52 @@ const FreelancerHomePage = () => {
     fetchSuggestedPeople()
   }, [])
 
+  useEffect(() => {
+    const fetchSavedIds = async () => {
+      try {
+        const token = localStorage.getItem('token')
+        if (!token) return
+        const res = await fetch(`${API_BASE}/api/freelancer/saved-jobs`, {
+          credentials: 'include',
+          headers: { Authorization: `Bearer ${token}` },
+        })
+        const data = await res.json()
+        if (data.success) {
+          setSavedJobIds(new Set(data.jobs.map(j => j._id || j.id)))
+        }
+      } catch (err) {
+        console.error('Error loading saved job IDs:', err)
+      }
+    }
+    fetchSavedIds()
+  }, [])
+
+  useEffect(() => {
+    if (activeTab !== 'saved') return
+    if (hasFetchedSaved.current) return
+    hasFetchedSaved.current = true
+
+    const fetchSavedJobs = async () => {
+      setLoadingSaved(true)
+      try {
+        const token = localStorage.getItem('token')
+        const res = await fetch(`${API_BASE}/api/freelancer/saved-jobs`, {
+          credentials: 'include',
+          headers: { Authorization: `Bearer ${token}` },
+        })
+        const data = await res.json()
+        if (data.success) {
+          setSavedJobs(data.jobs.map(formatJob))
+        }
+      } catch (err) {
+        console.error('Error fetching saved jobs:', err)
+      } finally {
+        setLoadingSaved(false)
+      }
+    }
+    fetchSavedJobs()
+  }, [activeTab])
+
   const handleWidgetFollow = async (personId) => {
     const current = followStates[personId]
     const token = localStorage.getItem('token')
@@ -151,6 +201,49 @@ const FreelancerHomePage = () => {
         if (data.success) setFollowStates(prev => ({ ...prev, [personId]: null }))
       }
     } catch {}
+  }
+
+  const handleToggleSave = async (jobId) => {
+    const token = localStorage.getItem('token')
+    const wasSaved = savedJobIds.has(jobId)
+
+    // Optimistic update for IDs
+    setSavedJobIds(prev => {
+      const next = new Set(prev)
+      wasSaved ? next.delete(jobId) : next.add(jobId)
+      return next
+    })
+
+    if (wasSaved) {
+      // Remove from saved list immediately
+      setSavedJobs(prev => prev.filter(j => (j._id || j.id) !== jobId))
+    } else {
+      // Add to saved list immediately using job data from the jobs feed
+      const jobToAdd = jobs.find(j => (j._id || j.id) === jobId)
+        || bestMatches.find(j => (j._id || j.id) === jobId)
+      if (jobToAdd) {
+        setSavedJobs(prev => [formatJob(jobToAdd), ...prev])
+      }
+    }
+
+    try {
+      await fetch(`${API_BASE}/api/freelancer/saved-jobs/${jobId}`, {
+        method: 'POST',
+        credentials: 'include',
+        headers: { Authorization: `Bearer ${token}` },
+      })
+    } catch (err) {
+      console.error('Toggle save error:', err)
+      // Revert on error
+      setSavedJobIds(prev => {
+        const next = new Set(prev)
+        wasSaved ? next.add(jobId) : next.delete(jobId)
+        return next
+      })
+      if (!wasSaved) {
+        setSavedJobs(prev => prev.filter(j => (j._id || j.id) !== jobId))
+      }
+    }
   }
 
   const getGreeting = () => {
@@ -289,7 +382,11 @@ const FreelancerHomePage = () => {
                     }}>
                       {job.matchScore}% Match
                     </div>
-                    <JobCard job={formatJob(job)} />
+                    <JobCard
+                      job={formatJob(job)}
+                      isSaved={savedJobIds.has(job._id)}
+                      onToggleSave={handleToggleSave}
+                    />
                   </div>
                 ))
               ) : (
@@ -297,20 +394,44 @@ const FreelancerHomePage = () => {
                   <p>No matches found. Complete your profile with skills and a title to get better matches.</p>
                 </div>
               )
-            ) : loadingJobs ? (
-              renderSkeletonCards()
-            ) : filteredJobs.length > 0 ? (
-              filteredJobs.map(job => (
-                <JobCard key={job._id || job.id} job={job} />
-              ))
+            ) : activeTab === 'saved' ? (
+              loadingSaved ? (
+                renderSkeletonCards()
+              ) : savedJobs.length > 0 ? (
+                savedJobs.map(job => (
+                  <JobCard
+                    key={job._id || job.id}
+                    job={job}
+                    isSaved={true}
+                    onToggleSave={handleToggleSave}
+                  />
+                ))
+              ) : (
+                <div className="no-jobs-message">
+                  <p>No saved jobs yet. Click the bookmark icon on any job to save it.</p>
+                </div>
+              )
             ) : (
-              <div className="no-jobs-message">
-                {searchQuery.trim() ? (
-                  <p>No jobs found. Try adjusting your search or filters.</p>
-                ) : (
-                  <p>No jobs available right now.</p>
-                )}
-              </div>
+              loadingJobs ? (
+                renderSkeletonCards()
+              ) : filteredJobs.length > 0 ? (
+                filteredJobs.map(job => (
+                  <JobCard
+                    key={job._id || job.id}
+                    job={job}
+                    isSaved={savedJobIds.has(job._id || job.id)}
+                    onToggleSave={handleToggleSave}
+                  />
+                ))
+              ) : (
+                <div className="no-jobs-message">
+                  {searchQuery.trim() ? (
+                    <p>No jobs found. Try adjusting your search or filters.</p>
+                  ) : (
+                    <p>No jobs available right now.</p>
+                  )}
+                </div>
+              )
             )}
           </div>
 

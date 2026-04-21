@@ -1,5 +1,7 @@
 import Application from '../models/applicationModel.js'
 import Project from '../models/projectModel.js'
+import User from '../models/userModels.js'
+import Job from '../models/jobModel.js'
 
 export const getFreelancerStats = async (req, res) => {
   try {
@@ -51,6 +53,42 @@ export const getFreelancerStats = async (req, res) => {
     })
   } catch (err) {
     console.error('getFreelancerStats error:', err)
+    return res.status(500).json({ success: false, message: 'Server error' })
+  }
+}
+
+// POST /api/freelancer/saved-jobs/:jobId — toggle save/unsave
+export const toggleSaveJob = async (req, res) => {
+  try {
+    const { jobId } = req.params
+    const user = await User.findById(req.userId)
+    if (!user) return res.status(404).json({ success: false, message: 'User not found' })
+
+    const alreadySaved = user.savedJobs.some(id => id.toString() === jobId)
+    if (alreadySaved) {
+      user.savedJobs = user.savedJobs.filter(id => id.toString() !== jobId)
+    } else {
+      user.savedJobs.push(jobId)
+    }
+    await user.save()
+    return res.json({ success: true, saved: !alreadySaved })
+  } catch (err) {
+    console.error('toggleSaveJob error:', err)
+    return res.status(500).json({ success: false, message: 'Server error' })
+  }
+}
+
+// GET /api/freelancer/saved-jobs — return saved jobs with full job data
+export const getSavedJobs = async (req, res) => {
+  try {
+    const user = await User.findById(req.userId).populate({
+      path: 'savedJobs',
+      match: { status: { $ne: 'deleted' } },
+    })
+    if (!user) return res.status(404).json({ success: false, message: 'User not found' })
+    return res.json({ success: true, jobs: user.savedJobs })
+  } catch (err) {
+    console.error('getSavedJobs error:', err)
     return res.status(500).json({ success: false, message: 'Server error' })
   }
 }
