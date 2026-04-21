@@ -121,6 +121,10 @@ const userSchema = new mongoose.Schema({
       type: Number,
       default: 0,
     },
+    onboardingDismissed: {
+      phone:   { type: Boolean, default: false },
+      billing: { type: Boolean, default: false },
+    },
 }, { timestamps: true })
 
 const User = mongoose.model('User', userSchema);

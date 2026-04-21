@@ -13,6 +13,7 @@ const ClientHomePage = () => {
   const navigate = useNavigate()
   const [user, setUser] = useState(null)
   const [activeView, setActiveView] = useState('activeJobs')
+  const [dismissedSteps, setDismissedSteps] = useState({ phone: false, billing: false })
   const [dashboardSummary, setDashboardSummary] = useState(defaultDashboardSummary)
   const [clientJobs, setClientJobs] = useState([])
   const [loadingJobs, setLoadingJobs] = useState(true)
@@ -57,6 +58,12 @@ const ClientHomePage = () => {
       if (userStr) {
         const userData = JSON.parse(userStr)
         setUser(userData)
+        // Load onboarding dismissed state from the user object
+        const dismissed = userData?.onboardingDismissed || {}
+        setDismissedSteps({
+          phone:   dismissed.phone   || false,
+          billing: dismissed.billing || false,
+        })
         if (userData.isAccountVerified !== undefined) {
           setDashboardSummary(prev => ({
             ...prev,
@@ -163,17 +170,43 @@ const ClientHomePage = () => {
 
   // Update nextSteps with user data
   const getNextSteps = () => {
-    return nextStepsData.map(step => {
-      if (step.id === 3) {
-        // Email verification step
-        return {
-          ...step,
-          completed: dashboardSummary.emailVerified
-        }
+    return nextStepsData
+      .map(step => {
+        if (step.id === 3) return { ...step, completed: dashboardSummary.emailVerified }
+        return step
+      })
+      .filter(step => {
+        if (step.id === 1 && dismissedSteps.phone)   return false
+        if (step.id === 2 && dismissedSteps.billing) return false
+        return true
+      })
+  }
+
+  const handleDismissStep = async (field) => {
+    // Optimistically hide it immediately
+    setDismissedSteps(prev => ({ ...prev, [field]: true }))
+    try {
+      const token = localStorage.getItem('token')
+      await fetch(`${API_BASE}/api/auth/onboarding-dismiss`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        credentials: 'include',
+        body: JSON.stringify({ field }),
+      })
+      // Also update localStorage so the dismissed state persists on refresh
+      // without needing a full re-fetch
+      const stored = localStorage.getItem('user')
+      if (stored) {
+        const u = JSON.parse(stored)
+        u.onboardingDismissed = { ...(u.onboardingDismissed || {}), [field]: true }
+        localStorage.setItem('user', JSON.stringify(u))
       }
-      // TODO: Update other steps when backend provides data
-      return step
-    })
+    } catch (err) {
+      console.error('Failed to dismiss onboarding step:', err)
+    }
   }
 
   // Handle "Post a Job" action — opens the multi-step wizard
@@ -263,12 +296,24 @@ const ClientHomePage = () => {
                   <h3 className="next-steps-title">{step.title}</h3>
                   <p className="next-steps-description">{step.description}</p>
                   {!step.completed && (
-                    <button 
-                      className="next-steps-action"
-                      onClick={() => handleNextStepAction(step.actionRoute)}
-                    >
-                      {step.actionText}
-                    </button>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0' }}>
+                      <button
+                        className="next-steps-action"
+                        onClick={() => handleNextStepAction(step.actionRoute)}
+                      >
+                        {step.actionText}
+                      </button>
+                      {(step.id === 1 || step.id === 2) && (
+                        <button
+                          className="onboarding-dismiss-btn"
+                          onClick={() => handleDismissStep(step.id === 1 ? 'phone' : 'billing')}
+                          aria-label="Dismiss"
+                          title="Mark as done"
+                        >
+                          ✓ Done
+                        </button>
+                      )}
+                    </div>
                   )}
                   {step.completed && (
                     <span className="completed-badge">✓ Done</span>

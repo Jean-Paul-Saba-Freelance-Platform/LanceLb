@@ -26,6 +26,10 @@ const FreelancerHomePage = () => {
   const [activeTab, setActiveTab] = useState('bestMatches')
   const [searchQuery, setSearchQuery] = useState('')
   const [profileProgress, setProfileProgress] = useState(0)
+  const [profileChecks, setProfileChecks] = useState({
+    bio: false, skills: false, education: false,
+    languages: false, hoursPerWeek: false, profilePic: false,
+  })
   const [peopleToFollow, setPeopleToFollow] = useState([])
   const [followStates, setFollowStates] = useState({})
   const [savedJobIds, setSavedJobIds] = useState(new Set())
@@ -39,13 +43,18 @@ const FreelancerHomePage = () => {
       if (userStr) {
         const u = JSON.parse(userStr)
         setUser(u)
-        // Calculate real profile completeness
-        let score = 0
-        if (u.name || u.firstName) score += 25      // name always exists if registered
-        if (u.bio) score += 25
-        if (u.skills?.length > 0) score += 25
-        if (u.title) score += 25
-        setProfileProgress(score)
+        // 6 fields, ~17 points each = 100% when all complete
+        const checks = {
+          bio:         !!u.bio?.trim(),
+          skills:      (u.skills?.length || 0) > 0,
+          education:   (u.education?.length || 0) > 0,
+          languages:   (u.languages?.length || 0) > 0,
+          hoursPerWeek:!!u.hoursPerWeek,
+          profilePic:  !!u.profilePicture?.trim(),
+        }
+        const completed = Object.values(checks).filter(Boolean).length
+        setProfileProgress(Math.round((completed / 6) * 100))
+        setProfileChecks(checks)
       }
     } catch (error) {
       console.error('Error loading user:', error)
@@ -487,8 +496,8 @@ const FreelancerHomePage = () => {
           <RightSidebarCard title="Profile Strength">
             <div className="profile-progress-content">
               <div className="profile-avatar-large">
-                {user?.avatar ? (
-                  <img src={user.avatar} alt={userName} />
+                {user?.profilePicture ? (
+                  <img src={user.profilePicture} alt={userName} />
                 ) : (
                   <div className="avatar-placeholder-large">
                     {userName.charAt(0).toUpperCase()}
@@ -496,55 +505,48 @@ const FreelancerHomePage = () => {
                 )}
               </div>
               <h4 className="profile-name">{userName}</h4>
-              <p className="profile-category">Freelancer</p>
-              <p className="sidebar-text">Improve your profile to get better matches.</p>
+              <p className="profile-category">{user?.title || 'Freelancer'}</p>
+
               <div className="profile-progress-section">
                 <div className="profile-progress-header">
-                  <span>Profile strength: {profileProgress}%</span>
+                  <span>Profile strength:&nbsp;</span>
+                  <span className="progress-percentage">{profileProgress}%</span>
                 </div>
                 <div className="progress-bar">
-                  <div className="progress-bar-fill" style={{ width: `${profileProgress}%` }}></div>
+                  <div
+                    className="progress-bar-fill"
+                    style={{ width: `${profileProgress}%` }}
+                  />
                 </div>
+                <p className="profile-progress-label">
+                  {profileProgress === 100
+                    ? '🎉 Profile complete!'
+                    : profileProgress >= 66
+                    ? 'Almost there — a few more sections to go.'
+                    : profileProgress >= 33
+                    ? 'Good start — keep filling in your profile.'
+                    : 'Complete your profile to attract better clients.'}
+                </p>
               </div>
-              <button className="sidebar-button-secondary">Update profile</button>
-            </div>
-          </RightSidebarCard>
 
-          {/* Complete Your Profile Card */}
-          <RightSidebarCard title="Complete Your Profile">
-            <div className="complete-profile-card">
-              <div className="complete-profile-checklist">
-                <div className="complete-profile-item">
-                  <div className={`complete-profile-check ${user?.bio ? 'done' : ''}`}>
-                    {user?.bio ? '✓' : ''}
-                  </div>
-                  <span className={`complete-profile-label ${user?.bio ? 'done' : ''}`}>
-                    Add a bio
-                  </span>
+              {/* Missing sections list — only shown when profile is incomplete */}
+              {profileProgress < 100 && (
+                <div className="profile-missing-list">
+                  {!profileChecks.bio          && <span className="profile-missing-item">+ Bio</span>}
+                  {!profileChecks.skills       && <span className="profile-missing-item">+ Skills</span>}
+                  {!profileChecks.education    && <span className="profile-missing-item">+ Education</span>}
+                  {!profileChecks.languages    && <span className="profile-missing-item">+ Languages</span>}
+                  {!profileChecks.hoursPerWeek && <span className="profile-missing-item">+ Hours / week</span>}
+                  {!profileChecks.profilePic   && <span className="profile-missing-item">+ Profile photo</span>}
                 </div>
-                <div className="complete-profile-item">
-                  <div className={`complete-profile-check ${user?.skills?.length > 0 ? 'done' : ''}`}>
-                    {user?.skills?.length > 0 ? '✓' : ''}
-                  </div>
-                  <span className={`complete-profile-label ${user?.skills?.length > 0 ? 'done' : ''}`}>
-                    Add your skills
-                  </span>
-                </div>
-                <div className="complete-profile-item">
-                  <div className={`complete-profile-check ${user?.title ? 'done' : ''}`}>
-                    {user?.title ? '✓' : ''}
-                  </div>
-                  <span className={`complete-profile-label ${user?.title ? 'done' : ''}`}>
-                    Set your title
-                  </span>
-                </div>
-              </div>
+              )}
+
               <button
-                className="sidebar-button-primary"
+                className="sidebar-button-secondary"
                 onClick={() => navigate('/freelancer/profile')}
-                style={{ marginTop: '0.75rem' }}
+                style={{ marginTop: '0.75rem', width: '100%' }}
               >
-                Go to profile
+                Update profile
               </button>
             </div>
           </RightSidebarCard>

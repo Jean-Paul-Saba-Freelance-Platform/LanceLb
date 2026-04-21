@@ -313,7 +313,7 @@ const Home = () => {
             {CATEGORIES.map((cat) => (
               <BorderGlow key={cat.slug} {...GLOW} borderRadius={22}>
                 <Link
-                  to={`/freelancer/home?category=${cat.slug}`}
+                  to={`/freelancer/find-work?category=${cat.slug}`}
                   className="category-card"
                 >
                   <span className="category-icon">{cat.icon}</span>

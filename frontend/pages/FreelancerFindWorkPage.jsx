@@ -1,6 +1,21 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react'
+/**
+ * FreelancerFindWorkPage
+ *
+ * Full job-browse page for freelancers.
+ * - Reads ?category=<slug> from the URL on mount and pre-selects that filter.
+ * - Maps each category slug to a representative skill keyword sent to the
+ *   backend as ?skills=<keyword> (GET /api/client/jobs/open).
+ * - Lets the user search by text and switch/clear the category chip.
+ * - Renders jobs using the shared JobCard component.
+ */
+
+import React, { useState, useEffect, useCallback } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import { motion } from 'motion/react'
-import { Search } from 'lucide-react'
+import {
+  Code2, Palette, TrendingUp, Headphones, PenTool,
+  DollarSign, Wrench, Scale, Users, BarChart2, Globe, Camera, X
+} from 'lucide-react'
 import TopNav from '../src/components/TopNav.jsx'
 import JobCard from '../src/components/JobCard.jsx'
 import './FreelancerFindWorkPage.css'
@@ -11,278 +26,229 @@ const fadeUp = {
   hidden: { opacity: 0, y: 20 },
   visible: (i = 0) => ({
     opacity: 1, y: 0,
-    transition: { duration: 0.4, ease: 'easeOut', delay: i * 0.05 }
+    transition: { duration: 0.45, ease: 'easeOut', delay: i * 0.06 }
   })
 }
 
-export default function FreelancerFindWorkPage() {
-  const user = (() => { try { return JSON.parse(localStorage.getItem('user')) } catch { return null } })()
-  const userName = user?.name?.split(' ')[0] || 'Freelancer'
+// Must match the slugs in Home.jsx CATEGORIES exactly
+const CATEGORIES = [
+  { icon: <Code2 size={16} />,      label: 'Development & IT',    slug: 'development',  skill: 'development' },
+  { icon: <Palette size={16} />,    label: 'Design & Creative',   slug: 'design',       skill: 'design' },
+  { icon: <TrendingUp size={16} />, label: 'Sales & Marketing',   slug: 'marketing',    skill: 'marketing' },
+  { icon: <Headphones size={16} />, label: 'Admin & Support',     slug: 'admin',        skill: 'admin' },
+  { icon: <PenTool size={16} />,    label: 'Writing & Content',   slug: 'writing',      skill: 'writing' },
+  { icon: <DollarSign size={16} />, label: 'Finance & Accounting',slug: 'finance',      skill: 'finance' },
+  { icon: <Wrench size={16} />,     label: 'Engineering',         slug: 'engineering',  skill: 'engineering' },
+  { icon: <Scale size={16} />,      label: 'Legal',               slug: 'legal',        skill: 'legal' },
+  { icon: <Users size={16} />,      label: 'HR & Training',       slug: 'hr',           skill: 'HR' },
+  { icon: <BarChart2 size={16} />,  label: 'Data Science & AI',   slug: 'data-science', skill: 'data' },
+  { icon: <Globe size={16} />,      label: 'Translation',         slug: 'translation',  skill: 'translation' },
+  { icon: <Camera size={16} />,     label: 'Photography & Video', slug: 'media',        skill: 'video' },
+]
 
-  const [allJobs, setAllJobs] = useState([])
+const SLUG_TO_SKILL = Object.fromEntries(CATEGORIES.map(c => [c.slug, c.skill]))
+
+const FreelancerFindWorkPage = () => {
+  const [searchParams, setSearchParams] = useSearchParams()
+
+  // Initialise category from URL on first render
+  const [activeCategory, setActiveCategory] = useState(
+    () => searchParams.get('category') || null
+  )
+  const [searchQuery, setSearchQuery] = useState('')
+  const [jobs, setJobs] = useState([])
   const [loading, setLoading] = useState(false)
-  const [error, setError] = useState('')
-  const [keyword, setKeyword] = useState('')
-  const [experienceLevel, setExperienceLevel] = useState('')
-  const [paymentType, setPaymentType] = useState('')
-  const [budgetMin, setBudgetMin] = useState('')
-  const [budgetMax, setBudgetMax] = useState('')
-  const [showFilters, setShowFilters] = useState(false)
+  const [error, setError] = useState(null)
 
-  const fetchJobs = useCallback(async (kw, exp) => {
-    setLoading(true)
-    setError('')
+  const getUserName = () => {
     try {
-      let url = `${API_BASE}/api/client/jobs/open`
-      const params = []
-      if (kw) params.push(`search=${encodeURIComponent(kw)}`)
-      if (exp) params.push(`experienceLevel=${encodeURIComponent(exp)}`)
-      if (params.length) url += `?${params.join('&')}`
+      const u = JSON.parse(localStorage.getItem('user') || '{}')
+      return u.name?.split(' ')[0] || u.firstName || 'Freelancer'
+    } catch { return 'Freelancer' }
+  }
+
+  // Fetch whenever category or search changes
+  const fetchJobs = useCallback(async (category, query) => {
+    setLoading(true)
+    setError(null)
+    try {
+      const params = new URLSearchParams()
+      if (query.trim()) params.set('search', query.trim())
+      if (category && SLUG_TO_SKILL[category]) {
+        params.set('skills', SLUG_TO_SKILL[category])
+      }
+      const url = `${API_BASE}/api/client/jobs/open${params.toString() ? '?' + params.toString() : ''}`
       const res = await fetch(url)
       const data = await res.json()
-      const normalized = (data.jobs || []).map(job => {
-        const rawClient = job.clientId
-        if (rawClient && typeof rawClient === 'object') {
-          return {
-            ...job,
-            clientId: rawClient._id || rawClient.id || null,
-            client: rawClient,
-          }
-        }
-        return job
-      })
-setAllJobs(normalized)
-    } catch {
-      setError('Failed to load jobs. Please try again.')
+      if (data.success) {
+        setJobs(data.jobs || [])
+      } else {
+        setError('Failed to load jobs.')
+      }
+    } catch (err) {
+      console.error('fetchJobs error:', err)
+      setError('Could not connect to server.')
     } finally {
       setLoading(false)
     }
   }, [])
 
+  // On mount and whenever activeCategory changes, re-fetch
   useEffect(() => {
-    fetchJobs('', '')
-  }, [fetchJobs])
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      fetchJobs(keyword, experienceLevel)
-    }, keyword ? 400 : 0)
-    return () => clearTimeout(timer)
-  }, [keyword, experienceLevel, fetchJobs])
-
-  const filteredJobs = allJobs.filter(job => {
-    if (paymentType && job.paymentType !== paymentType) return false
-    if (budgetMin || budgetMax) {
-      const min = budgetMin ? Number(budgetMin) : 0
-      const max = budgetMax ? Number(budgetMax) : Infinity
-      if (job.paymentType === 'hourly') {
-        const jobMax = job.hourlyMax ?? job.hourlyMin ?? 0
-        const jobMin = job.hourlyMin ?? 0
-        if (budgetMax && jobMin > max) return false
-        if (budgetMin && jobMax < min) return false
-      } else {
-        const fixed = job.fixedBudget ?? 0
-        if (budgetMax && fixed > max) return false
-        if (budgetMin && fixed < min) return false
-      }
+    fetchJobs(activeCategory, searchQuery)
+    // Keep URL in sync with the active category chip
+    if (activeCategory) {
+      setSearchParams({ category: activeCategory }, { replace: true })
+    } else {
+      setSearchParams({}, { replace: true })
     }
-    return true
-  })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeCategory])
 
-  const activeFilters = []
-  if (keyword) activeFilters.push({ key: 'keyword', label: `"${keyword}"`, clear: () => setKeyword('') })
-  if (experienceLevel) activeFilters.push({ key: 'exp', label: experienceLevel, clear: () => setExperienceLevel('') })
-  if (paymentType) activeFilters.push({ key: 'type', label: paymentType === 'hourly' ? 'Hourly' : 'Fixed-price', clear: () => setPaymentType('') })
-  if (budgetMin) activeFilters.push({ key: 'bmin', label: `Min $${budgetMin}`, clear: () => setBudgetMin('') })
-  if (budgetMax) activeFilters.push({ key: 'bmax', label: `Max $${budgetMax}`, clear: () => setBudgetMax('') })
+  // Debounced text search — fire 400 ms after the user stops typing
+  useEffect(() => {
+    const t = setTimeout(() => {
+      fetchJobs(activeCategory, searchQuery)
+    }, 400)
+    return () => clearTimeout(t)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchQuery])
 
-  const hasActiveFilters = activeFilters.length > 0
-
-  const clearAll = () => {
-    setKeyword('')
-    setExperienceLevel('')
-    setPaymentType('')
-    setBudgetMin('')
-    setBudgetMax('')
+  const handleCategoryClick = (slug) => {
+    setActiveCategory(prev => prev === slug ? null : slug)
   }
 
-  return (
-    <div className="ffw-page">
-      <TopNav userName={userName} />
-      <div className="ffw-container">
+  const clearFilters = () => {
+    setActiveCategory(null)
+    setSearchQuery('')
+  }
 
-        <motion.div className="ffw-header" variants={fadeUp} initial="hidden" animate="visible" custom={0}>
-          <h1 className="ffw-title">Find Work</h1>
-          <p className="ffw-subtitle">
-            {loading ? 'Loading jobs...' : `${filteredJobs.length} job${filteredJobs.length !== 1 ? 's' : ''} available`}
-          </p>
+  const formatJob = (job) => ({
+    ...job,
+    id: job._id,
+    rate: job.paymentType === 'hourly'
+      ? `$${job.hourlyMin || 0}–$${job.hourlyMax || 0}/hr`
+      : `$${job.fixedBudget || job.budget || 0}`,
+    type: job.paymentType === 'hourly' ? 'Hourly' : 'Fixed-price',
+    experience: job.experienceLevel,
+    tags: job.requiredSkills || [],
+  })
+
+  const activeCategoryLabel = activeCategory
+    ? CATEGORIES.find(c => c.slug === activeCategory)?.label
+    : null
+
+  const renderSkeletons = () => (
+    <>
+      {[1, 2, 3].map(i => (
+        <div key={i} className="job-card skeleton-job-card">
+          <div className="skeleton-line skeleton-short" />
+          <div className="skeleton-line skeleton-title" />
+          <div className="skeleton-line skeleton-medium" />
+          <div className="skeleton-line skeleton-long" />
+          <div className="skeleton-line skeleton-long" />
+          <div className="skeleton-tags-row">
+            <div className="skeleton-tag" />
+            <div className="skeleton-tag" />
+            <div className="skeleton-tag" />
+          </div>
+        </div>
+      ))}
+    </>
+  )
+
+  return (
+    <div className="fw-page">
+      <TopNav userName={getUserName()} />
+
+      <div className="fw-container">
+        {/* ── Page header ── */}
+        <motion.div className="fw-header" variants={fadeUp} initial="hidden" animate="visible" custom={0}>
+          <h1 className="fw-title">Find Work</h1>
+          <p className="fw-subtitle">Browse open jobs from clients across Lebanon and beyond.</p>
         </motion.div>
 
-        <button className="ffw-filter-toggle" onClick={() => setShowFilters(p => !p)}>
-          ⚙ Filters {hasActiveFilters ? `(${activeFilters.length})` : ''}
-        </button>
+        {/* ── Search bar ── */}
+        <motion.div className="fw-search-wrap" variants={fadeUp} initial="hidden" animate="visible" custom={1}>
+          <svg className="fw-search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+          </svg>
+          <input
+            className="fw-search-input"
+            type="text"
+            placeholder="Search by title, skill, or keyword…"
+            value={searchQuery}
+            onChange={e => setSearchQuery(e.target.value)}
+          />
+          {searchQuery && (
+            <button className="fw-search-clear" onClick={() => setSearchQuery('')} aria-label="Clear search">
+              <X size={15} />
+            </button>
+          )}
+        </motion.div>
 
-        <div className="ffw-body">
+        {/* ── Category chips ── */}
+        <motion.div className="fw-chips-wrap" variants={fadeUp} initial="hidden" animate="visible" custom={2}>
+          {CATEGORIES.map(cat => (
+            <button
+              key={cat.slug}
+              className={`fw-chip ${activeCategory === cat.slug ? 'fw-chip--active' : ''}`}
+              onClick={() => handleCategoryClick(cat.slug)}
+            >
+              <span className="fw-chip-icon">{cat.icon}</span>
+              {cat.label}
+            </button>
+          ))}
+        </motion.div>
 
-          <motion.aside
-            className={`ffw-sidebar ${showFilters ? 'ffw-sidebar--open' : ''}`}
-            variants={fadeUp}
-            initial="hidden"
-            animate="visible"
-            custom={1}
-          >
-            <div className="ffw-filter-section">
-              <div className="ffw-search-wrap">
-                <Search className="ffw-search-icon" size={15} />
-                <input
-                  className="ffw-search-input"
-                  type="text"
-                  placeholder="Search jobs..."
-                  value={keyword}
-                  onChange={e => setKeyword(e.target.value)}
-                />
-                {keyword && (
-                  <button className="ffw-search-clear" onClick={() => setKeyword('')}>×</button>
-                )}
-              </div>
-            </div>
+        {/* ── Active filter indicator ── */}
+        {(activeCategoryLabel || searchQuery.trim()) && (
+          <motion.div className="fw-active-filter" variants={fadeUp} initial="hidden" animate="visible">
+            <span>
+              {activeCategoryLabel && <strong>{activeCategoryLabel}</strong>}
+              {activeCategoryLabel && searchQuery.trim() && ' · '}
+              {searchQuery.trim() && <span>"{searchQuery.trim()}"</span>}
+            </span>
+            <button className="fw-clear-btn" onClick={clearFilters}>
+              <X size={13} /> Clear filters
+            </button>
+          </motion.div>
+        )}
 
-            <div className="ffw-filter-divider" />
+        {/* ── Results count ── */}
+        {!loading && !error && (
+          <motion.p className="fw-result-count" variants={fadeUp} initial="hidden" animate="visible" custom={3}>
+            {jobs.length === 0 ? 'No jobs found' : `${jobs.length} job${jobs.length !== 1 ? 's' : ''} found`}
+          </motion.p>
+        )}
 
-            <div className="ffw-filter-section">
-              <p className="ffw-filter-label">Experience Level</p>
-              {['', 'entry', 'intermediate', 'expert'].map(val => (
-                <label key={val} className="ffw-radio-label">
-                  <input
-                    type="radio"
-                    name="exp"
-                    value={val}
-                    checked={experienceLevel === val}
-                    onChange={() => setExperienceLevel(val)}
-                  />
-                  <span className="ffw-radio-dot" />
-                  <span>{val === '' ? 'Any' : val.charAt(0).toUpperCase() + val.slice(1)}</span>
-                </label>
-              ))}
-            </div>
-
-            <div className="ffw-filter-divider" />
-
-            <div className="ffw-filter-section">
-              <p className="ffw-filter-label">Project Type</p>
-              {[{ val: '', label: 'Any' }, { val: 'hourly', label: 'Hourly' }, { val: 'fixed', label: 'Fixed-price' }].map(({ val, label }) => (
-                <label key={val} className="ffw-radio-label">
-                  <input
-                    type="radio"
-                    name="type"
-                    value={val}
-                    checked={paymentType === val}
-                    onChange={() => setPaymentType(val)}
-                  />
-                  <span className="ffw-radio-dot" />
-                  <span>{label}</span>
-                </label>
-              ))}
-            </div>
-
-            <div className="ffw-filter-divider" />
-
-            <div className="ffw-filter-section">
-              <p className="ffw-filter-label">Budget Range ($)</p>
-              <div className="ffw-budget-row">
-                <input
-                  className="ffw-budget-input"
-                  type="number"
-                  min="0"
-                  placeholder="Min"
-                  value={budgetMin}
-                  onChange={e => setBudgetMin(e.target.value)}
-                />
-                <span className="ffw-budget-sep">–</span>
-                <input
-                  className="ffw-budget-input"
-                  type="number"
-                  min="0"
-                  placeholder="Max"
-                  value={budgetMax}
-                  onChange={e => setBudgetMax(e.target.value)}
-                />
-              </div>
-            </div>
-
-            {hasActiveFilters && (
-              <>
-                <div className="ffw-filter-divider" />
-                <button className="ffw-clear-all" onClick={clearAll}>
-                  Clear all filters
-                </button>
-              </>
-            )}
-          </motion.aside>
-
-          <div className="ffw-content">
-
-            {hasActiveFilters && (
-              <div className="ffw-chips">
-                {activeFilters.map(f => (
-                  <span key={f.key} className="ffw-chip">
-                    {f.label}
-                    <button className="ffw-chip-x" onClick={f.clear}>×</button>
-                  </span>
-                ))}
-              </div>
-            )}
-
-            {loading && (
-              <div className="ffw-jobs-list">
-                {[1, 2, 3].map(i => (
-                  <div key={i} className="job-card skeleton-job-card">
-                    <div className="skeleton-line skeleton-short" />
-                    <div className="skeleton-line skeleton-title" />
-                    <div className="skeleton-line skeleton-medium" />
-                    <div className="skeleton-line skeleton-long" />
-                    <div className="skeleton-tags-row">
-                      <div className="skeleton-tag" />
-                      <div className="skeleton-tag" />
-                      <div className="skeleton-tag" />
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-
-            {error && !loading && (
-              <div className="ffw-error">
+        {/* ── Job feed ── */}
+        <div className="fw-feed">
+          {loading ? renderSkeletons()
+            : error ? (
+              <div className="fw-error">
                 <p>{error}</p>
-                <button className="ffw-retry-btn" onClick={() => fetchJobs(keyword, experienceLevel)}>Retry</button>
+                <button className="fw-retry-btn" onClick={() => fetchJobs(activeCategory, searchQuery)}>
+                  Retry
+                </button>
               </div>
-            )}
-
-            {!loading && !error && filteredJobs.length === 0 && (
-              <div className="ffw-empty">
-                <p className="ffw-empty-title">No jobs match your filters</p>
-                <p className="ffw-empty-sub">Try adjusting your search or clearing some filters.</p>
-                {hasActiveFilters && (
-                  <button className="ffw-retry-btn" onClick={clearAll}>
-                    Clear all filters
-                  </button>
-                )}
+            )
+            : jobs.length === 0 ? (
+              <div className="fw-empty">
+                <p>No jobs match your current filters.</p>
+                <button className="fw-retry-btn" onClick={clearFilters}>Clear filters</button>
               </div>
-            )}
-
-            {!loading && !error && filteredJobs.length > 0 && (
-              <div className="ffw-jobs-list">
-                {filteredJobs.map((job, i) => (
-                  <motion.div key={job._id} variants={fadeUp} initial="hidden" animate="visible" custom={i}>
-                    <JobCard job={job} />
-                  </motion.div>
-                ))}
-              </div>
-            )}
-
-          </div>
+            )
+            : jobs.map((job, i) => (
+              <motion.div key={job._id} variants={fadeUp} initial="hidden" animate="visible" custom={i * 0.3 + 4}>
+                <JobCard job={formatJob(job)} />
+              </motion.div>
+            ))
+          }
         </div>
       </div>
     </div>
   )
 }
+
+export default FreelancerFindWorkPage

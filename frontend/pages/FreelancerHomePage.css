@@ -961,3 +961,30 @@
   background-size: 200% 100%;
   animation: shimmer 1.5s infinite;
 }
+
+/* Profile Strength — missing items + label */
+.profile-progress-label {
+  font-size: 0.78rem;
+  color: #8696a0;
+  margin: 0.5rem 0 0;
+  text-align: center;
+  line-height: 1.4;
+}
+
+.profile-missing-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  justify-content: center;
+  margin-top: 0.75rem;
+}
+
+.profile-missing-item {
+  font-size: 0.74rem;
+  padding: 0.25rem 0.6rem;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 999px;
+  color: #8696a0;
+  white-space: nowrap;
+}

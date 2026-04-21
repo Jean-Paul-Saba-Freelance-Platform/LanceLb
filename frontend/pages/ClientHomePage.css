@@ -1180,3 +1180,20 @@
 [data-theme="light"] .empty-state-description {
   color: #667781;
 }
+
+.onboarding-dismiss-btn {
+  background: none;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 6px;
+  color: #8696a0;
+  font-size: 0.78rem;
+  padding: 0.3rem 0.65rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-left: 0.5rem;
+}
+.onboarding-dismiss-btn:hover {
+  background: rgba(62, 181, 145, 0.12);
+  border-color: rgba(62, 181, 145, 0.4);
+  color: #3eb591;
+}
