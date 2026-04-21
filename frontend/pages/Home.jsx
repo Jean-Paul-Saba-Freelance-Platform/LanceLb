@@ -87,12 +87,20 @@ const Home = () => {
   const [searchQuery, setSearchQuery] = useState('')
   const [activeTab, setActiveTab] = useState('hiring')
   const [stats, setStats] = useState(null)
+  const [featuredFreelancers, setFeaturedFreelancers] = useState([])
 
   useEffect(() => {
     fetch(`${API_BASE}/api/public/stats`)
       .then(r => r.json())
       .then(data => { if (data.success) setStats(data.stats) })
       .catch(() => {}) // silent fail — keeps hardcoded fallback
+  }, [])
+
+  useEffect(() => {
+    fetch(`${API_BASE}/api/public/featured-freelancers`)
+      .then(r => r.json())
+      .then(data => { if (data.success) setFeaturedFreelancers(data.freelancers) })
+      .catch(() => {})
   }, [])
   const navigate = useNavigate()
 
@@ -202,6 +210,70 @@ const Home = () => {
           </div>
         </section>
 
+        {/* ── FEATURED FREELANCERS ── */}
+        {featuredFreelancers.length > 0 && (
+          <section className="featured-section">
+            <h2 className="section-title">Top freelancers on LanceLB</h2>
+            <p className="section-subtitle">Verified talent, ready to work.</p>
+            <motion.div
+              className="featured-grid"
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, amount: 0.2 }}
+              variants={{ visible: { transition: { staggerChildren: 0.12 } } }}
+            >
+              {featuredFreelancers.map((fl) => {
+                const initials = fl.name?.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2) || '?'
+                const expLabel = fl.experienceLevel === 'expert' ? 'Expert' : fl.experienceLevel === 'intermediate' ? 'Mid-level' : 'Entry'
+                return (
+                  <motion.div
+                    key={fl._id}
+                    className="featured-card"
+                    variants={{ hidden: { opacity: 0, y: 24 }, visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: 'easeOut' } } }}
+                    whileHover={{ y: -4, transition: { duration: 0.2 } }}
+                  >
+                    <div className="featured-card-top">
+                      {fl.profilePicture ? (
+                        <img src={fl.profilePicture} alt={fl.name} className="featured-avatar" />
+                      ) : (
+                        <div className="featured-avatar featured-avatar-initials">{initials}</div>
+                      )}
+                      <div className="featured-card-meta">
+                        <span className="featured-name">{fl.name}</span>
+                        <span className="featured-title">{fl.title}</span>
+                        <span className="featured-exp-badge">{expLabel}</span>
+                      </div>
+                    </div>
+
+                    {fl.averageRating > 0 && (
+                      <div className="featured-rating">
+                        {[1,2,3,4,5].map(i => (
+                          <span key={i} className={`featured-star ${i <= Math.round(fl.averageRating) ? 'filled' : ''}`}>★</span>
+                        ))}
+                        <span className="featured-rating-num">{fl.averageRating.toFixed(1)}</span>
+                        <span className="featured-review-count">({fl.totalReviews} {fl.totalReviews === 1 ? 'review' : 'reviews'})</span>
+                      </div>
+                    )}
+
+                    {fl.skills?.length > 0 && (
+                      <div className="featured-skills">
+                        {fl.skills.slice(0, 4).map(skill => (
+                          <span key={skill} className="featured-skill-tag">{skill}</span>
+                        ))}
+                        {fl.skills.length > 4 && (
+                          <span className="featured-skill-tag featured-skill-more">+{fl.skills.length - 4}</span>
+                        )}
+                      </div>
+                    )}
+
+                    <Link to="/signup" className="featured-cta-btn">Join to view profile</Link>
+                  </motion.div>
+                )
+              })}
+            </motion.div>
+          </section>
+        )}
+
         {/* ── HOW IT WORKS ── */}
         <section id="features" className="how-section">
           <h2 className="section-title">How it works</h2>
@@ -270,7 +342,7 @@ const Home = () => {
       <footer className="landing-footer">
         <div className="footer-main">
           <div className="footer-brand">
-            <span className="footer-brand-name">openhand</span>
+            <span className="footer-brand-name">LanceLB</span>
             <p className="footer-tagline">
               Lebanon's dedicated freelance marketplace.<br />Built for talent, built for growth.
             </p>

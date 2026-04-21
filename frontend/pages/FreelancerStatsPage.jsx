@@ -46,7 +46,7 @@ const FreelancerStatsPage = () => {
       setError(null)
       try {
         const token = localStorage.getItem('token')
-        const res = await fetch(`${API_BASE}/api/freelancer/stats`, {
+        const res = await fetch(`${API_BASE}/api/freelancer/stats?range=${proposalsTimeFilter}`, {
           credentials: 'include',
           headers: {
             'Content-Type': 'application/json',
@@ -64,16 +64,9 @@ const FreelancerStatsPage = () => {
       }
     }
     fetchStats()
-  }, [])
+  }, [proposalsTimeFilter])
 
   const userName = user?.name || user?.firstName || 'Freelancer'
-
-  const profileMetrics = {
-    views: { value: 0, label: 'profile views' },
-    invites: { value: 0, label: 'invites received' },
-    clicks: { value: 0, label: 'profile clicks' }
-  }
-  const currentMetric = profileMetrics[profileMetricTab]
   const chartData = [0, 0, 0, 0, 0, 0, 0]
 
   const proposals = statsData?.proposals || {}
@@ -85,6 +78,16 @@ const FreelancerStatsPage = () => {
   const contractList = statsData?.activeContractList || []
   const avgAiScore = statsData?.avgAiScore ?? null
   const avgAtsScore = statsData?.avgAtsScore ?? null
+  const uniqueClients = statsData?.uniqueClients ?? 0
+  const profileViews = statsData?.profileViews ?? 0
+  const achievements = statsData?.achievements || []
+
+  const profileMetrics = {
+    views: { value: profileViews, label: 'profile views' },
+    invites: { value: 0, label: 'invites received' },
+    clicks: { value: 0, label: 'profile clicks' }
+  }
+  const currentMetric = profileMetrics[profileMetricTab]
 
   if (loading) {
     return (
@@ -324,6 +327,9 @@ const FreelancerStatsPage = () => {
               <p className="stats-card-description" style={{ marginTop: '0.25rem' }}>
                 {completedContracts} completed
               </p>
+              <p className="stats-card-description" style={{ marginTop: '0.15rem' }}>
+                {uniqueClients} unique client{uniqueClients !== 1 ? 's' : ''} worked with
+              </p>
 
               {contractList.length > 0 && (
                 <div className="contract-list">
@@ -459,10 +465,21 @@ const FreelancerStatsPage = () => {
                   <h2 className="stats-card-title">Achievements</h2>
                 </div>
               </div>
-              <div className="achievement-badge">
-                <Award size={24} />
-                <span>Starter badge</span>
-              </div>
+              {achievements.length > 0 ? (
+                achievements.map((badge) => (
+                  <div key={badge.id} className="achievement-badge">
+                    <Award size={24} />
+                    <div>
+                      <div style={{ fontWeight: 600, fontSize: '0.95rem' }}>{badge.label}</div>
+                      <div style={{ fontSize: '0.8rem', color: '#94a3b8', marginTop: '2px' }}>{badge.description}</div>
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <div className="stats-hint-card" style={{ marginTop: '0.5rem' }}>
+                  <p className="hint-text">Complete a project to earn your first badge.</p>
+                </div>
+              )}
               <a
                 href="#"
                 className="stats-card-link"

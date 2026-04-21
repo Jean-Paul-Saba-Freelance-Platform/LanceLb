@@ -27,6 +27,9 @@ const ProfileContent = ({
   portfolioTab, setPortfolioTab,
   openFollowModal,
   reviews,
+  education, editingEducation, setEditingEducation, eduDraft, setEduDraft, savingEdu, handleSaveEducation,
+  languages, editingLanguages, setEditingLanguages, langDraft, setLangDraft, savingLang, handleSaveLanguages,
+  hoursPerWeek, editingHours, setEditingHours, hoursDraft, setHoursDraft, savingHours, handleSaveHours,
 }) => {
   const [localTitle, setLocalTitle] = useState('')
   const [localBio, setLocalBio] = useState('')
@@ -196,11 +199,35 @@ const ProfileContent = ({
                 <Clock size={18} />
                 <span>Hours per week</span>
               </div>
-              <button className="sidebar-edit-icon fh-icon-button" aria-label="Edit hours per week">
+              <button
+                className="sidebar-edit-icon fh-icon-button"
+                aria-label="Edit hours per week"
+                onClick={() => { setHoursDraft(hoursPerWeek !== null ? String(hoursPerWeek) : ''); setEditingHours(true) }}
+              >
                 <Edit2 size={16} />
               </button>
             </div>
-            <p className="sidebar-card-text">Not set</p>
+            {editingHours ? (
+              <div style={{ marginTop: 8, display: 'flex', flexDirection: 'column', gap: 8 }}>
+                <input
+                  type="number"
+                  className="profile-edit-input"
+                  min={1}
+                  max={168}
+                  placeholder="e.g. 40"
+                  value={hoursDraft}
+                  onChange={e => setHoursDraft(e.target.value)}
+                />
+                <div style={{ display: 'flex', gap: 6 }}>
+                  <button className="fh-btn fh-btn-secondary" style={{ flex: 1, minHeight: 32, fontSize: '0.82rem' }} onClick={() => setEditingHours(false)}>Cancel</button>
+                  <button className="fh-btn fh-btn-primary" style={{ flex: 1, minHeight: 32, fontSize: '0.82rem' }} onClick={handleSaveHours} disabled={savingHours}>
+                    {savingHours ? 'Saving…' : 'Save'}
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <p className="sidebar-card-text">{hoursPerWeek !== null ? `${hoursPerWeek} hrs / week` : 'Not set'}</p>
+            )}
           </div>
 
           {/* Languages */}
@@ -210,11 +237,61 @@ const ProfileContent = ({
                 <Globe size={18} />
                 <span>Languages</span>
               </div>
-              <button className="sidebar-edit-icon fh-icon-button" aria-label="Add language">
+              <button
+                className="sidebar-edit-icon fh-icon-button"
+                aria-label="Edit languages"
+                onClick={() => { setLangDraft(languages.length ? languages.map(l => ({ ...l })) : [{ language: '', proficiency: 'conversational' }]); setEditingLanguages(true) }}
+              >
                 <Plus size={16} />
               </button>
             </div>
-            <p className="sidebar-card-text">Not set</p>
+            {editingLanguages ? (
+              <div style={{ marginTop: 8, display: 'flex', flexDirection: 'column', gap: 10 }}>
+                {langDraft.map((l, i) => (
+                  <div key={i} style={{ display: 'flex', flexDirection: 'column', gap: 6, padding: '8px', borderRadius: 8, background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.1)' }}>
+                    <input
+                      className="profile-edit-input"
+                      placeholder="Language (e.g. Arabic)"
+                      value={l.language}
+                      onChange={e => { const d = [...langDraft]; d[i] = { ...d[i], language: e.target.value }; setLangDraft(d) }}
+                    />
+                    <select
+                      className="profile-edit-input profile-edit-select"
+                      value={l.proficiency}
+                      onChange={e => { const d = [...langDraft]; d[i] = { ...d[i], proficiency: e.target.value }; setLangDraft(d) }}
+                    >
+                      <option value="basic">Basic</option>
+                      <option value="conversational">Conversational</option>
+                      <option value="fluent">Fluent</option>
+                      <option value="native">Native</option>
+                    </select>
+                    {langDraft.length > 1 && (
+                      <button className="fh-btn fh-btn-secondary" style={{ fontSize: '0.78rem', minHeight: 28 }} onClick={() => setLangDraft(langDraft.filter((_, j) => j !== i))}>Remove</button>
+                    )}
+                  </div>
+                ))}
+                <button className="fh-btn fh-btn-secondary" style={{ fontSize: '0.82rem', minHeight: 30 }} onClick={() => setLangDraft([...langDraft, { language: '', proficiency: 'conversational' }])}>+ Add another</button>
+                <div style={{ display: 'flex', gap: 6 }}>
+                  <button className="fh-btn fh-btn-secondary" style={{ flex: 1, minHeight: 32, fontSize: '0.82rem' }} onClick={() => setEditingLanguages(false)}>Cancel</button>
+                  <button className="fh-btn fh-btn-primary" style={{ flex: 1, minHeight: 32, fontSize: '0.82rem' }} onClick={handleSaveLanguages} disabled={savingLang}>
+                    {savingLang ? 'Saving…' : 'Save'}
+                  </button>
+                </div>
+              </div>
+            ) : (
+              languages.length > 0 ? (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 4, marginTop: 4 }}>
+                  {languages.map((l, i) => (
+                    <div key={i} style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.88rem' }}>
+                      <span style={{ color: 'var(--fh-text-body)' }}>{l.language}</span>
+                      <span style={{ color: 'var(--fh-text-muted)', textTransform: 'capitalize' }}>{l.proficiency}</span>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="sidebar-card-text">Not set</p>
+              )
+            )}
           </div>
 
           {/* Verifications */}
@@ -255,11 +332,51 @@ const ProfileContent = ({
                 <GraduationCap size={18} />
                 <span>Education</span>
               </div>
-              <button className="sidebar-edit-icon fh-icon-button" aria-label="Add education">
+              <button
+                className="sidebar-edit-icon fh-icon-button"
+                aria-label="Add education"
+                onClick={() => { setEduDraft(education.length ? education.map(e => ({ ...e })) : [{ school: '', degree: '', yearFrom: '', yearTo: '' }]); setEditingEducation(true) }}
+              >
                 <Plus size={16} />
               </button>
             </div>
-            <p className="sidebar-card-text">No education added</p>
+            {editingEducation ? (
+              <div style={{ marginTop: 8, display: 'flex', flexDirection: 'column', gap: 10 }}>
+                {eduDraft.map((e, i) => (
+                  <div key={i} style={{ display: 'flex', flexDirection: 'column', gap: 6, padding: '8px', borderRadius: 8, background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.1)' }}>
+                    <input className="profile-edit-input" placeholder="School / University" value={e.school} onChange={ev => { const d = [...eduDraft]; d[i] = { ...d[i], school: ev.target.value }; setEduDraft(d) }} />
+                    <input className="profile-edit-input" placeholder="Degree (e.g. B.S. Computer Science)" value={e.degree} onChange={ev => { const d = [...eduDraft]; d[i] = { ...d[i], degree: ev.target.value }; setEduDraft(d) }} />
+                    <div style={{ display: 'flex', gap: 6 }}>
+                      <input className="profile-edit-input" type="number" placeholder="From year" value={e.yearFrom} onChange={ev => { const d = [...eduDraft]; d[i] = { ...d[i], yearFrom: ev.target.value }; setEduDraft(d) }} />
+                      <input className="profile-edit-input" type="number" placeholder="To year" value={e.yearTo} onChange={ev => { const d = [...eduDraft]; d[i] = { ...d[i], yearTo: ev.target.value }; setEduDraft(d) }} />
+                    </div>
+                    {eduDraft.length > 1 && (
+                      <button className="fh-btn fh-btn-secondary" style={{ fontSize: '0.78rem', minHeight: 28 }} onClick={() => setEduDraft(eduDraft.filter((_, j) => j !== i))}>Remove</button>
+                    )}
+                  </div>
+                ))}
+                <button className="fh-btn fh-btn-secondary" style={{ fontSize: '0.82rem', minHeight: 30 }} onClick={() => setEduDraft([...eduDraft, { school: '', degree: '', yearFrom: '', yearTo: '' }])}>+ Add another</button>
+                <div style={{ display: 'flex', gap: 6 }}>
+                  <button className="fh-btn fh-btn-secondary" style={{ flex: 1, minHeight: 32, fontSize: '0.82rem' }} onClick={() => setEditingEducation(false)}>Cancel</button>
+                  <button className="fh-btn fh-btn-primary" style={{ flex: 1, minHeight: 32, fontSize: '0.82rem' }} onClick={handleSaveEducation} disabled={savingEdu}>
+                    {savingEdu ? 'Saving…' : 'Save'}
+                  </button>
+                </div>
+              </div>
+            ) : (
+              education.length > 0 ? (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginTop: 4 }}>
+                  {education.map((e, i) => (
+                    <div key={i}>
+                      <div style={{ fontSize: '0.88rem', color: 'var(--fh-text-body)', fontWeight: 600 }}>{e.school}</div>
+                      <div style={{ fontSize: '0.82rem', color: 'var(--fh-text-muted)' }}>{e.degree}{e.yearFrom ? ` · ${e.yearFrom}–${e.yearTo || 'Present'}` : ''}</div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="sidebar-card-text">No education added</p>
+              )
+            )}
           </div>
         </div>
 
@@ -526,6 +643,24 @@ const FreelancerProfilePage = () => {
   const [savingProfile, setSavingProfile] = useState(false)
   const [saveMessage, setSaveMessage] = useState('')
 
+  // Education
+  const [education, setEducation] = useState([])
+  const [editingEducation, setEditingEducation] = useState(false)
+  const [eduDraft, setEduDraft] = useState([])
+  const [savingEdu, setSavingEdu] = useState(false)
+
+  // Languages
+  const [languages, setLanguages] = useState([])
+  const [editingLanguages, setEditingLanguages] = useState(false)
+  const [langDraft, setLangDraft] = useState([])
+  const [savingLang, setSavingLang] = useState(false)
+
+  // Hours per week
+  const [hoursPerWeek, setHoursPerWeek] = useState(null)
+  const [editingHours, setEditingHours] = useState(false)
+  const [hoursDraft, setHoursDraft] = useState('')
+  const [savingHours, setSavingHours] = useState(false)
+
   const [followersCount, setFollowersCount] = useState(0)
   const [followingCount, setFollowingCount] = useState(0)
   const [showFollowModal, setShowFollowModal] = useState(null) // null | 'followers' | 'following'
@@ -548,6 +683,9 @@ const FreelancerProfilePage = () => {
         const data = await res.json()
         if (data.success && data.user) {
           setUser(data.user)
+          setEducation(data.user.education || [])
+          setLanguages(data.user.languages || [])
+          setHoursPerWeek(data.user.hoursPerWeek ?? null)
 
           const [followersRes, followingRes] = await Promise.all([
             fetch(`${API_BASE}/api/follow/followers`, {
@@ -611,6 +749,73 @@ const FreelancerProfilePage = () => {
       setSaveMessage('Network error')
     } finally {
       setSavingProfile(false)
+    }
+  }
+
+  const handleSaveEducation = async () => {
+    setSavingEdu(true)
+    try {
+      const token = localStorage.getItem('token')
+      const res = await fetch(`${API_BASE}/api/auth/profile`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        credentials: 'include',
+        body: JSON.stringify({ education: eduDraft }),
+      })
+      const data = await res.json()
+      if (data.success) {
+        setEducation(data.user.education || [])
+        setEditingEducation(false)
+      }
+    } catch (err) {
+      console.error('Save education error:', err)
+    } finally {
+      setSavingEdu(false)
+    }
+  }
+
+  const handleSaveLanguages = async () => {
+    setSavingLang(true)
+    try {
+      const token = localStorage.getItem('token')
+      const res = await fetch(`${API_BASE}/api/auth/profile`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        credentials: 'include',
+        body: JSON.stringify({ languages: langDraft }),
+      })
+      const data = await res.json()
+      if (data.success) {
+        setLanguages(data.user.languages || [])
+        setEditingLanguages(false)
+      }
+    } catch (err) {
+      console.error('Save languages error:', err)
+    } finally {
+      setSavingLang(false)
+    }
+  }
+
+  const handleSaveHours = async () => {
+    setSavingHours(true)
+    try {
+      const token = localStorage.getItem('token')
+      const hours = hoursDraft === '' ? null : Number(hoursDraft)
+      const res = await fetch(`${API_BASE}/api/auth/profile`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        credentials: 'include',
+        body: JSON.stringify({ hoursPerWeek: hours }),
+      })
+      const data = await res.json()
+      if (data.success) {
+        setHoursPerWeek(data.user.hoursPerWeek ?? null)
+        setEditingHours(false)
+      }
+    } catch (err) {
+      console.error('Save hours error:', err)
+    } finally {
+      setSavingHours(false)
     }
   }
 
@@ -689,6 +894,9 @@ const FreelancerProfilePage = () => {
     portfolioTab, setPortfolioTab,
     openFollowModal,
     reviews,
+    education, editingEducation, setEditingEducation, eduDraft, setEduDraft, savingEdu, handleSaveEducation,
+    languages, editingLanguages, setEditingLanguages, langDraft, setLangDraft, savingLang, handleSaveLanguages,
+    hoursPerWeek, editingHours, setEditingHours, hoursDraft, setHoursDraft, savingHours, handleSaveHours,
   }
 
   return (

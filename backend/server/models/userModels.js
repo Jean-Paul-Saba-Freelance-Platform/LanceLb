@@ -87,6 +87,40 @@ const userSchema = new mongoose.Schema({
       type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Job' }],
       default: [],
     },
+    education: {
+      type: [
+        {
+          school: { type: String, trim: true, maxlength: 120 },
+          degree: { type: String, trim: true, maxlength: 120 },
+          yearFrom: { type: Number },
+          yearTo: { type: Number },
+        }
+      ],
+      default: [],
+    },
+    languages: {
+      type: [
+        {
+          language: { type: String, trim: true, maxlength: 60 },
+          proficiency: {
+            type: String,
+            enum: ['basic', 'conversational', 'fluent', 'native'],
+            default: 'conversational',
+          },
+        }
+      ],
+      default: [],
+    },
+    hoursPerWeek: {
+      type: Number,
+      default: null,
+      min: 1,
+      max: 168,
+    },
+    profileViews: {
+      type: Number,
+      default: 0,
+    },
 }, { timestamps: true })
 
 const User = mongoose.model('User', userSchema);

@@ -7,22 +7,37 @@ export const getFreelancerStats = async (req, res) => {
   try {
     const freelancerId = req.userId
 
+    // --- Range filter for proposals (default: all time) ---
+    const range = req.query.range // '7days' | '30days' | '90days' | undefined
+    let createdAtFilter = {}
+    if (range) {
+      const days = range === '7days' ? 7 : range === '30days' ? 30 : 90
+      const cutoff = new Date()
+      cutoff.setDate(cutoff.getDate() - days)
+      createdAtFilter = { createdAt: { $gte: cutoff } }
+    }
+
     // --- Proposals breakdown ---
-    const apps = await Application.find({ freelancerId }).select('status aiScore atsScore')
+    const apps = await Application.find({ freelancerId, ...createdAtFilter })
+      .select('status aiScore atsScore clientId')
     const total = apps.length
     const byStatus = { pending: 0, shortlisted: 0, accepted: 0, rejected: 0, withdrawn: 0 }
     let aiScoreSum = 0, aiScoreCount = 0, atsScoreSum = 0, atsScoreCount = 0
+    const uniqueClientIds = new Set()
+
     for (const a of apps) {
       if (byStatus[a.status] !== undefined) byStatus[a.status]++
       if (a.aiScore != null) { aiScoreSum += a.aiScore; aiScoreCount++ }
       if (a.atsScore != null) { atsScoreSum += a.atsScore; atsScoreCount++ }
+      if (a.clientId) uniqueClientIds.add(a.clientId.toString())
     }
+
     const successRate = total ? Math.round((byStatus.accepted / total) * 100) : 0
     const shortlistRate = total ? Math.round(((byStatus.shortlisted + byStatus.accepted) / total) * 100) : 0
     const avgAiScore = aiScoreCount ? Math.round(aiScoreSum / aiScoreCount) : null
     const avgAtsScore = atsScoreCount ? Math.round(atsScoreSum / atsScoreCount) : null
 
-    // --- Active / Completed contracts (projects where this freelancer is a member) ---
+    // --- Active / Completed contracts ---
     const activeProjects = await Project.find({
       'jobs.freelancerIds': freelancerId,
       status: 'active'
@@ -33,12 +48,24 @@ export const getFreelancerStats = async (req, res) => {
       status: 'completed'
     }).countDocuments()
 
-    // Compute task stats per active project
     const activeContractsList = activeProjects.map(p => {
-      const total = p.tasks.length
-      const done = p.tasks.filter(t => t.validatedByClient).length
-      return { _id: p._id, title: p.title, launchDate: p.launchDate, tasksTotal: total, tasksDone: done }
+      const t = p.tasks?.length ?? 0
+      const done = p.tasks?.filter(tk => tk.validatedByClient).length ?? 0
+      return { _id: p._id, title: p.title, launchDate: p.launchDate, tasksTotal: t, tasksDone: done }
     })
+
+    // --- Profile views ---
+    const user = await User.findById(freelancerId).select('profileViews').lean()
+    const profileViews = user?.profileViews ?? 0
+
+    // --- Achievements ---
+    const achievements = []
+    if (completedProjects >= 1) {
+      achievements.push({ id: 'starter', label: 'Starter', description: 'Completed your first project' })
+    }
+    if (byStatus.accepted >= 5) {
+      achievements.push({ id: 'hired5', label: 'In Demand', description: 'Accepted on 5+ proposals' })
+    }
 
     return res.json({
       success: true,
@@ -49,7 +76,10 @@ export const getFreelancerStats = async (req, res) => {
       avgAtsScore,
       activeContracts: activeProjects.length,
       completedContracts: completedProjects,
-      activeContractsList
+      activeContractsList,
+      uniqueClients: uniqueClientIds.size,
+      profileViews,
+      achievements,
     })
   } catch (err) {
     console.error('getFreelancerStats error:', err)

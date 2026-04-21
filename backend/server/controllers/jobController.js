@@ -607,6 +607,28 @@ export const deleteClientJob = async (req, res) => {
 };
 
 // ---------------------------------------------------------------------------
+// GET  /api/public/featured-freelancers  —  Top-rated freelancers for landing page
+// ---------------------------------------------------------------------------
+
+/** Returns up to 4 highest-rated freelancers with a title set — no auth required. */
+export const getFeaturedFreelancers = async (req, res) => {
+    try {
+        const freelancers = await User.find({
+            userType: 'freelancer',
+            title: { $exists: true, $ne: '' },
+        })
+            .sort({ averageRating: -1, totalReviews: -1 })
+            .limit(4)
+            .select('_id name title skills averageRating totalReviews experienceLevel profilePicture')
+            .lean();
+
+        return res.status(200).json({ success: true, freelancers });
+    } catch (error) {
+        return res.status(500).json({ success: false, message: error.message });
+    }
+};
+
+// ---------------------------------------------------------------------------
 // GET  /api/jobs/best-matches  —  AI-ranked job matches for the logged-in freelancer
 // ---------------------------------------------------------------------------
 

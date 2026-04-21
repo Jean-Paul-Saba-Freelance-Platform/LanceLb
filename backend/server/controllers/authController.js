@@ -282,7 +282,7 @@ export const getProfile = async (req, res) => {
 
 export const updateProfile = async (req, res) => {
     try {
-        const { skills, bio, experienceLevel, title } = req.body;
+        const { skills, bio, experienceLevel, title, education, languages, hoursPerWeek } = req.body;
         const updates = {};
 
         // Build the updates object from only the fields that were provided.
@@ -311,6 +311,37 @@ export const updateProfile = async (req, res) => {
             updates.title = String(title).trim().slice(0, 120);
         }
 
+        if (education !== undefined) {
+            if (!Array.isArray(education)) {
+                return res.status(400).json({ success: false, message: 'Education must be an array' });
+            }
+            updates.education = education.map(e => ({
+                school: String(e.school || '').trim().slice(0, 120),
+                degree: String(e.degree || '').trim().slice(0, 120),
+                yearFrom: e.yearFrom ? Number(e.yearFrom) : undefined,
+                yearTo: e.yearTo ? Number(e.yearTo) : undefined,
+            }));
+        }
+
+        if (languages !== undefined) {
+            if (!Array.isArray(languages)) {
+                return res.status(400).json({ success: false, message: 'Languages must be an array' });
+            }
+            const validProficiencies = ['basic', 'conversational', 'fluent', 'native'];
+            updates.languages = languages.map(l => ({
+                language: String(l.language || '').trim().slice(0, 60),
+                proficiency: validProficiencies.includes(l.proficiency) ? l.proficiency : 'conversational',
+            }));
+        }
+
+        if (hoursPerWeek !== undefined) {
+            const hours = hoursPerWeek === null ? null : Number(hoursPerWeek);
+            if (hours !== null && (isNaN(hours) || hours < 1 || hours > 168)) {
+                return res.status(400).json({ success: false, message: 'Invalid hours per week' });
+            }
+            updates.hoursPerWeek = hours;
+        }
+
         const user = await User.findByIdAndUpdate(req.userId, updates, { new: true })
             .select('-password -verifyOtp -verifyOtpExpiry -resetOtp -resetOtpExpiry');
 
@@ -321,6 +352,26 @@ export const updateProfile = async (req, res) => {
         return res.status(500).json({ success: false, message: error.message });
     }
 };
+
+// ---------------------------------------------------------------------------
+// PATCH /api/user/:id/view — Increment a freelancer's profile view counter
+// ---------------------------------------------------------------------------
+
+export const incrementProfileViews = async (req, res) => {
+  try {
+    const user = await User.findByIdAndUpdate(
+      req.params.id,
+      { $inc: { profileViews: 1 } },
+      { new: true }
+    ).select('profileViews').lean()
+
+    if (!user) return res.status(404).json({ success: false, message: 'User not found' })
+
+    return res.json({ success: true, profileViews: user.profileViews })
+  } catch (error) {
+    return res.status(500).json({ success: false, message: error.message })
+  }
+}
 
 // ---------------------------------------------------------------------------
 // GET /api/auth/google — Redirect the browser to Google's OAuth consent screen
