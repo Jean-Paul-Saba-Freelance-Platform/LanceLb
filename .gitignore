@@ -35,7 +35,7 @@ frontend/.vite/
 screenshots/
 .screenshot-auth.json
 
-# Hugging Face space (local git repo, not a submodule)
-hf-ats-space/__pycache__/
+# Hugging Face space — managed as a separate git repo, not tracked here
+hf-ats-space/
 **/__pycache__/
 *.pyc

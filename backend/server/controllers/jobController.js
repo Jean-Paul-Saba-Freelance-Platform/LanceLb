@@ -666,11 +666,14 @@ export const getBestMatchJobs = async (req, res) => {
             }),
         });
 
+        const normalize = (list) => list.map(j => ({ ...j, id: j._id?.toString(), _id: j._id?.toString() }));
+
         if (!flaskRes.ok) {
-            throw new Error('Flask match-jobs service unavailable');
+            return res.status(200).json({ success: true, data: normalize(jobs) });
         }
 
-        const { matches } = await flaskRes.json();
+        const flaskData = await flaskRes.json();
+        const matches = normalize(flaskData.matches || jobs);
 
         return res.status(200).json({ success: true, data: matches });
 

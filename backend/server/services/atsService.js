@@ -1,28 +1,17 @@
-import fetch from "node-fetch";
-
-const getFlaskUrl = () => process.env.FLASK_URL || 'http://localhost:5001';
+const getFlaskUrl = () => process.env.FLASK_URL || 'http://127.0.0.1:5001';
 
 export const evaluateResumeWithFlask = async (fileBuffer, originalName, jobDescription = '') => {
-  const base64Pdf = fileBuffer.toString('base64');
+  const form = new FormData();
+  const blob = new Blob([fileBuffer], { type: 'application/pdf' });
+  form.append('file', blob, originalName);
+  if (jobDescription) form.append('job_description', jobDescription);
 
-  const response = await fetch(`${getFlaskUrl()}/evaluate`, {
-    method  : 'POST',
-    headers : { 'Content-Type': 'application/json' },
-    body    : JSON.stringify({
-      resume_b64      : base64Pdf,
-      job_description : jobDescription || '',
-    }),
-  });
+  const response = await fetch(`${getFlaskUrl()}/evaluate`, { method: 'POST', body: form });
 
   if (!response.ok) {
-    const error = await response.json();
-    throw new Error(error.error || 'ATS evaluation failed.');
+    const error = await response.json().catch(() => ({}));
+    throw new Error(error.error || `Flask returned ${response.status}`);
   }
 
   return await response.json();
-};
-
-export const checkFlaskHealth = async () => {
-  const response = await fetch(`${getFlaskUrl()}/health`);
-  return response.ok;
 };

@@ -100,7 +100,7 @@ const FreelancerHomePage = () => {
         });
         const data = await res.json();
         if (data.success) {
-          setBestMatches(data.data);
+          setBestMatches((data.data || []).map(j => ({ ...j, id: j._id || j.id, _id: j._id || j.id })));
         }
       } catch (err) {
         console.error('Best matches fetch error:', err);

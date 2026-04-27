@@ -76,11 +76,17 @@ const SignUp = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault()
+        console.log('=== handleSubmit called ===')
         const allTouched = { name: true, email: true, password: true, confirmPassword: true }
         setTouched(allTouched)
         const errs = validateAll()
         setErrors(errs)
-        if (Object.keys(errs).length > 0) return
+        console.log('Validation errors:', errs)
+        if (Object.keys(errs).length > 0) {
+            console.log('Validation failed, returning')
+            return
+        }
+        console.log('Validation passed, submitting form')
 
         setIsSubmitting(true)
         try{

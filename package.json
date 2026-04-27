@@ -1,5 +1,11 @@
 {
+  "scripts": {
+    "dev": "concurrently \"npm run dev --prefix backend\" \"npm run dev --prefix frontend\" \"npm run ats\"",
+    "ats": "docker run --rm -p 5000:5000 ats-scorer",
+    "ats:build": "docker build -t ats-scorer ./hf-ats-space"
+  },
   "devDependencies": {
+    "concurrently": "^9.2.1",
     "puppeteer": "^24.39.1"
   },
   "dependencies": {

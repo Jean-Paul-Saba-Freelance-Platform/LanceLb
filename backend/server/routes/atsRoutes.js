@@ -1,7 +1,7 @@
 import express from 'express';
 import multer from 'multer';
 import userAuth from '../middleware/userAuth.js';
-import { evaluateResumeWithFlask, checkFlaskHealth } from '../services/atsService.js';
+import { evaluateResumeWithFlask } from '../services/atsService.js';
 
 const atsRouter = express.Router();
 
@@ -22,11 +22,6 @@ atsRouter.post('/evaluate', userAuth, upload.single('resume'), async (req, res) 
     try {
         if (!req.file) {
             return res.status(400).json({ success: false, message: 'No PDF file uploaded.' });
-        }
-
-        const healthy = await checkFlaskHealth();
-        if (!healthy) {
-            return res.status(503).json({ success: false, message: 'ATS scoring service is currently unavailable.' });
         }
 
         const jobDescription = req.body.job_description || '';

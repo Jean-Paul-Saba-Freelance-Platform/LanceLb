@@ -2,7 +2,7 @@ import express from 'express';
 import userAuth from '../middleware/userAuth.js';
 import User from '../models/userModels.js';
 import Job from '../models/jobModel.js';
-import { analyzeProfileFit, generateApplicationTips, chatWithSupport } from '../services/aiService.js';
+import { analyzeProfileFit, generateApplicationTips, generateApplicationSuggestions, chatWithSupport } from '../services/aiService.js';
 
 const aiRouter = express.Router();
 
@@ -86,6 +86,33 @@ aiRouter.get('/application-tips/:jobId', userAuth, async (req, res) => {
   } catch (error) {
     console.error('AI application-tips error:', error);
     return res.status(500).json({ success: false, message: 'Error generating application tips' });
+  }
+});
+
+aiRouter.post('/suggest-improvements/:jobId', userAuth, async (req, res) => {
+  try {
+    const { jobId } = req.params;
+    const { coverLetter, proposedBudget, proposedTimelineDays, answers } = req.body;
+
+    const [user, job] = await Promise.all([
+      User.findById(req.userId).select('skills bio experienceLevel title').lean(),
+      Job.findById(jobId).lean(),
+    ]);
+
+    if (!job) {
+      return res.status(404).json({ success: false, message: 'Job not found' });
+    }
+
+    const result = await generateApplicationSuggestions(
+      { title: user.title, bio: user.bio, skills: user.skills, experienceLevel: user.experienceLevel },
+      job,
+      { coverLetter, proposedBudget, proposedTimelineDays, answers },
+    );
+
+    return res.json({ success: true, suggestions: result.suggestions });
+  } catch (error) {
+    console.error('AI suggest-improvements error:', error);
+    return res.status(500).json({ success: false, message: 'Error generating suggestions' });
   }
 });
 

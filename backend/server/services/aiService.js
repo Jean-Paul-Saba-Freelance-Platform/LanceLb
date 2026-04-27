@@ -270,6 +270,105 @@ Rules:
   }
 }
 
+// ─────────────────────────────────────────────────────────
+//  FUNCTION 4: Application Suggestions (in-progress draft)
+// ─────────────────────────────────────────────────────────
+//
+// Called when a freelancer clicks "Suggest improvements" while
+// filling out the apply wizard. Takes their current draft state
+// and returns field-level rewrites with accept/reject UX.
+//
+// Returns: { suggestions: [{ field, label, suggested, reason }] }
+export async function generateApplicationSuggestions(freelancerProfile, jobData, draft) {
+  const answersSummary = draft.answers?.length
+    ? draft.answers.map(a => `Q: ${a.questionText}\nA: ${a.value}`).join('\n\n')
+    : 'No screening answers provided.';
+
+  const existingSkills = freelancerProfile.skills?.length
+    ? freelancerProfile.skills.join(', ')
+    : 'none';
+
+  const userPrompt = `You are coaching a freelancer filling out a job application. Review their current draft AND profile, then suggest concrete improvements for fields that need work.
+
+## Job Posting
+${buildJobSummary(jobData)}
+
+## Freelancer Profile
+${buildProfileSummary(freelancerProfile)}
+
+## Freelancer's Existing Skills (DO NOT suggest any of these)
+${existingSkills}
+
+## Current Application Draft
+Cover letter: ${draft.coverLetter || '(empty — not written yet)'}
+Proposed budget: ${draft.proposedBudget ? '$' + draft.proposedBudget : '(not set)'}
+Proposed timeline: ${draft.proposedTimelineDays ? draft.proposedTimelineDays + ' days' : '(not set)'}
+Screening answers:
+${answersSummary}
+
+Suggest improvements for application fields AND profile fields that would make this freelancer more competitive for this job. Only include fields that genuinely need work.
+
+Respond with JSON in this exact format:
+{
+  "suggestions": [
+    {
+      "field": "coverLetter",
+      "label": "Cover Letter",
+      "suggested": "<complete rewritten cover letter — ready to paste>",
+      "reason": "<one sentence explaining the key improvement>"
+    },
+    {
+      "field": "proposedBudget",
+      "label": "Proposed Budget",
+      "suggested": "<number only, no $ sign>",
+      "reason": "<one sentence>"
+    },
+    {
+      "field": "proposedTimelineDays",
+      "label": "Timeline (days)",
+      "suggested": "<number only>",
+      "reason": "<one sentence>"
+    },
+    {
+      "field": "profile_bio",
+      "label": "Profile Bio",
+      "suggested": "<rewritten bio that highlights skills relevant to this job>",
+      "reason": "<one sentence>"
+    },
+    {
+      "field": "profile_title",
+      "label": "Profile Title",
+      "suggested": "<improved professional title — max 120 chars>",
+      "reason": "<one sentence>"
+    },
+    {
+      "field": "profile_skills",
+      "label": "Skills to Add",
+      "suggested": "<comma-separated list of missing skills relevant to this job>",
+      "reason": "<one sentence>"
+    }
+  ]
+}
+
+Rules:
+- Return only fields that need improvement (1 to 5 suggestions total)
+- Cover letter must be complete and specific to this job
+- Budget and timeline must be numbers only
+- Profile suggestions must be directly relevant to this job's requirements
+- For profile_skills: ONLY suggest skills NOT in the "Freelancer's Existing Skills" list above — any skill already listed there must be excluded from your suggestion
+- Reasons must reference this specific job, not generic advice`;
+
+  try {
+    const result = await chatJSON(SYSTEM_PROMPT, userPrompt);
+    return {
+      suggestions: Array.isArray(result.suggestions) ? result.suggestions : [],
+    };
+  } catch (error) {
+    console.error('AI generateApplicationSuggestions error:', error.message);
+    return { suggestions: [] };
+  }
+}
+
 export async function chatWithSupport(history, mode = 'user', stats = null) {
   const userSystemPrompt = `You are LanceLB Support Assistant — a helpful, friendly AI for the LanceLB freelance marketplace platform (Lebanese-focused, like Fiverr/Upwork).
 

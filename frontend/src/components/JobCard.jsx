@@ -121,8 +121,14 @@ const JobCard = ({ job, isSaved = false, onToggleSave }) => {
   const [tipsError, setTipsError] = useState('')
   const [tipsSummary, setTipsSummary] = useState('')
   const [detailedTips, setDetailedTips] = useState([])
+  const [suggestions, setSuggestions] = useState([])
+  const [suggestLoading, setSuggestLoading] = useState(false)
+  const [suggestError, setSuggestError] = useState('')
+  const [dismissedSuggestions, setDismissedSuggestions] = useState(new Set())
+  const [currentProfile, setCurrentProfile] = useState(null)
 
   const openApplyModal = async () => {
+    const jobId = job.id || job._id
     setIsApplyOpen(true)
     setLoadingQuestions(true)
     setFitLoading(true)
@@ -131,15 +137,20 @@ const JobCard = ({ job, isSaved = false, onToggleSave }) => {
     const token = localStorage.getItem('token')
     const headers = token ? { Authorization: `Bearer ${token}` } : {}
 
+    if (token) {
+      fetch(`${API_BASE}/api/auth/profile`, { headers, credentials: 'include' })
+        .then(r => r.json()).then(d => { if (d.success) setCurrentProfile(d.user) }).catch(() => {})
+    }
+
     try {
       const [jobResult, fitResult] = await Promise.allSettled([
-        fetch(`${API_BASE}/api/client/jobs/${job.id || job._id}`),
-        token
-          ? fetch(`${API_BASE}/api/ai/fit-score/${job.id || job._id}`, { credentials: 'include', headers })
+        jobId ? fetch(`${API_BASE}/api/client/jobs/${jobId}`) : Promise.resolve(null),
+        token && jobId
+          ? fetch(`${API_BASE}/api/ai/fit-score/${jobId}`, { credentials: 'include', headers })
           : Promise.resolve(null),
       ])
 
-      if (jobResult.status === 'fulfilled') {
+      if (jobResult.status === 'fulfilled' && jobResult.value) {
         const data = await jobResult.value.json()
         if (data.success && data.job?.screeningQuestions?.length) {
           setQuestions(data.job.screeningQuestions)
@@ -208,6 +219,84 @@ const JobCard = ({ job, isSaved = false, onToggleSave }) => {
     } finally {
       setTipsLoading(false)
     }
+  }
+
+  const fetchSuggestions = async () => {
+    const token = localStorage.getItem('token')
+    if (!token || suggestLoading) return
+
+    setSuggestLoading(true)
+    setSuggestError('')
+    setSuggestions([])
+    setDismissedSuggestions(new Set())
+
+    const formattedAnswers = questions.map(q => ({
+      questionId: q._id || q.id,
+      questionText: q.questionText,
+      value: answers[q._id || q.id] || '',
+    })).filter(a => a.value !== '')
+
+    try {
+      const res = await fetch(`${API_BASE}/api/ai/suggest-improvements/${job.id || job._id}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        credentials: 'include',
+        body: JSON.stringify({
+          coverLetter,
+          proposedBudget: proposedBudget ? Number(proposedBudget) : undefined,
+          proposedTimelineDays: proposedTimeline ? Number(proposedTimeline) : undefined,
+          answers: formattedAnswers,
+        }),
+      })
+      const data = await res.json()
+      if (!res.ok || !data.success) {
+        setSuggestError(data.message || 'Could not generate suggestions.')
+        return
+      }
+      setSuggestions(data.suggestions || [])
+    } catch {
+      setSuggestError('Could not reach AI service.')
+    } finally {
+      setSuggestLoading(false)
+    }
+  }
+
+  const acceptSuggestion = async (suggestion) => {
+    if (suggestion.field === 'coverLetter') setCoverLetter(suggestion.suggested)
+    if (suggestion.field === 'proposedBudget') setProposedBudget(suggestion.suggested)
+    if (suggestion.field === 'proposedTimelineDays') setProposedTimeline(suggestion.suggested)
+
+    if (suggestion.field.startsWith('profile_')) {
+      const token = localStorage.getItem('token')
+      const payload = {}
+      if (suggestion.field === 'profile_bio') payload.bio = suggestion.suggested
+      if (suggestion.field === 'profile_title') payload.title = suggestion.suggested
+      if (suggestion.field === 'profile_skills') {
+        const newSkills = suggestion.suggested.split(',').map(s => s.trim()).filter(Boolean)
+        const existing = currentProfile?.skills || []
+        const existingLower = existing.map(s => s.toLowerCase())
+        const toAdd = newSkills.filter(s => !existingLower.includes(s.toLowerCase()))
+        payload.skills = [...new Set([...existing, ...toAdd])]
+      }
+      try {
+        await fetch(`${API_BASE}/api/auth/profile`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+          credentials: 'include',
+          body: JSON.stringify(payload),
+        })
+        setSuggestions([])
+        setDismissedSuggestions(new Set())
+      } catch {
+        // profile update failure doesn't block the application flow
+      }
+    }
+
+    setDismissedSuggestions(prev => new Set([...prev, suggestion.field]))
+  }
+
+  const rejectSuggestion = (field) => {
+    setDismissedSuggestions(prev => new Set([...prev, field]))
   }
 
   const handleCvUpload = async (file) => {
@@ -335,6 +424,11 @@ const JobCard = ({ job, isSaved = false, onToggleSave }) => {
     setTipsError('')
     setTipsSummary('')
     setDetailedTips([])
+    setSuggestions([])
+    setSuggestLoading(false)
+    setSuggestError('')
+    setDismissedSuggestions(new Set())
+    setCurrentProfile(null)
   }
 
   const hasQuestions = questions.length > 0
@@ -434,7 +528,7 @@ const JobCard = ({ job, isSaved = false, onToggleSave }) => {
             </div>
 
             {/* AI Fit Score Panel */}
-            {!success && (fitLoading || fitError || !fitProfileComplete || fitScore != null || tipsSummary || detailedTips.length > 0 || tipsError) && (
+            {!success && (fitLoading || fitError || !fitProfileComplete || fitScore != null || fitImprovements.length > 0 || fitStrengths.length > 0 || tipsSummary || detailedTips.length > 0 || tipsError) && (
               <div className="fit-score-panel">
                 {fitLoading ? (
                   <div className="fit-score-loading">
@@ -484,14 +578,24 @@ const JobCard = ({ job, isSaved = false, onToggleSave }) => {
                           ))}
                         </div>
                       )}
-                      <button
-                        type="button"
-                        className="fit-tips-button"
-                        onClick={fetchDetailedTips}
-                        disabled={tipsLoading}
-                      >
-                        {tipsLoading ? 'Getting detailed tips...' : 'Get detailed AI tips'}
-                      </button>
+                      <div className="fit-action-row">
+                        <button
+                          type="button"
+                          className="fit-tips-button"
+                          onClick={fetchDetailedTips}
+                          disabled={tipsLoading}
+                        >
+                          {tipsLoading ? 'Getting tips...' : 'Get AI tips'}
+                        </button>
+                        <button
+                          type="button"
+                          className="fit-suggest-button"
+                          onClick={fetchSuggestions}
+                          disabled={suggestLoading}
+                        >
+                          {suggestLoading ? 'Analyzing...' : 'Suggest improvements'}
+                        </button>
+                      </div>
                     </div>
                   </div>
                 ) : null}
@@ -515,6 +619,99 @@ const JobCard = ({ job, isSaved = false, onToggleSave }) => {
                         )}
                       </>
                     )}
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* AI Suggestions Panel */}
+            {(suggestLoading || suggestError || suggestions.length > 0) && (
+              <div className="suggestions-panel">
+                <div className="suggestions-panel-header">
+                  <span className="suggestions-panel-title">AI Suggested Improvements</span>
+                  {!suggestLoading && suggestions.length > 0 && (
+                    <span className="suggestions-count">
+                      {suggestions.filter(s => !dismissedSuggestions.has(s.field)).length} remaining
+                    </span>
+                  )}
+                </div>
+                {suggestLoading ? (
+                  <div className="suggestions-loading">
+                    <div className="fit-score-spinner" />
+                    <span>Analyzing your draft...</span>
+                  </div>
+                ) : suggestError ? (
+                  <p className="suggestions-error">{suggestError}</p>
+                ) : suggestions.length === 0 ? (
+                  <p className="suggestions-empty">Your application looks great — no improvements needed.</p>
+                ) : (
+                  <div className="suggestions-list">
+                    {suggestions.map((s) => {
+                      const dismissed = dismissedSuggestions.has(s.field)
+                      const isAccepted = dismissed && (
+                        (s.field === 'coverLetter' && coverLetter === s.suggested) ||
+                        (s.field === 'proposedBudget' && proposedBudget === s.suggested) ||
+                        (s.field === 'proposedTimelineDays' && proposedTimeline === s.suggested)
+                      )
+                      return (
+                        <div key={s.field} className={`suggestion-card ${dismissed ? 'suggestion-card--dismissed' : ''}`}>
+                          <div className="suggestion-header">
+                            <span className="suggestion-label">{s.label}</span>
+                            {dismissed && (
+                              <span className={`suggestion-status ${isAccepted ? 'suggestion-status--accepted' : 'suggestion-status--rejected'}`}>
+                                {isAccepted ? 'Applied' : 'Skipped'}
+                              </span>
+                            )}
+                          </div>
+                          <p className="suggestion-reason">{s.reason}</p>
+                          {!dismissed && (
+                            <>
+                              <div className="suggestion-diff">
+                                <div className="suggestion-diff-before">
+                                  <span className="suggestion-diff-label">Current</span>
+                                  <p className="suggestion-diff-text suggestion-diff-text--before">
+                                    {s.field === 'coverLetter'
+                                      ? (coverLetter ? `${coverLetter.slice(0, 100)}${coverLetter.length > 100 ? '…' : ''}` : '(empty)')
+                                      : s.field === 'proposedBudget' ? (proposedBudget ? `$${proposedBudget}` : '(not set)')
+                                      : s.field === 'proposedTimelineDays' ? (proposedTimeline ? `${proposedTimeline} days` : '(not set)')
+                                      : s.field === 'profile_bio' ? (currentProfile?.bio ? `${currentProfile.bio.slice(0, 80)}…` : '(empty)')
+                                      : s.field === 'profile_title' ? (currentProfile?.title || '(empty)')
+                                      : (currentProfile?.skills?.join(', ') || '(no skills)')}
+                                  </p>
+                                </div>
+                                <div className="suggestion-diff-arrow">→</div>
+                                <div className="suggestion-diff-after">
+                                  <span className="suggestion-diff-label">Suggested</span>
+                                  <p className="suggestion-diff-text suggestion-diff-text--after">
+                                    {s.field === 'coverLetter'
+                                      ? `${s.suggested.slice(0, 100)}${s.suggested.length > 100 ? '…' : ''}`
+                                      : s.field === 'proposedBudget' ? `$${s.suggested}`
+                                      : s.field === 'proposedTimelineDays' ? `${s.suggested} days`
+                                      : `${s.suggested.slice(0, 100)}${s.suggested.length > 100 ? '…' : ''}`}
+                                  </p>
+                                </div>
+                              </div>
+                              <div className="suggestion-actions">
+                                <button
+                                  type="button"
+                                  className="suggestion-accept"
+                                  onClick={() => acceptSuggestion(s)}
+                                >
+                                  {s.field.startsWith('profile_') ? 'Apply to Profile' : 'Accept'}
+                                </button>
+                                <button
+                                  type="button"
+                                  className="suggestion-reject"
+                                  onClick={() => rejectSuggestion(s.field)}
+                                >
+                                  Skip
+                                </button>
+                              </div>
+                            </>
+                          )}
+                        </div>
+                      )
+                    })}
                   </div>
                 )}
               </div>

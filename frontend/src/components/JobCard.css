@@ -1282,3 +1282,277 @@
 .ats-match-tag { font-size: 0.75rem; line-height: 1.5; display: block; }
 .ats-match-tag--hit { color: #10b981; }
 .ats-match-tag--miss { color: #fbbf24; }
+
+/* ── AI Suggestions Panel ── */
+
+.fit-action-row {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-top: 0.2rem;
+}
+
+.fit-suggest-button {
+  align-self: flex-start;
+  border: 1px solid rgba(0, 168, 132, 0.5);
+  background: transparent;
+  color: #9df3dc;
+  border-radius: 999px;
+  padding: 0.38rem 0.75rem;
+  font-size: 0.76rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.fit-suggest-button:hover:not(:disabled) {
+  background: rgba(0, 168, 132, 0.1);
+  border-color: #00a884;
+}
+
+.fit-suggest-button:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+
+.suggestions-panel {
+  background: rgba(0, 168, 132, 0.04);
+  border: 1px solid rgba(0, 168, 132, 0.2);
+  border-radius: 12px;
+  padding: 0.85rem 1rem;
+  margin: 0 1.5rem 0.75rem;
+}
+
+.suggestions-panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.65rem;
+}
+
+.suggestions-panel-title {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #9df3dc;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.suggestions-count {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.suggestions-loading {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.83rem;
+}
+
+.suggestions-error {
+  font-size: 0.82rem;
+  color: #f87171;
+  margin: 0;
+}
+
+.suggestions-empty {
+  font-size: 0.82rem;
+  color: #10b981;
+  margin: 0;
+}
+
+.suggestions-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.suggestion-card {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  padding: 0.65rem 0.75rem;
+  transition: opacity 0.2s;
+}
+
+.suggestion-card--dismissed {
+  opacity: 0.45;
+}
+
+.suggestion-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.25rem;
+}
+
+.suggestion-label {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #e9edef;
+}
+
+.suggestion-status {
+  font-size: 0.72rem;
+  font-weight: 600;
+  border-radius: 999px;
+  padding: 0.15rem 0.55rem;
+}
+
+.suggestion-status--accepted {
+  background: rgba(16, 185, 129, 0.15);
+  color: #10b981;
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.suggestion-status--rejected {
+  background: rgba(255, 255, 255, 0.05);
+  color: rgba(255, 255, 255, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.suggestion-reason {
+  font-size: 0.78rem;
+  color: rgba(255, 255, 255, 0.5);
+  margin: 0 0 0.55rem;
+  line-height: 1.4;
+}
+
+.suggestion-diff {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  margin-bottom: 0.55rem;
+}
+
+.suggestion-diff-before,
+.suggestion-diff-after {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.suggestion-diff-label {
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: rgba(255, 255, 255, 0.35);
+}
+
+.suggestion-diff-text {
+  font-size: 0.8rem;
+  line-height: 1.45;
+  margin: 0;
+  border-radius: 6px;
+  padding: 0.35rem 0.5rem;
+}
+
+.suggestion-diff-text--before {
+  background: rgba(248, 113, 113, 0.08);
+  color: rgba(255, 255, 255, 0.5);
+  border: 1px solid rgba(248, 113, 113, 0.15);
+  text-decoration: line-through;
+  text-decoration-color: rgba(248, 113, 113, 0.4);
+}
+
+.suggestion-diff-arrow {
+  color: rgba(255, 255, 255, 0.25);
+  font-size: 1rem;
+  padding-top: 1.4rem;
+  flex-shrink: 0;
+}
+
+.suggestion-diff-text--after {
+  background: rgba(16, 185, 129, 0.08);
+  color: #9df3dc;
+  border: 1px solid rgba(16, 185, 129, 0.2);
+}
+
+.suggestion-actions {
+  display: flex;
+  gap: 0.45rem;
+}
+
+.suggestion-accept {
+  background: #00a884;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 0.3rem 0.8rem;
+  font-size: 0.76rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.suggestion-accept:hover {
+  background: #009073;
+}
+
+.suggestion-reject {
+  background: transparent;
+  color: rgba(255, 255, 255, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 6px;
+  padding: 0.3rem 0.8rem;
+  font-size: 0.76rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.suggestion-reject:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: rgba(255, 255, 255, 0.6);
+}
+
+[data-theme="light"] .suggestions-panel {
+  background: #f0faf6;
+  border-color: rgba(0, 168, 132, 0.25);
+}
+
+[data-theme="light"] .suggestions-panel-title { color: #017561; }
+[data-theme="light"] .suggestions-count { color: #667781; }
+[data-theme="light"] .suggestions-loading { color: #667781; }
+[data-theme="light"] .suggestions-empty { color: #017561; }
+
+[data-theme="light"] .suggestion-card {
+  background: #fff;
+  border-color: #e0e3e7;
+}
+
+[data-theme="light"] .suggestion-label { color: #111b21; }
+[data-theme="light"] .suggestion-reason { color: #667781; }
+
+[data-theme="light"] .suggestion-diff-text--before {
+  background: #fff5f5;
+  color: #667781;
+  border-color: rgba(248, 113, 113, 0.2);
+}
+
+[data-theme="light"] .suggestion-diff-text--after {
+  background: #eef9f5;
+  color: #017561;
+  border-color: rgba(0, 168, 132, 0.25);
+}
+
+[data-theme="light"] .suggestion-diff-arrow { color: #c0c8ce; }
+[data-theme="light"] .suggestion-diff-label { color: #8696a0; }
+
+[data-theme="light"] .suggestion-reject {
+  color: #667781;
+  border-color: #d8dde1;
+}
+
+[data-theme="light"] .fit-suggest-button {
+  color: #017561;
+  border-color: #00a884;
+}
+
+[data-theme="light"] .fit-suggest-button:hover:not(:disabled) {
+  background: #eef9f5;
+}
