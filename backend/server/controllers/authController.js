@@ -81,8 +81,8 @@ export const register = async (req, res) => {
             await transporter.sendMail({
                 from: process.env.SENDER_EMAIL,
                 to: email,
-                subject: 'Verify your email for LanceLB',
-                text: `Welcome to LanceLB! Your account has been created. Your verification OTP is ${otp}.`,
+                subject: 'Verify your email for Lance',
+                text: `Welcome to Lance! Your account has been created. Your verification OTP is ${otp}.`,
             });
             // SECURITY: never log the OTP value — it is a credential
             console.log('Verification OTP email sent to:', email);
@@ -188,7 +188,7 @@ export const sendVerifyOtp = async (req, res) => {
         await transporter.sendMail({
             from: process.env.SENDER_EMAIL,
             to: user.email,
-            subject: 'Verify your email for LanceLB',
+            subject: 'Verify your email for Lance',
             text: `Your verification OTP is ${otp}.`,
         });
 

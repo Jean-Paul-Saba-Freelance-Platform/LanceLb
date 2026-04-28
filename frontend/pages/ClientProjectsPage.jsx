@@ -135,7 +135,7 @@ const ClientProjectsPage = () => {
                 className="cp-input"
                 value={formTitle}
                 onChange={e => setFormTitle(e.target.value)}
-                placeholder="e.g. LanceLB Website Redesign"
+                placeholder="e.g. Lance Website Redesign"
                 required
               />
             </div>

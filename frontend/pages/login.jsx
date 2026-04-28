@@ -134,7 +134,7 @@ const Login = () => {
             <div className="auth-card">
                 <div className="auth-header">
                     <h1>Sign In</h1>
-                    <p className="auth-subtitle">Welcome back to LanceLB</p>
+                    <p className="auth-subtitle">Welcome back to Lance</p>
                 </div>
                 <form onSubmit={handleSubmit} className="auth-form">
                     {error && <div className="error-message-global">{error}</div>}

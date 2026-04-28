@@ -298,7 +298,7 @@ const SignupFreelancer = () => {
                   onChange={handleChange}
                   required
                 />
-                <span>I agree to the LanceLB <a href="#" onClick={(e) => e.preventDefault()}>Terms of Service</a> and <a href="#" onClick={(e) => e.preventDefault()}>Privacy Policy</a></span>
+                <span>I agree to the Lance <a href="#" onClick={(e) => e.preventDefault()}>Terms of Service</a> and <a href="#" onClick={(e) => e.preventDefault()}>Privacy Policy</a></span>
               </label>
               {errors.termsAgreed && <span className="error-message">{errors.termsAgreed}</span>}
             </div>

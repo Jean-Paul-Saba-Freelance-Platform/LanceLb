@@ -214,7 +214,7 @@ const Home = () => {
         {/* ── FEATURED FREELANCERS ── */}
         {featuredFreelancers.length > 0 && (
           <section className="featured-section">
-            <h2 className="section-title">Top freelancers on LanceLB</h2>
+            <h2 className="section-title">Top freelancers on Lance</h2>
             <p className="section-subtitle">Verified talent, ready to work.</p>
             <motion.div
               className="featured-grid"
@@ -369,7 +369,7 @@ const Home = () => {
           </div>
         </div>
         <div className="footer-bottom">
-          <p>© 2025 LanceLB. All rights reserved. Made in Lebanon 🇱🇧</p>
+          <p>© 2025 Lance. All rights reserved. Made in Lebanon 🇱🇧</p>
         </div>
       </footer>
     </div>

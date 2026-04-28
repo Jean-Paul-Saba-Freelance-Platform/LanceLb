@@ -295,7 +295,7 @@ const ExplorePeoplePage = () => {
           <div className="ep-header-text">
             <h1 className="ep-heading">Explore People</h1>
             <p className="ep-subheading">
-              {total > 0 ? `${total} member${total !== 1 ? 's' : ''} on LanceLB` : 'Discover talent and clients'}
+              {total > 0 ? `${total} member${total !== 1 ? 's' : ''} on Lance` : 'Discover talent and clients'}
             </p>
           </div>
 

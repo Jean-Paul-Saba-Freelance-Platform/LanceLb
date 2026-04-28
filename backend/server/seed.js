@@ -315,7 +315,7 @@ async function seed() {
   const q4 = job4.screeningQuestions.map(q => q._id);
   await Application.create({
     jobId: job4._id, clientId: saba._id, freelancerId: jp._id,
-    coverLetter: "Building LanceLB-style platforms is exactly what I do. I have 3 years of experience with React, Node.js, MongoDB, and Socket.io. I've shipped a full marketplace from scratch — auth, messaging, payments, file uploads, notifications. I can own the full stack and deliver in 4 months.",
+    coverLetter: "Building Lance-style platforms is exactly what I do. I have 3 years of experience with React, Node.js, MongoDB, and Socket.io. I've shipped a full marketplace from scratch — auth, messaging, payments, file uploads, notifications. I can own the full stack and deliver in 4 months.",
     proposedBudget: 4800, proposedTimelineDays: 120,
     answers: [
       { questionId: q4[0], questionText: 'Have you built a marketplace or multi-sided platform before?', value: true },
@@ -354,7 +354,7 @@ async function seed() {
   const jpApp = await Application.findOne({ jobId: job4._id, freelancerId: jp._id });
 
   await Project.create({
-    title: 'LanceLB Marketplace Platform',
+    title: 'Lance Marketplace Platform',
     description: 'Full-stack freelance marketplace for the Lebanese market. Covers freelancer/client flows, real-time messaging, AI job matching, and an admin dashboard.',
     clientId: saba._id,
     status: 'active',

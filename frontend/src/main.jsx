@@ -3,12 +3,12 @@ import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './App.jsx'
 import { applyTheme, getInitialTheme } from './lib/theme'
-import mintFavicon from '../Assets/mint favicon.png'
+import whiteFavicon from '../Assets/white favicon.svg'
 
 applyTheme(getInitialTheme())
 
 const faviconEl = document.getElementById('app-favicon')
-if (faviconEl) faviconEl.href = mintFavicon
+if (faviconEl) faviconEl.href = whiteFavicon
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>

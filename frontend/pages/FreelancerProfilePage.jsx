@@ -141,7 +141,7 @@ const ProfileContent = ({
           <div className="sidebar-card fh-glass-card">
             <h3 className="sidebar-card-title">Pro Offer</h3>
             <p className="sidebar-card-text">
-              Unlock premium features and boost your visibility on LanceLB.
+              Unlock premium features and boost your visibility on Lance.
             </p>
             <button className="sidebar-card-link">Learn more</button>
           </div>

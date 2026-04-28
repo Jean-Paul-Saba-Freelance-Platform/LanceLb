@@ -1,5 +1,5 @@
 /* ============================================
-   AdminDashboard — LanceLB redesign
+   AdminDashboard — Lance redesign
    Dark teal aesthetic — sidebar layout
    ============================================ */
 
@@ -599,7 +599,7 @@
   }
 
   .adm-topbar-title::before {
-    content: 'LanceLB Admin';
+    content: 'Lance Admin';
   }
 
   .adm-topbar-title {

@@ -8,7 +8,7 @@ import { toggleTheme } from '../src/lib/theme'
 import ThemeLogo from '../src/components/ThemeLogo'
 import './CardNav.css'
 
-// LanceLB floating card navbar — expands on hamburger click to show nav cards
+// Lance floating card navbar — expands on hamburger click to show nav cards
 const CardNav = ({ ease = 'power3.out' }) => {
   const [isHamburgerOpen, setIsHamburgerOpen] = useState(false)
   const [isExpanded, setIsExpanded] = useState(false)

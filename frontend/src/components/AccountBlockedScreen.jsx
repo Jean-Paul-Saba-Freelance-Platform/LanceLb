@@ -38,7 +38,7 @@ const AccountBlockedScreen = ({ statusType, reason, timeoutUntil }) => {
 
         <p className="blocked-subtitle">
           {isBanned
-            ? 'Your account has been permanently banned from LanceLB.'
+            ? 'Your account has been permanently banned from Lance.'
             : 'Your account has been temporarily suspended by an administrator.'}
         </p>
 

@@ -3,7 +3,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { Bot, Bell, Search, X } from 'lucide-react'
 import ProfileDropdown from './ProfileDropdown'
 import AIChatPanel from './AIChatPanel'
-import ThemeLogo from './ThemeLogo'
+import ThemeLogo, { ThemeNavBrand } from './ThemeLogo'
 import './TopNav.css'
 
 const API_BASE = import.meta.env.VITE_API_BASE || 'http://127.0.0.1:4000'
@@ -311,9 +311,9 @@ const TopNav = ({ userName, userAvatar }) => {
   return (
     <nav className="top-nav">
       <div className="top-nav-container">
-        {/* Left: Brand */}
+        {/* Left: Brand — favicon shown by default, full logo crossfades in on hover */}
         <Link to={brandLink} className="top-nav-brand">
-          <ThemeLogo className="top-nav-logo-img" />
+          <ThemeNavBrand />
         </Link>
 
         {/* Center: Menu Links */}

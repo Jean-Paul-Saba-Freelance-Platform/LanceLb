@@ -9,7 +9,7 @@ export default function AIChatPanel({ isOpen, onClose }) {
   const [messages, setMessages] = useState([
     {
       role: 'assistant',
-      content: "Hi! I'm your LanceLB Support Assistant 👋 I can help you with posting jobs, applying for work, improving your profile, writing cover letters, and anything else on the platform. What can I help you with?",
+      content: "Hi! I'm your Lance Support Assistant 👋 I can help you with posting jobs, applying for work, improving your profile, writing cover letters, and anything else on the platform. What can I help you with?",
     },
   ])
   const [input, setInput] = useState('')
@@ -120,7 +120,7 @@ export default function AIChatPanel({ isOpen, onClose }) {
                   <Bot size={18} />
                 </div>
                 <div>
-                  <p className="aichat-title">LanceLB Assistant</p>
+                  <p className="aichat-title">Lance Assistant</p>
                   <p className="aichat-subtitle">Powered by AI · Always here to help</p>
                 </div>
               </div>
@@ -170,7 +170,7 @@ export default function AIChatPanel({ isOpen, onClose }) {
               <textarea
                 ref={textareaRef}
                 className="aichat-input"
-                placeholder="Ask me anything about LanceLB…"
+                placeholder="Ask me anything about Lance…"
                 value={input}
                 onChange={e => setInput(e.target.value)}
                 onKeyDown={handleKey}

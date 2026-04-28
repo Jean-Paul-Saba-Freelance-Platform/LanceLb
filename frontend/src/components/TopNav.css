@@ -22,21 +22,55 @@
 .top-nav-brand {
   text-decoration: none;
   flex-shrink: 0;
-  transition: opacity 0.2s ease;
   display: flex;
   align-items: center;
 }
 
-.top-nav-brand:hover {
-  opacity: 0.8;
+/* ── Nav brand: favicon + staggered letter animation on hover ── */
+
+.tnb-wrap {
+  display: flex;
+  align-items: center;
+  gap: 5px;
 }
 
-.top-nav-logo-img {
-  height: 28px;
+/* Favicon — fixed, always visible */
+.tnb-fav {
+  height: 26px;
   width: auto;
-  display: block;
-  object-fit: contain;
+  flex-shrink: 0;
+  pointer-events: none;
 }
+
+/* Letter container */
+.tnb-letters {
+  display: flex;
+  align-items: center;
+}
+
+/* Each letter slides in from the right and fades in on hover */
+.tnb-letter {
+  display: inline-block;
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: #e9edef;
+  opacity: 0;
+  transform: translateX(10px);
+  transition: opacity 0.15s ease, transform 0.18s ease;
+  transition-delay: calc(var(--i) * 0.045s);
+}
+
+.top-nav-brand:hover .tnb-letter {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* Light theme */
+.tnb-light { display: none !important; }
+[data-theme="light"] .tnb-dark  { display: none !important; }
+[data-theme="light"] .tnb-light { display: inline !important; }
+[data-theme="light"] .tnb-letter { color: #0d1418; }
 
 .top-nav-menu {
   display: flex;

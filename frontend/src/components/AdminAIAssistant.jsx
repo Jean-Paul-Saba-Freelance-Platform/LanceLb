@@ -16,7 +16,7 @@ export default function AdminAIAssistant({ stats, growth, categories }) {
   const [messages, setMessages] = useState([
     {
       role: 'assistant',
-      content: "Hello! I'm your LanceLB Platform Analyst. I have access to your current platform statistics and can help you analyze growth trends, generate reports, and identify opportunities. What would you like to know?",
+      content: "Hello! I'm your Lance Platform Analyst. I have access to your current platform statistics and can help you analyze growth trends, generate reports, and identify opportunities. What would you like to know?",
     },
   ])
   const [input, setInput] = useState('')
