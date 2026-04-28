@@ -38,10 +38,6 @@
   object-fit: contain;
 }
 
-[data-theme="light"] .top-nav-logo-img {
-  filter: brightness(0) saturate(100%) invert(12%) sepia(37%) saturate(500%) hue-rotate(162deg) brightness(90%) contrast(95%);
-}
-
 .top-nav-menu {
   display: flex;
   align-items: center;

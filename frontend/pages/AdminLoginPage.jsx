@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import whiteLogo from '../Assets/white logo.png'
+import ThemeLogo from '../src/components/ThemeLogo'
 import './AdminLoginPage.css'
 
 const API_BASE = import.meta.env.VITE_API_BASE || 'http://127.0.0.1:4000'
@@ -41,7 +41,7 @@ export default function AdminLoginPage() {
       <div className="admin-login-card">
 
         <div className="admin-login-header">
-          <img src={whiteLogo} alt="LanceLB" className="admin-login-logo" />
+          <ThemeLogo className="admin-login-logo" />
           <p className="admin-login-title">Admin Portal</p>
           <p className="admin-login-subtitle">Restricted access</p>
         </div>

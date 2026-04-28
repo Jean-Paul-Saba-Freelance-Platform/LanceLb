@@ -3,6 +3,11 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/* Theme-aware logo switching */
+.theme-logo-light { display: none !important; }
+[data-theme="light"] .theme-logo-dark { display: none !important; }
+[data-theme="light"] .theme-logo-light { display: block !important; }
+
 /* Theme Tokens */
 :root {
   /* Colors */

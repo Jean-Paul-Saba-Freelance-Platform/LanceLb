@@ -5,7 +5,7 @@ import { GoArrowUpRight } from 'react-icons/go'
 import { LuSun, LuMoon } from 'react-icons/lu'
 import { useTheme } from '../src/lib/useTheme'
 import { toggleTheme } from '../src/lib/theme'
-import whiteLogo from '../Assets/white logo.png'
+import ThemeLogo from '../src/components/ThemeLogo'
 import './CardNav.css'
 
 // LanceLB floating card navbar — expands on hamburger click to show nav cards
@@ -206,7 +206,7 @@ const CardNav = ({ ease = 'power3.out' }) => {
           </div>
 
           <Link to={brandLink} className="card-nav-brand">
-            <img src={whiteLogo} alt="LanceLB" className="card-nav-logo-img" />
+            <ThemeLogo className="card-nav-logo-img" />
           </Link>
 
           <div className="card-nav-auth">

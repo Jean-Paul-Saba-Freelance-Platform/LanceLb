@@ -13,7 +13,7 @@ import {
 } from 'lucide-react'
 import './AdminDashboard.css'
 import AdminAIAssistant from '../src/components/AdminAIAssistant'
-import whiteLogo from '../Assets/white logo.png'
+import ThemeLogo from '../src/components/ThemeLogo'
 
 const API_BASE = import.meta.env.VITE_API_BASE || 'http://127.0.0.1:4000'
 const MONTH_NAMES = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
@@ -360,7 +360,7 @@ const AdminDashboard = () => {
 const Sidebar = ({ navigate }) => (
   <aside className="adm-sidebar">
     <div className="adm-sidebar-logo">
-      <img src={whiteLogo} alt="LanceLB" className="adm-sidebar-logo-img" />
+      <ThemeLogo className="adm-sidebar-logo-img" />
       <span className="adm-sidebar-sub">Admin Panel</span>
     </div>
 

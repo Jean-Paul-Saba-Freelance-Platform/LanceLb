@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import whiteLogo from '../Assets/white logo.png'
+import ThemeLogo from '../src/components/ThemeLogo'
 import './SignupFreelancer.css'
 
 const API_BASE = import.meta.env.VITE_API_BASE || 'http://127.0.0.1:4000'
@@ -145,7 +145,7 @@ const SignupFreelancer = () => {
     <div className="signup-freelancer-container">
       <div className="signup-freelancer-header">
         <Link to="/" className="header-brand-small">
-          <img src={whiteLogo} alt="LanceLB" className="header-brand-logo" />
+          <ThemeLogo className="header-brand-logo" />
         </Link>
         <Link to="/login" className="header-login-link">
           Already have an account? Log In
