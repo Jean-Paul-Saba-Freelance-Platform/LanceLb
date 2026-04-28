@@ -352,7 +352,7 @@ const Home = () => {
             <div className="footer-col">
               <h4 className="footer-col-title">For Clients</h4>
               <Link to="/signup?role=client" className="footer-link">Post a Job</Link>
-              <a href="#categories" className="footer-link">Browse Categories</a>
+              <Link to="/signup?role=client" className="footer-link">Browse Categories</Link>
               <Link to="/login" className="footer-link">Sign In</Link>
             </div>
             <div className="footer-col">
@@ -363,8 +363,8 @@ const Home = () => {
             </div>
             <div className="footer-col">
               <h4 className="footer-col-title">Platform</h4>
-              <a href="#features" className="footer-link">How It Works</a>
-              <a href="#categories" className="footer-link">Categories</a>
+              <Link to="/signup" className="footer-link">How It Works</Link>
+              <Link to="/signup?role=freelancer" className="footer-link">Categories</Link>
             </div>
           </div>
         </div>

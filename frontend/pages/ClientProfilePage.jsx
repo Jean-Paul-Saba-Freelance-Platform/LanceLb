@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useLocation, Link } from 'react-router-dom'
 import { Mail, Shield, Bell, MapPin, User } from 'lucide-react'
 import TopNav from '../src/components/TopNav'
@@ -22,6 +22,10 @@ const ClientProfilePage = () => {
   const [formTitle, setFormTitle] = useState('')
   const [formSkills, setFormSkills] = useState([])
   const [newSkill, setNewSkill] = useState('')
+
+  const [avatarUploading, setAvatarUploading] = useState(false)
+  const [avatarError, setAvatarError] = useState('')
+  const avatarInputRef = useRef(null)
 
   const [followersCount, setFollowersCount] = useState(0)
   const [followingCount, setFollowingCount] = useState(0)
@@ -198,6 +202,40 @@ const ClientProfilePage = () => {
     setFollowListLoading(false)
   }
 
+  const handleAvatarChange = async (e) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+    if (file.size > 5 * 1024 * 1024) {
+      setAvatarError('Image must be under 5MB')
+      return
+    }
+    setAvatarError('')
+    setAvatarUploading(true)
+    try {
+      const token = localStorage.getItem('token')
+      const formData = new FormData()
+      formData.append('profilePicture', file)
+      const res = await fetch(`${API_BASE}/api/upload/profile-picture`, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}` },
+        credentials: 'include',
+        body: formData,
+      })
+      const data = await res.json()
+      if (data.success) {
+        setUser(prev => ({ ...prev, profilePicture: data.url }))
+        const stored = JSON.parse(localStorage.getItem('user') || '{}')
+        localStorage.setItem('user', JSON.stringify({ ...stored, profilePicture: data.url }))
+      } else {
+        setAvatarError(data.message || 'Upload failed')
+      }
+    } catch {
+      setAvatarError('Upload failed')
+    } finally {
+      setAvatarUploading(false)
+    }
+  }
+
   const addSkill = () => {
     const trimmed = newSkill.trim()
     if (trimmed && !formSkills.includes(trimmed)) {
@@ -283,13 +321,30 @@ const ClientProfilePage = () => {
                 {/* Left: avatar / info card */}
                 <div className="client-profile-sidebar">
                   <div className="client-profile-avatar-card">
-                    <div className="client-profile-avatar">
-                      {user?.avatar ? (
-                        <img src={user.avatar} alt={userName} className="client-profile-avatar-img" />
+                    <input
+                      ref={avatarInputRef}
+                      type="file"
+                      accept="image/jpeg,image/png,image/webp"
+                      style={{ display: 'none' }}
+                      onChange={handleAvatarChange}
+                    />
+                    <div
+                      className="client-profile-avatar"
+                      style={{ cursor: 'pointer', opacity: avatarUploading ? 0.5 : 1, transition: 'opacity 0.2s' }}
+                      onClick={() => !avatarUploading && avatarInputRef.current?.click()}
+                      title="Click to change profile picture"
+                    >
+                      {user?.profilePicture || user?.avatar ? (
+                        <img src={user.profilePicture || user.avatar} alt={userName} className="client-profile-avatar-img" />
                       ) : (
                         <span className="client-profile-avatar-initial">{userInitial}</span>
                       )}
                     </div>
+                    {avatarError && (
+                      <p style={{ color: 'var(--color-danger)', fontSize: '0.78rem', marginTop: 6, textAlign: 'center' }}>
+                        {avatarError}
+                      </p>
+                    )}
                     <h2 className="client-profile-name">{userName}</h2>
                     {user?.title && (
                       <p className="client-profile-tagline">{user.title}</p>

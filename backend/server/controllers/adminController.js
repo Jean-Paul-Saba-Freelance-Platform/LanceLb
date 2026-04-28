@@ -110,6 +110,70 @@ export const getJobCategories = async (req, res) => {
   }
 }
 
+// Returns all users with optional search and role filters, sorted by createdAt descending
+export const getAllUsers = async (req, res) => {
+  try {
+    const { search, role } = req.query
+    const filter = {}
+
+    if (search) {
+      const regex = new RegExp(search, 'i')
+      filter.$or = [{ name: regex }, { email: regex }]
+    }
+
+    if (role === 'client' || role === 'freelancer') {
+      filter.userType = role
+    }
+
+    const users = await User.find(filter)
+      .select('_id name email userType status banReason timeoutUntil createdAt profilePicture')
+      .sort({ createdAt: -1 })
+      .lean()
+
+    return res.json({ success: true, users })
+  } catch (error) {
+    return res.status(500).json({ success: false, message: error.message })
+  }
+}
+
+// Sets the target user's status to banned with an optional reason
+export const banUser = async (req, res) => {
+  try {
+    const { reason = 'Banned by admin' } = req.body
+    await User.findByIdAndUpdate(req.params.id, { status: 'banned', banReason: reason })
+    return res.json({ success: true })
+  } catch (error) {
+    return res.status(500).json({ success: false, message: error.message })
+  }
+}
+
+// Sets the target user's status to timeout until the calculated future date
+export const timeoutUser = async (req, res) => {
+  try {
+    const { duration, unit } = req.body
+    const ms = unit === 'days' ? duration * 24 * 60 * 60 * 1000 : duration * 60 * 60 * 1000
+    const timeoutUntil = new Date(Date.now() + ms)
+    await User.findByIdAndUpdate(req.params.id, { status: 'timeout', timeoutUntil })
+    return res.json({ success: true })
+  } catch (error) {
+    return res.status(500).json({ success: false, message: error.message })
+  }
+}
+
+// Clears any ban or timeout on the target user and restores active status
+export const unbanUser = async (req, res) => {
+  try {
+    await User.findByIdAndUpdate(req.params.id, {
+      status: 'active',
+      banReason: '',
+      timeoutUntil: null,
+    })
+    return res.json({ success: true })
+  } catch (error) {
+    return res.status(500).json({ success: false, message: error.message })
+  }
+}
+
 // Returns the top 5 freelancers ranked by number of accepted applications
 export const getTopFreelancers = async (req, res) => {
   try {

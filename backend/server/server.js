@@ -15,6 +15,7 @@ import messageRouter from './routes/messageRoutes.js'
 import crewRouter from "./routes/crewRoutes.js";
 import { app, server } from "./lib/realtime.js";
 
+
 import notificationRouter from "./routes/notificationRoutes.js";
 import projectRouter from "./routes/projectRoutes.js";
 import freelancerRouter from "./routes/freelancerRoutes.js";
@@ -24,6 +25,7 @@ import publicStatsRouter from "./routes/publicStatsRoutes.js";
 import followRouter from "./routes/followRoutes.js";
 import reviewRouter from "./routes/reviewRoutes.js";
 import userRouter from "./routes/userRoutes.js";
+import uploadRouter from "./routes/uploadRoutes.js";
 
 
 
@@ -80,7 +82,6 @@ app.use("/api/admin", adminRouter);
 app.use("/api/ai", aiRouter);
 app.use("/api/message", messageRouter);
 app.use("/api/crew", crewRouter);
-app.use("/api/ats", atsRouter);
 app.use("/api/notifications", notificationRouter);
 app.use("/api/projects", projectRouter);
 app.use("/api/freelancer", freelancerRouter);
@@ -88,6 +89,7 @@ app.use("/api/public", publicStatsRouter);
 app.use("/api/follow", followRouter);
 app.use("/api/reviews", reviewRouter);
 app.use("/api/user", userRouter);
+app.use("/api/upload", uploadRouter);
 
 // Start
 connectDB();

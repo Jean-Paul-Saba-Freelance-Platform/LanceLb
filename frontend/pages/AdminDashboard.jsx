@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import {
   Users,
@@ -28,6 +28,8 @@ const healthColor = (pct) => {
 // Fetches all admin data in parallel on mount and renders the full dashboard
 const AdminDashboard = () => {
   const navigate = useNavigate()
+
+  const [activeSection, setActiveSection] = useState('overview')
 
   const [stats, setStats] = useState(null)
   const [growth, setGrowth] = useState([])
@@ -111,7 +113,7 @@ const AdminDashboard = () => {
   if (loading) {
     return (
       <div className="adm-shell">
-        <Sidebar navigate={navigate} />
+        <Sidebar navigate={navigate} activeSection={activeSection} setActiveSection={setActiveSection} />
         <div className="adm-body">
           <div className="adm-fullscreen-center">
             <div className="adm-spinner" />
@@ -125,7 +127,7 @@ const AdminDashboard = () => {
   if (error) {
     return (
       <div className="adm-shell">
-        <Sidebar navigate={navigate} />
+        <Sidebar navigate={navigate} activeSection={activeSection} setActiveSection={setActiveSection} />
         <div className="adm-body">
           <div className="adm-fullscreen-center">
             <span className="adm-error-icon">⚠</span>
@@ -151,12 +153,14 @@ const AdminDashboard = () => {
 
   return (
     <div className="adm-shell">
-      <Sidebar navigate={navigate} />
+      <Sidebar navigate={navigate} activeSection={activeSection} setActiveSection={setActiveSection} />
 
       <div className="adm-body">
         {/* Top navbar */}
         <header className="adm-topbar">
-          <span className="adm-topbar-title">Overview</span>
+          <span className="adm-topbar-title">
+            {activeSection === 'overview' ? 'Overview' : 'User Management'}
+          </span>
           <div className="adm-topbar-user">
             <span className="adm-topbar-name">{user?.name || 'Admin'}</span>
             <div className="adm-avatar">
@@ -175,194 +179,172 @@ const AdminDashboard = () => {
         </header>
 
         <main className="adm-main">
-
-          {/* KPI Cards */}
-          <section className="adm-section">
-            <h2 className="adm-section-title">Key Metrics</h2>
-            <div className="adm-kpi-grid">
-              <KpiCard
-                label="Total Freelancers"
-                value={stats.totalFreelancers}
-                Icon={Users}
-                accent="#00a884"
-              />
-              <KpiCard
-                label="Total Clients"
-                value={stats.totalClients}
-                Icon={Building2}
-                accent="#3b82f6"
-              />
-              <KpiCard
-                label="Active Jobs"
-                value={stats.activeJobs}
-                Icon={Briefcase}
-                accent="#fbbf24"
-              />
-              <KpiCard
-                label="Total Applications"
-                value={stats.totalApplications}
-                Icon={FileText}
-                accent="#a78bfa"
-              />
-              <KpiCard
-                label="Active Projects"
-                value={stats.activeProjects}
-                Icon={FolderOpen}
-                accent="#10b981"
-              />
-              <KpiCard
-                label="Pending Applications"
-                value={stats.pendingApplications}
-                Icon={Clock}
-                accent="#fbbf24"
-              />
-              <KpiCard
-                label="Verified Users"
-                value={stats.totalVerifiedUsers}
-                Icon={ShieldCheck}
-                accent="#3b82f6"
-              />
-            </div>
-          </section>
-
-          {/* Platform Health */}
-          <section className="adm-section">
-            <div className="adm-card adm-health-card">
-              <h3 className="adm-card-title">Platform Health</h3>
-              <div className="adm-health-list">
-                <HealthBar label="Hire Rate" pct={hireRate} loaded={loaded} />
-                <HealthBar label="Job Fill Rate" pct={jobFillRate} loaded={loaded} />
-                <HealthBar label="Client / User Ratio" pct={clientRatio} loaded={loaded} />
-              </div>
-            </div>
-          </section>
-
-          {/* Top Skills */}
-          <section className="adm-section">
-            <h2 className="adm-section-title">Top Skills in Demand</h2>
-            <div className="adm-card">
-              {categories.length === 0 ? (
-                <p className="adm-empty">No job postings yet — skill data will appear here.</p>
-              ) : (
-                <div className="adm-skills-list">
-                  {categories.map((cat) => (
-                    <div key={cat.skill} className="adm-skill-row">
-                      <span className="adm-skill-name">{cat.skill}</span>
-                      <div className="adm-skill-track">
-                        <div
-                          className="adm-skill-fill"
-                          style={{
-                            width: loaded ? `${(cat.count / maxSkillCount) * 100}%` : '0%',
-                          }}
-                        />
-                      </div>
-                      <span className="adm-skill-count">{cat.count}</span>
-                    </div>
-                  ))}
+          {activeSection === 'users' ? (
+            <UsersSection />
+          ) : (
+            <>
+              {/* KPI Cards */}
+              <section className="adm-section">
+                <h2 className="adm-section-title">Key Metrics</h2>
+                <div className="adm-kpi-grid">
+                  <KpiCard label="Total Freelancers" value={stats.totalFreelancers} Icon={Users} accent="#00a884" />
+                  <KpiCard label="Total Clients" value={stats.totalClients} Icon={Building2} accent="#3b82f6" />
+                  <KpiCard label="Active Jobs" value={stats.activeJobs} Icon={Briefcase} accent="#fbbf24" />
+                  <KpiCard label="Total Applications" value={stats.totalApplications} Icon={FileText} accent="#a78bfa" />
+                  <KpiCard label="Active Projects" value={stats.activeProjects} Icon={FolderOpen} accent="#10b981" />
+                  <KpiCard label="Pending Applications" value={stats.pendingApplications} Icon={Clock} accent="#fbbf24" />
+                  <KpiCard label="Verified Users" value={stats.totalVerifiedUsers} Icon={ShieldCheck} accent="#3b82f6" />
                 </div>
-              )}
-            </div>
-          </section>
+              </section>
 
-          {/* Top Freelancers */}
-          <section className="adm-section">
-            <h2 className="adm-section-title">Top Freelancers</h2>
-            <div className="adm-card adm-card-flush">
-              {topFreelancers.length === 0 ? (
-                <p className="adm-empty">No accepted applications yet.</p>
-              ) : (
-                <table className="adm-table">
-                  <thead>
-                    <tr>
-                      <th>Rank</th>
-                      <th>Name</th>
-                      <th>Email</th>
-                      <th>Title</th>
-                      <th>Hired</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {topFreelancers.map((fl, i) => (
-                      <tr key={fl.email} className={i % 2 === 0 ? 'adm-row-even' : 'adm-row-odd'}>
-                        <td className="adm-rank">#{i + 1}</td>
-                        <td>
-                          <div className="adm-fl-name-cell">
-                            <div className="adm-fl-avatar">
-                              {(fl.name?.[0] || '?').toUpperCase()}
-                            </div>
-                            <span className="adm-fl-name">{fl.name || '—'}</span>
+              {/* Platform Health */}
+              <section className="adm-section">
+                <div className="adm-card adm-health-card">
+                  <h3 className="adm-card-title">Platform Health</h3>
+                  <div className="adm-health-list">
+                    <HealthBar label="Hire Rate" pct={hireRate} loaded={loaded} />
+                    <HealthBar label="Job Fill Rate" pct={jobFillRate} loaded={loaded} />
+                    <HealthBar label="Client / User Ratio" pct={clientRatio} loaded={loaded} />
+                  </div>
+                </div>
+              </section>
+
+              {/* Top Skills */}
+              <section className="adm-section">
+                <h2 className="adm-section-title">Top Skills in Demand</h2>
+                <div className="adm-card">
+                  {categories.length === 0 ? (
+                    <p className="adm-empty">No job postings yet — skill data will appear here.</p>
+                  ) : (
+                    <div className="adm-skills-list">
+                      {categories.map((cat) => (
+                        <div key={cat.skill} className="adm-skill-row">
+                          <span className="adm-skill-name">{cat.skill}</span>
+                          <div className="adm-skill-track">
+                            <div
+                              className="adm-skill-fill"
+                              style={{ width: loaded ? `${(cat.count / maxSkillCount) * 100}%` : '0%' }}
+                            />
                           </div>
-                        </td>
-                        <td className="adm-email">{fl.email}</td>
-                        <td className="adm-title-cell">
-                          {fl.title || <span className="adm-muted">No title</span>}
-                        </td>
-                        <td className="adm-hired">
-                          <span className="adm-hired-badge">{fl.hiredCount}</span>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              )}
-            </div>
-          </section>
-
-          {/* User Growth */}
-          <section className="adm-section">
-            <h2 className="adm-section-title">User Growth — Last 6 Months</h2>
-            <div className="adm-card">
-              {growth.length === 0 ? (
-                <div className="adm-growth-empty">
-                  <BarChart2 size={32} color="#8696a0" />
-                  <p>No new signups in the last 6 months — growth data will appear here as users register.</p>
-                </div>
-              ) : (
-                <div className="adm-growth-chart">
-                  {growth.map((g) => (
-                    <div key={`${g._id.year}-${g._id.month}`} className="adm-growth-col">
-                      <span className="adm-growth-count">{g.count}</span>
-                      <div className="adm-growth-track">
-                        <div
-                          className="adm-growth-fill"
-                          style={{
-                            height: loaded ? `${(g.count / maxGrowthCount) * 100}%` : '0%',
-                          }}
-                        />
-                      </div>
-                      <span className="adm-growth-label">
-                        {MONTH_NAMES[(g._id.month - 1) % 12]}
-                      </span>
+                          <span className="adm-skill-count">{cat.count}</span>
+                        </div>
+                      ))}
                     </div>
-                  ))}
+                  )}
                 </div>
-              )}
-            </div>
-          </section>
+              </section>
 
-          {/* AI Platform Analyst */}
-          <section className="adm-section">
-            <h2 className="adm-section-title">AI Platform Analyst</h2>
-            <AdminAIAssistant
-              stats={stats}
-              growth={growth}
-              categories={categories}
-            />
-          </section>
+              {/* Top Freelancers */}
+              <section className="adm-section">
+                <h2 className="adm-section-title">Top Freelancers</h2>
+                <div className="adm-card adm-card-flush">
+                  {topFreelancers.length === 0 ? (
+                    <p className="adm-empty">No accepted applications yet.</p>
+                  ) : (
+                    <table className="adm-table">
+                      <thead>
+                        <tr>
+                          <th>Rank</th>
+                          <th>Name</th>
+                          <th>Email</th>
+                          <th>Title</th>
+                          <th>Hired</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {topFreelancers.map((fl, i) => (
+                          <tr key={fl.email} className={i % 2 === 0 ? 'adm-row-even' : 'adm-row-odd'}>
+                            <td className="adm-rank">#{i + 1}</td>
+                            <td>
+                              <div className="adm-fl-name-cell">
+                                <div className="adm-fl-avatar">
+                                  {(fl.name?.[0] || '?').toUpperCase()}
+                                </div>
+                                <span className="adm-fl-name">{fl.name || '—'}</span>
+                              </div>
+                            </td>
+                            <td className="adm-email">{fl.email}</td>
+                            <td className="adm-title-cell">
+                              {fl.title || <span className="adm-muted">No title</span>}
+                            </td>
+                            <td className="adm-hired">
+                              <span className="adm-hired-badge">{fl.hiredCount}</span>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  )}
+                </div>
+              </section>
 
+              {/* User Growth */}
+              <section className="adm-section">
+                <h2 className="adm-section-title">User Growth — Last 6 Months</h2>
+                <div className="adm-card">
+                  {growth.length === 0 ? (
+                    <div className="adm-growth-empty">
+                      <BarChart2 size={32} color="#8696a0" />
+                      <p>No new signups in the last 6 months — growth data will appear here as users register.</p>
+                    </div>
+                  ) : (
+                    <div className="adm-growth-chart">
+                      {growth.map((g) => (
+                        <div key={`${g._id.year}-${g._id.month}`} className="adm-growth-col">
+                          <span className="adm-growth-count">{g.count}</span>
+                          <div className="adm-growth-track">
+                            <div
+                              className="adm-growth-fill"
+                              style={{ height: loaded ? `${(g.count / maxGrowthCount) * 100}%` : '0%' }}
+                            />
+                          </div>
+                          <span className="adm-growth-label">
+                            {MONTH_NAMES[(g._id.month - 1) % 12]}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </section>
+
+              {/* AI Platform Analyst */}
+              <section className="adm-section">
+                <h2 className="adm-section-title">AI Platform Analyst</h2>
+                <AdminAIAssistant stats={stats} growth={growth} categories={categories} />
+              </section>
+            </>
+          )}
         </main>
       </div>
     </div>
   )
 }
 
-// Fixed left sidebar with logo and back link
-const Sidebar = ({ navigate }) => (
+// Fixed left sidebar with logo, section nav, and back link
+const Sidebar = ({ navigate, activeSection, setActiveSection }) => (
   <aside className="adm-sidebar">
     <div className="adm-sidebar-logo">
       <ThemeLogo className="adm-sidebar-logo-img" />
       <span className="adm-sidebar-sub">Admin Panel</span>
     </div>
+
+    <nav className="adm-nav">
+      <button
+        className={`adm-nav-item ${activeSection === 'overview' ? 'adm-nav-active' : ''}`}
+        onClick={() => setActiveSection('overview')}
+      >
+        <BarChart2 size={16} />
+        <span>Overview</span>
+      </button>
+      <button
+        className={`adm-nav-item ${activeSection === 'users' ? 'adm-nav-active' : ''}`}
+        onClick={() => setActiveSection('users')}
+      >
+        <Users size={16} />
+        <span>Users</span>
+      </button>
+    </nav>
 
     <div className="adm-sidebar-spacer" />
 
@@ -372,6 +354,261 @@ const Sidebar = ({ navigate }) => (
     </button>
   </aside>
 )
+
+// Users management section — search, filter, table with ban/timeout/unban actions
+const UsersSection = () => {
+  const [users, setUsers] = useState([])
+  const [loadingUsers, setLoadingUsers] = useState(true)
+  const [search, setSearch] = useState('')
+  const [role, setRole] = useState('')
+  const [rowAction, setRowAction] = useState({})
+  const debounceRef = useRef(null)
+
+  const adminToken = localStorage.getItem('adminToken')
+  const authHeaders = { Authorization: `Bearer ${adminToken}` }
+
+  const fetchUsers = async (s, r) => {
+    setLoadingUsers(true)
+    try {
+      const params = new URLSearchParams()
+      if (s) params.set('search', s)
+      if (r) params.set('role', r)
+      const res = await fetch(`${API_BASE}/api/admin/users?${params}`, {
+        headers: authHeaders,
+        credentials: 'include',
+      })
+      const data = await res.json()
+      if (data.success) setUsers(data.users)
+    } catch (err) {
+      console.error('Failed to fetch users:', err)
+    } finally {
+      setLoadingUsers(false)
+    }
+  }
+
+  useEffect(() => {
+    clearTimeout(debounceRef.current)
+    debounceRef.current = setTimeout(() => fetchUsers(search, role), 400)
+    return () => clearTimeout(debounceRef.current)
+  }, [search, role])
+
+  const banUser = async (id) => {
+    const ra = rowAction[id] || {}
+    await fetch(`${API_BASE}/api/admin/users/${id}/ban`, {
+      method: 'PATCH',
+      headers: { ...authHeaders, 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify({ reason: ra.reason || 'Banned by admin' }),
+    })
+    clearRowAction(id)
+    fetchUsers(search, role)
+  }
+
+  const timeoutUser = async (id) => {
+    const ra = rowAction[id] || {}
+    await fetch(`${API_BASE}/api/admin/users/${id}/timeout`, {
+      method: 'PATCH',
+      headers: { ...authHeaders, 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify({ duration: Number(ra.duration || 1), unit: ra.unit || 'hours' }),
+    })
+    clearRowAction(id)
+    fetchUsers(search, role)
+  }
+
+  const unbanUser = async (id) => {
+    await fetch(`${API_BASE}/api/admin/users/${id}/unban`, {
+      method: 'PATCH',
+      headers: authHeaders,
+      credentials: 'include',
+    })
+    fetchUsers(search, role)
+  }
+
+  const setRowMode = (id, mode) =>
+    setRowAction(prev => ({ ...prev, [id]: { mode, reason: '', duration: '1', unit: 'hours' } }))
+
+  const clearRowAction = (id) =>
+    setRowAction(prev => { const next = { ...prev }; delete next[id]; return next })
+
+  const updateRowField = (id, field, val) =>
+    setRowAction(prev => ({ ...prev, [id]: { ...prev[id], [field]: val } }))
+
+  const formatJoined = (d) =>
+    new Date(d).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' })
+
+  return (
+    <div className="adm-users-section">
+      <div className="adm-users-toolbar">
+        <input
+          className="adm-users-search"
+          type="text"
+          placeholder="Search by name or email…"
+          value={search}
+          onChange={e => setSearch(e.target.value)}
+        />
+        <select
+          className="adm-users-role-filter"
+          value={role}
+          onChange={e => setRole(e.target.value)}
+        >
+          <option value="">All Roles</option>
+          <option value="client">Client</option>
+          <option value="freelancer">Freelancer</option>
+        </select>
+      </div>
+
+      {loadingUsers ? (
+        <div className="adm-fullscreen-center" style={{ height: '240px' }}>
+          <div className="adm-spinner" />
+          <p className="adm-spinner-label">Loading users…</p>
+        </div>
+      ) : users.length === 0 ? (
+        <p className="adm-empty" style={{ marginTop: '2rem' }}>No users found.</p>
+      ) : (
+        <div className="adm-card adm-card-flush">
+          <table className="adm-table adm-users-table">
+            <thead>
+              <tr>
+                <th>User</th>
+                <th>Email</th>
+                <th>Role</th>
+                <th>Joined</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {users.map((u, i) => {
+                const ra = rowAction[u._id] || {}
+                return (
+                  <tr key={u._id} className={i % 2 === 0 ? 'adm-row-even' : 'adm-row-odd'}>
+                    <td>
+                      <div className="adm-fl-name-cell">
+                        {u.profilePicture ? (
+                          <img
+                            src={u.profilePicture}
+                            alt=""
+                            className="adm-fl-avatar adm-fl-avatar-img"
+                          />
+                        ) : (
+                          <div className="adm-fl-avatar">
+                            {(u.name?.[0] || '?').toUpperCase()}
+                          </div>
+                        )}
+                        <span className="adm-fl-name">{u.name || '—'}</span>
+                      </div>
+                    </td>
+                    <td className="adm-email">{u.email}</td>
+                    <td>
+                      <span className={`adm-role-badge adm-role-${u.userType}`}>
+                        {u.userType}
+                      </span>
+                    </td>
+                    <td className="adm-email">{formatJoined(u.createdAt)}</td>
+                    <td>
+                      <span className={`adm-status-badge adm-status-${u.status}`}>
+                        {u.status}
+                      </span>
+                    </td>
+                    <td>
+                      <div className="adm-row-actions">
+                        {/* Active user (or status missing) — no inline form open */}
+                        {(u.status === 'active' || !u.status) && !ra.mode && (
+                          <>
+                            <button
+                              className="adm-action-btn adm-action-ban"
+                              onClick={() => setRowMode(u._id, 'ban')}
+                            >
+                              Ban
+                            </button>
+                            <button
+                              className="adm-action-btn adm-action-timeout"
+                              onClick={() => setRowMode(u._id, 'timeout')}
+                            >
+                              Timeout
+                            </button>
+                          </>
+                        )}
+
+                        {/* Banned or timed-out — show Unban only */}
+                        {(u.status === 'banned' || u.status === 'timeout') && !ra.mode && (
+                          <button
+                            className="adm-action-btn adm-action-unban"
+                            onClick={() => unbanUser(u._id)}
+                          >
+                            Unban
+                          </button>
+                        )}
+
+                        {/* Inline ban form */}
+                        {ra.mode === 'ban' && (
+                          <div className="adm-inline-form">
+                            <input
+                              className="adm-inline-input"
+                              placeholder="Reason…"
+                              value={ra.reason || ''}
+                              onChange={e => updateRowField(u._id, 'reason', e.target.value)}
+                            />
+                            <button
+                              className="adm-inline-confirm adm-inline-confirm-ban"
+                              onClick={() => banUser(u._id)}
+                            >
+                              Confirm
+                            </button>
+                            <button
+                              className="adm-inline-cancel"
+                              onClick={() => clearRowAction(u._id)}
+                            >
+                              ✕
+                            </button>
+                          </div>
+                        )}
+
+                        {/* Inline timeout form */}
+                        {ra.mode === 'timeout' && (
+                          <div className="adm-inline-form">
+                            <input
+                              className="adm-inline-input adm-inline-number"
+                              type="number"
+                              min="1"
+                              value={ra.duration || '1'}
+                              onChange={e => updateRowField(u._id, 'duration', e.target.value)}
+                            />
+                            <select
+                              className="adm-inline-select"
+                              value={ra.unit || 'hours'}
+                              onChange={e => updateRowField(u._id, 'unit', e.target.value)}
+                            >
+                              <option value="hours">hours</option>
+                              <option value="days">days</option>
+                            </select>
+                            <button
+                              className="adm-inline-confirm adm-inline-confirm-timeout"
+                              onClick={() => timeoutUser(u._id)}
+                            >
+                              Confirm
+                            </button>
+                            <button
+                              className="adm-inline-cancel"
+                              onClick={() => clearRowAction(u._id)}
+                            >
+                              ✕
+                            </button>
+                          </div>
+                        )}
+                      </div>
+                    </td>
+                  </tr>
+                )
+              })}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </div>
+  )
+}
 
 // KPI card with icon in a translucent circle, large number, bottom border accent
 const KpiCard = ({ label, value, Icon, accent }) => (
@@ -396,10 +633,7 @@ const HealthBar = ({ label, pct, loaded }) => {
       <div className="adm-health-track">
         <div
           className="adm-health-fill"
-          style={{
-            width: loaded ? `${pct}%` : '0%',
-            background: color,
-          }}
+          style={{ width: loaded ? `${pct}%` : '0%', background: color }}
         />
       </div>
       <span className="adm-health-pct" style={{ color }}>{pct}%</span>

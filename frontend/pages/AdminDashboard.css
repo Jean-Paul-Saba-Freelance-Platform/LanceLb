@@ -618,3 +618,269 @@
     grid-template-columns: 110px 1fr 40px;
   }
 }
+
+/* ============================================
+   Users Management Section
+   ============================================ */
+
+.adm-users-section {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  width: 100%;
+}
+
+/* ---- Toolbar ---- */
+.adm-users-toolbar {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.adm-users-search {
+  flex: 1;
+  max-width: 380px;
+  padding: 0.55rem 0.9rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  color: #e9edef;
+  font-size: 0.875rem;
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+.adm-users-search::placeholder {
+  color: #8696a0;
+}
+
+.adm-users-search:focus {
+  border-color: #00a884;
+}
+
+.adm-users-role-filter {
+  padding: 0.55rem 0.9rem;
+  background-color: #1a1825;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 8px;
+  color: #e9edef;
+  font-size: 0.875rem;
+  outline: none;
+  cursor: pointer;
+  transition: border-color 0.15s;
+}
+
+.adm-users-role-filter:focus {
+  border-color: #00a884;
+}
+
+.adm-users-role-filter option {
+  background-color: #1a1825;
+  color: #e9edef;
+}
+
+/* ---- Table overrides for users ---- */
+.adm-users-table th:last-child,
+.adm-users-table td:last-child {
+  min-width: 200px;
+}
+
+/* ---- Status badges ---- */
+.adm-status-badge {
+  display: inline-block;
+  font-size: 0.73rem;
+  font-weight: 600;
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  text-transform: capitalize;
+  letter-spacing: 0.03em;
+}
+
+.adm-status-active {
+  background: rgba(16, 185, 129, 0.12);
+  color: #10b981;
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.adm-status-banned {
+  background: rgba(248, 113, 113, 0.12);
+  color: #f87171;
+  border: 1px solid rgba(248, 113, 113, 0.3);
+}
+
+.adm-status-timeout {
+  background: rgba(251, 191, 36, 0.12);
+  color: #fbbf24;
+  border: 1px solid rgba(251, 191, 36, 0.3);
+}
+
+/* ---- Role badges ---- */
+.adm-role-badge {
+  display: inline-block;
+  font-size: 0.73rem;
+  font-weight: 600;
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  text-transform: capitalize;
+  letter-spacing: 0.03em;
+}
+
+.adm-role-freelancer {
+  background: rgba(0, 168, 132, 0.12);
+  color: #00a884;
+  border: 1px solid rgba(0, 168, 132, 0.3);
+}
+
+.adm-role-client {
+  background: rgba(59, 130, 246, 0.12);
+  color: #60a5fa;
+  border: 1px solid rgba(59, 130, 246, 0.3);
+}
+
+/* ---- Row actions ---- */
+.adm-row-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.adm-action-btn {
+  font-size: 0.78rem;
+  font-weight: 600;
+  padding: 0.28rem 0.7rem;
+  border-radius: 6px;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: background 0.15s, border-color 0.15s;
+  white-space: nowrap;
+}
+
+.adm-action-ban {
+  background: rgba(248, 113, 113, 0.1);
+  border-color: rgba(248, 113, 113, 0.3);
+  color: #f87171;
+}
+
+.adm-action-ban:hover {
+  background: rgba(248, 113, 113, 0.2);
+  border-color: rgba(248, 113, 113, 0.55);
+}
+
+.adm-action-timeout {
+  background: rgba(251, 191, 36, 0.1);
+  border-color: rgba(251, 191, 36, 0.3);
+  color: #fbbf24;
+}
+
+.adm-action-timeout:hover {
+  background: rgba(251, 191, 36, 0.2);
+  border-color: rgba(251, 191, 36, 0.55);
+}
+
+.adm-action-unban {
+  background: rgba(16, 185, 129, 0.1);
+  border-color: rgba(16, 185, 129, 0.3);
+  color: #10b981;
+}
+
+.adm-action-unban:hover {
+  background: rgba(16, 185, 129, 0.2);
+  border-color: rgba(16, 185, 129, 0.55);
+}
+
+/* ---- Inline forms ---- */
+.adm-inline-form {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  flex-wrap: nowrap;
+}
+
+.adm-inline-input {
+  padding: 0.28rem 0.55rem;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 6px;
+  color: #e9edef;
+  font-size: 0.8rem;
+  outline: none;
+  width: 140px;
+  transition: border-color 0.15s;
+}
+
+.adm-inline-input:focus {
+  border-color: #00a884;
+}
+
+.adm-inline-number {
+  width: 56px;
+}
+
+.adm-inline-select {
+  padding: 0.28rem 0.5rem;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 6px;
+  color: #e9edef;
+  font-size: 0.8rem;
+  outline: none;
+  cursor: pointer;
+}
+
+.adm-inline-confirm {
+  font-size: 0.78rem;
+  font-weight: 600;
+  padding: 0.28rem 0.65rem;
+  border-radius: 6px;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: background 0.15s;
+  white-space: nowrap;
+}
+
+.adm-inline-confirm-ban {
+  background: rgba(248, 113, 113, 0.15);
+  border-color: rgba(248, 113, 113, 0.35);
+  color: #f87171;
+}
+
+.adm-inline-confirm-ban:hover {
+  background: rgba(248, 113, 113, 0.28);
+}
+
+.adm-inline-confirm-timeout {
+  background: rgba(251, 191, 36, 0.15);
+  border-color: rgba(251, 191, 36, 0.35);
+  color: #fbbf24;
+}
+
+.adm-inline-confirm-timeout:hover {
+  background: rgba(251, 191, 36, 0.28);
+}
+
+.adm-inline-cancel {
+  font-size: 0.78rem;
+  font-weight: 700;
+  padding: 0.28rem 0.5rem;
+  border-radius: 6px;
+  cursor: pointer;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #8696a0;
+  transition: color 0.15s, background 0.15s;
+  line-height: 1;
+}
+
+.adm-inline-cancel:hover {
+  color: #e9edef;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+/* ---- Avatar image variant ---- */
+.adm-fl-avatar-img {
+  object-fit: cover;
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+}

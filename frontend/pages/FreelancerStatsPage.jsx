@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import TopNav from '../src/components/TopNav'
 import {
-  TrendingUp, DollarSign, Target, Eye, Mail, MousePointerClick,
+  TrendingUp, DollarSign, Target,
   FileText, Award, Briefcase, Bot
 } from 'lucide-react'
 import './FreelancerStatsPage.css'
@@ -27,7 +27,6 @@ const FreelancerStatsPage = () => {
   const [statsData, setStatsData] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
-  const [profileMetricTab, setProfileMetricTab] = useState('views')
   const [profileTimeFilter, setProfileTimeFilter] = useState('7days')
   const [proposalsTimeFilter, setProposalsTimeFilter] = useState('7days')
 
@@ -67,7 +66,6 @@ const FreelancerStatsPage = () => {
   }, [proposalsTimeFilter])
 
   const userName = user?.name || user?.firstName || 'Freelancer'
-  const chartData = [0, 0, 0, 0, 0, 0, 0]
 
   const proposals = statsData?.proposals || {}
   const totalProposals = proposals.total ?? 0
@@ -81,13 +79,6 @@ const FreelancerStatsPage = () => {
   const uniqueClients = statsData?.uniqueClients ?? 0
   const profileViews = statsData?.profileViews ?? 0
   const achievements = statsData?.achievements || []
-
-  const profileMetrics = {
-    views: { value: profileViews, label: 'profile views' },
-    invites: { value: 0, label: 'invites received' },
-    clicks: { value: 0, label: 'profile clicks' }
-  }
-  const currentMetric = profileMetrics[profileMetricTab]
 
   if (loading) {
     return (
@@ -405,51 +396,8 @@ const FreelancerStatsPage = () => {
                 </div>
               </div>
 
-              {/* Tabs */}
-              <div className="metrics-tabs">
-                <button
-                  className={`metric-tab ${profileMetricTab === 'views' ? 'active' : ''}`}
-                  onClick={() => setProfileMetricTab('views')}
-                >
-                  <Eye size={16} />
-                  <span>Profile views</span>
-                </button>
-                <button
-                  className={`metric-tab ${profileMetricTab === 'invites' ? 'active' : ''}`}
-                  onClick={() => setProfileMetricTab('invites')}
-                >
-                  <Mail size={16} />
-                  <span>Invites</span>
-                </button>
-                <button
-                  className={`metric-tab ${profileMetricTab === 'clicks' ? 'active' : ''}`}
-                  onClick={() => setProfileMetricTab('clicks')}
-                >
-                  <MousePointerClick size={16} />
-                  <span>Clicks</span>
-                </button>
-              </div>
-
               <div className="metric-main-value">
-                {currentMetric.value} {currentMetric.label}
-              </div>
-
-              {/* Simple Chart Placeholder */}
-              <div className="chart-placeholder">
-                <div className="chart-bars">
-                  {chartData.map((value, index) => (
-                    <div
-                      key={index}
-                      className="chart-bar"
-                      style={{ height: `${Math.max(10, value)}%` }}
-                    />
-                  ))}
-                </div>
-                <div className="chart-labels">
-                  {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((day, index) => (
-                    <span key={index} className="chart-label">{day}</span>
-                  ))}
-                </div>
+                {profileViews} profile views
               </div>
 
               <div className="stats-hint-card">
