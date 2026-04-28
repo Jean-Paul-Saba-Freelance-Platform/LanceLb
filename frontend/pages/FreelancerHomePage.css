@@ -690,12 +690,12 @@
 /* ── Light Mode: People You May Know grid ── */
 [data-theme="light"] .fh-person-card {
   background: rgba(255, 255, 255, 0.85);
-  border-color: #e0e3e7;
+  border-color: #dde4e1;
   backdrop-filter: none;
 }
 
 [data-theme="light"] .fh-person-card:hover {
-  border-color: rgba(1, 117, 97, 0.3);
+  border-color: rgba(0, 168, 132, 0.3);
 }
 
 [data-theme="light"] .fh-person-name {
@@ -707,16 +707,16 @@
 }
 
 [data-theme="light"] .fh-person-follow-btn.active {
-  background: #017561;
+  background: #00a884;
 }
 
 [data-theme="light"] .fh-person-view-btn {
-  color: #017561;
-  border-color: rgba(1, 117, 97, 0.4);
+  color: #00a884;
+  border-color: rgba(0, 168, 132, 0.4);
 }
 
 [data-theme="light"] .fh-people-see-all {
-  color: #017561;
+  color: #00a884;
 }
 
 /* ── Responsive ── */
@@ -769,8 +769,8 @@
    ========================================================================= */
 [data-theme="light"] .greeting-card {
   background: rgba(255, 255, 255, 0.85);
-  border-color: #e0e3e7;
-  border-left-color: #017561;
+  border-color: #dde4e1;
+  border-left-color: #00a884;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
 }
 
@@ -784,7 +784,7 @@
 
 [data-theme="light"] .jobs-search-bar-inner {
   background: #fff;
-  border-color: #d8dde1;
+  border-color: #dde3df;
 }
 
 [data-theme="light"] .jobs-search-input {
@@ -801,7 +801,7 @@
 
 [data-theme="light"] .jobs-tabs {
   background: rgba(240, 244, 248, 0.8);
-  border-color: #d8dde1;
+  border-color: #dde3df;
 }
 
 [data-theme="light"] .tab-button {
@@ -813,7 +813,7 @@
 }
 
 [data-theme="light"] .tab-button.active {
-  background: #017561;
+  background: #00a884;
   color: white;
 }
 
@@ -830,7 +830,7 @@
 }
 
 [data-theme="light"] .people-follow-btn--active {
-  background: #017561;
+  background: #00a884;
 }
 
 [data-theme="light"] .profile-name {
@@ -870,22 +870,22 @@
 }
 
 [data-theme="light"] .sidebar-button-primary {
-  background: #017561;
+  background: #00a884;
   color: white;
 }
 
 [data-theme="light"] .sidebar-button-secondary {
-  color: #017561;
-  border-color: rgba(1, 117, 97, 0.4);
+  color: #00a884;
+  border-color: rgba(0, 168, 132, 0.4);
 }
 
 [data-theme="light"] .sidebar-button-secondary:hover {
-  background: rgba(1, 117, 97, 0.1);
-  color: #017561;
+  background: rgba(0, 168, 132, 0.1);
+  color: #00a884;
 }
 
 [data-theme="light"] .sidebar-link {
-  color: #017561;
+  color: #00a884;
 }
 
 [data-theme="light"] .sidebar-link:hover {
@@ -944,7 +944,7 @@
 }
 
 [data-theme="light"] .complete-profile-check {
-  border-color: #d8dde1;
+  border-color: #dde3df;
 }
 
 [data-theme="light"] .complete-profile-label {

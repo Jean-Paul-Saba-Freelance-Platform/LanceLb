@@ -496,12 +496,12 @@
 
 [data-theme="light"] .manage-job-card {
   background: rgba(255, 255, 255, 0.85);
-  border-color: #e0e3e7;
+  border-color: #dde4e1;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
 }
 
 [data-theme="light"] .manage-job-card:hover {
-  border-color: rgba(1, 117, 97, 0.3);
+  border-color: rgba(0, 168, 132, 0.3);
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
 }
 
@@ -523,7 +523,7 @@
 
 [data-theme="light"] .manage-search-input {
   background: #fff;
-  border-color: #d8dde1;
+  border-color: #dde3df;
   color: #111b21;
 }
 
@@ -533,7 +533,7 @@
 
 [data-theme="light"] .manage-status-filter {
   background: rgba(240, 244, 248, 0.8);
-  border-color: #d8dde1;
+  border-color: #dde3df;
 }
 
 [data-theme="light"] .manage-status-btn {
@@ -541,13 +541,13 @@
 }
 
 [data-theme="light"] .manage-status-btn.active {
-  background: #017561;
+  background: #00a884;
   color: white;
 }
 
 [data-theme="light"] .manage-empty {
   background: rgba(255, 255, 255, 0.85);
-  border-color: #e0e3e7;
+  border-color: #dde4e1;
 }
 
 [data-theme="light"] .manage-empty h3 {
@@ -559,25 +559,25 @@
 }
 
 [data-theme="light"] .manage-job-badge.status-open {
-  background: rgba(1, 117, 97, 0.1);
-  color: #017561;
-  border-color: rgba(1, 117, 97, 0.25);
+  background: rgba(0, 168, 132, 0.1);
+  color: #00a884;
+  border-color: rgba(0, 168, 132, 0.25);
 }
 
 [data-theme="light"] .manage-skill-chip {
-  background: rgba(1, 117, 97, 0.08);
-  border-color: rgba(1, 117, 97, 0.2);
-  color: #017561;
+  background: rgba(0, 168, 132, 0.08);
+  border-color: rgba(0, 168, 132, 0.2);
+  color: #00a884;
 }
 
 [data-theme="light"] .manage-success {
-  color: #017561;
-  background: rgba(1, 117, 97, 0.08);
-  border-color: rgba(1, 117, 97, 0.2);
+  color: #00a884;
+  background: rgba(0, 168, 132, 0.08);
+  border-color: rgba(0, 168, 132, 0.2);
 }
 
 [data-theme="light"] .manage-success-dismiss {
-  color: #017561;
+  color: #00a884;
 }
 
 [data-theme="light"] .manage-error {

@@ -717,7 +717,7 @@
    Light Mode Overrides
    ========================================================================= */
 [data-theme="light"] .messages-shell {
-  border-color: #e0e3e7;
+  border-color: #dde4e1;
   background: rgba(255, 255, 255, 0.92);
   backdrop-filter: blur(18px);
   -webkit-backdrop-filter: blur(18px);
@@ -725,7 +725,7 @@
 
 [data-theme="light"] .messages-sidebar {
   background: #f8fafc;
-  border-right-color: #e0e3e7;
+  border-right-color: #dde4e1;
 }
 
 [data-theme="light"] .messages-chat-panel {
@@ -733,20 +733,20 @@
 }
 
 [data-theme="light"] .messages-sidebar-header {
-  background: #f0f2f5;
-  border-bottom-color: #e0e3e7;
+  background: #f3f4f3;
+  border-bottom-color: #dde4e1;
 }
 
 [data-theme="light"] .messages-back-button {
   background: #ffffff;
-  border-color: #d8dde1;
+  border-color: #dde3df;
   color: #41525d;
 }
 
 [data-theme="light"] .messages-back-button:hover {
   background: #e7f7f1;
-  color: #017561;
-  border-color: rgba(1, 117, 97, 0.3);
+  color: #00a884;
+  border-color: rgba(0, 168, 132, 0.3);
 }
 
 [data-theme="light"] .messages-sidebar-header h2 {
@@ -758,8 +758,8 @@
 }
 
 [data-theme="light"] .messages-search {
-  border-color: #d8dde1;
-  background: #f0f2f5;
+  border-color: #dde3df;
+  background: #f3f4f3;
   color: #667781;
 }
 
@@ -780,12 +780,12 @@
 }
 
 [data-theme="light"] .messages-user-row:hover {
-  background: #f0f2f5;
+  background: #f3f4f3;
 }
 
 [data-theme="light"] .messages-user-row.active {
-  background: rgba(1, 117, 97, 0.1);
-  border-color: rgba(1, 117, 97, 0.2);
+  background: rgba(0, 168, 132, 0.1);
+  border-color: rgba(0, 168, 132, 0.2);
 }
 
 [data-theme="light"] .messages-user-name {
@@ -797,8 +797,8 @@
 }
 
 [data-theme="light"] .messages-chat-header {
-  background: #f0f2f5;
-  border-bottom-color: #e0e3e7;
+  background: #f3f4f3;
+  border-bottom-color: #dde4e1;
 }
 
 [data-theme="light"] .messages-chat-header h3 {
@@ -820,7 +820,7 @@
 
 [data-theme="light"] .messages-menu-panel {
   background: #ffffff;
-  border-color: #e0e3e7;
+  border-color: #dde4e1;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
 }
 
@@ -829,7 +829,7 @@
 }
 
 [data-theme="light"] .messages-menu-item:hover {
-  background: #f0f2f5;
+  background: #f3f4f3;
   color: #111b21;
 }
 
@@ -846,7 +846,7 @@
 
 [data-theme="light"] .message-row.from-them .message-bubble {
   background: #ffffff;
-  border-color: #e0e3e7;
+  border-color: #dde4e1;
   color: #111b21;
   box-shadow: none;
 }
@@ -860,13 +860,13 @@
 }
 
 [data-theme="light"] .messages-composer {
-  background: #f0f2f5;
-  border-top-color: #e0e3e7;
+  background: #f3f4f3;
+  border-top-color: #dde4e1;
 }
 
 [data-theme="light"] .messages-composer input {
   background: #ffffff;
-  border-color: #d8dde1;
+  border-color: #dde3df;
   color: #111b21;
 }
 
@@ -888,12 +888,12 @@
 
 [data-theme="light"] .messages-panel {
   background: rgba(255, 255, 255, 0.97);
-  border-color: #e0e3e7;
+  border-color: #dde4e1;
 }
 
 [data-theme="light"] .messages-panel-header {
-  background: #f0f2f5;
-  border-bottom-color: #e0e3e7;
+  background: #f3f4f3;
+  border-bottom-color: #dde4e1;
 }
 
 [data-theme="light"] .messages-panel-header h3 {
@@ -909,13 +909,13 @@
 }
 
 [data-theme="light"] .messages-panel-field input {
-  background: #f5f7f8;
-  border-color: #d8dde1;
+  background: #f0f7f4;
+  border-color: #dde3df;
   color: #111b21;
 }
 
 [data-theme="light"] .messages-panel-members {
-  border-color: #d8dde1;
+  border-color: #dde3df;
 }
 
 [data-theme="light"] .messages-panel-member-row {
@@ -923,13 +923,13 @@
 }
 
 [data-theme="light"] .messages-panel-actions {
-  border-top-color: #d8dde1;
+  border-top-color: #dde3df;
 }
 
 [data-theme="light"] .messages-panel-btn.secondary {
-  background: #f0f2f5;
+  background: #f3f4f3;
   color: #41525d;
-  border-color: #d8dde1;
+  border-color: #dde3df;
 }
 
 [data-theme="light"] .messages-user-name,

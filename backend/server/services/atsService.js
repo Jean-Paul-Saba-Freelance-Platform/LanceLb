@@ -15,3 +15,13 @@ export const evaluateResumeWithFlask = async (fileBuffer, originalName, jobDescr
 
   return await response.json();
 };
+
+export const checkFlaskHealth = async () => {
+  try {
+    const response = await fetch(`${getFlaskUrl()}/health`);
+    return response.ok;
+  } catch (error) {
+    console.error('Error checking Flask health:', error);
+    return false;
+  }
+};

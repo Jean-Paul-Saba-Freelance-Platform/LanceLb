@@ -236,7 +236,7 @@
   border-radius: 999px;
   font-size: 0.8rem;
   font-weight: 500;
-  color: #017561;
+  color: #00a884;
 }
 
 .edit-skill-remove {
@@ -249,7 +249,7 @@
   background: rgba(0, 0, 0, 0.06);
   border: none;
   border-radius: 50%;
-  color: #017561;
+  color: #00a884;
   font-size: 0.75rem;
   line-height: 1;
   cursor: pointer;
@@ -290,7 +290,7 @@
 .edit-option-btn.selected {
   background: rgba(0, 168, 132, 0.1);
   border-color: #00a884;
-  color: #017561;
+  color: #00a884;
   font-weight: 600;
   box-shadow: 0 0 0 1px rgba(0, 168, 132, 0.12);
 }

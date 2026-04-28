@@ -1110,9 +1110,9 @@
   --fh-text-title: #111b21;
   --fh-text-body: #374151;
   --fh-text-muted: #667781;
-  --fh-text-accent: #017561;
-  --fh-text-link: #017561;
-  --fh-border-soft: 1px solid #e0e3e7;
+  --fh-text-accent: #00a884;
+  --fh-text-link: #00a884;
+  --fh-border-soft: 1px solid #dde4e1;
   --fh-shadow-soft: 0 4px 16px rgba(0, 0, 0, 0.06);
   --fh-shadow-hover: 0 8px 24px rgba(0, 0, 0, 0.1);
 }
@@ -1121,7 +1121,7 @@
   background: rgba(255, 255, 255, 0.85);
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
-  border-color: #e0e3e7;
+  border-color: #dde4e1;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
 }
 
@@ -1131,49 +1131,49 @@
 }
 
 [data-theme="light"] .fh-btn-secondary {
-  background: #f0f2f5;
-  border-color: #d8dde1;
+  background: #f3f4f3;
+  border-color: #dde3df;
   color: #111b21;
 }
 
 [data-theme="light"] .fh-btn-primary {
-  background: #017561;
-  border-color: rgba(1, 117, 97, 0.3);
+  background: #00a884;
+  border-color: rgba(0, 168, 132, 0.3);
 }
 
 [data-theme="light"] .fh-btn-icon,
 [data-theme="light"] .fh-icon-button {
-  background: #f0f2f5;
-  border-color: #d8dde1;
+  background: #f3f4f3;
+  border-color: #dde3df;
   color: #41525d;
 }
 
 [data-theme="light"] .fh-btn-icon:hover,
 [data-theme="light"] .fh-icon-button:hover {
-  background: rgba(1, 117, 97, 0.08);
-  border-color: rgba(1, 117, 97, 0.3);
-  color: #017561;
+  background: rgba(0, 168, 132, 0.08);
+  border-color: rgba(0, 168, 132, 0.3);
+  color: #00a884;
 }
 
 [data-theme="light"] .freelancer-profile-page .profile-header-avatar {
-  border-color: rgba(1, 117, 97, 0.3);
+  border-color: rgba(0, 168, 132, 0.3);
 }
 
 [data-theme="light"] .freelancer-profile-page .profile-edit-input {
-  background: #f5f7f8;
-  border-color: #d8dde1;
+  background: #f0f7f4;
+  border-color: #dde3df;
   color: #111b21;
 }
 
 [data-theme="light"] .freelancer-profile-page .profile-edit-input:focus {
-  border-color: #017561;
-  box-shadow: 0 0 0 3px rgba(1, 117, 97, 0.12);
+  border-color: #00a884;
+  box-shadow: 0 0 0 3px rgba(0, 168, 132, 0.12);
 }
 
 [data-theme="light"] .freelancer-profile-page .skill-tag {
-  background: rgba(1, 117, 97, 0.07);
-  border-color: rgba(1, 117, 97, 0.18);
-  color: #017561;
+  background: rgba(0, 168, 132, 0.07);
+  border-color: rgba(0, 168, 132, 0.18);
+  color: #00a884;
 }
 
 [data-theme="light"] .freelancer-profile-page .portfolio-tab {
@@ -1181,14 +1181,14 @@
 }
 
 [data-theme="light"] .freelancer-profile-page .portfolio-tab.active {
-  background: rgba(1, 117, 97, 0.1);
-  border-color: rgba(1, 117, 97, 0.3);
-  color: #017561;
+  background: rgba(0, 168, 132, 0.1);
+  border-color: rgba(0, 168, 132, 0.3);
+  color: #00a884;
 }
 
 [data-theme="light"] .freelancer-profile-page .portfolio-tabs {
   background: rgba(0, 0, 0, 0.03);
-  border-color: #d8dde1;
+  border-color: #dde3df;
 }
 
 [data-theme="light"] .freelancer-profile-page .top-nav {
@@ -1199,11 +1199,11 @@
 
 [data-theme="light"] .fprofile-modal {
   background: rgba(255, 255, 255, 0.97);
-  border-color: #e0e3e7;
+  border-color: #dde4e1;
 }
 
 [data-theme="light"] .fprofile-modal-header {
-  border-bottom-color: #e0e3e7;
+  border-bottom-color: #dde4e1;
 }
 
 [data-theme="light"] .fprofile-modal-title {
@@ -1364,11 +1364,11 @@
 [data-theme="light"] .fprofile-settings-subtitle { color: #667781; }
 [data-theme="light"] .fprofile-settings-nav-title { color: #667781; }
 [data-theme="light"] .fprofile-settings-nav-item { color: #41525d; }
-[data-theme="light"] .fprofile-settings-nav-item:hover { background: #f0f2f5; color: #111b21; }
+[data-theme="light"] .fprofile-settings-nav-item:hover { background: #f3f4f3; color: #111b21; }
 [data-theme="light"] .fprofile-settings-nav-item.active {
-  background: rgba(1, 117, 97, 0.08);
-  color: #017561;
-  border-color: #017561;
+  background: rgba(0, 168, 132, 0.08);
+  color: #00a884;
+  border-color: #00a884;
 }
 
 /* ─── Reviews ─── */

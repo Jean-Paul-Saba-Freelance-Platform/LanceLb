@@ -713,13 +713,13 @@
 }
 
 [data-theme="light"] .client-profile-settings-nav-item:hover {
-  background: #f0f2f5;
+  background: #f3f4f3;
   color: #111b21;
 }
 
 [data-theme="light"] .client-profile-settings-nav-item.active {
-  background: rgba(1, 117, 97, 0.08);
-  color: #017561;
-  border-left-color: #017561;
-  border-bottom-color: #017561;
+  background: rgba(0, 168, 132, 0.08);
+  color: #00a884;
+  border-left-color: #00a884;
+  border-bottom-color: #00a884;
 }

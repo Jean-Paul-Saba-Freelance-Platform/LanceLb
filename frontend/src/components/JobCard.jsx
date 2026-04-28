@@ -61,7 +61,7 @@ function budgetLine(job) {
   return ''
 }
 
-const JobCard = ({ job, isSaved = false, onToggleSave }) => {
+const JobCard = ({ job, isSaved = false, onToggleSave, alreadyApplied = false, onApplied }) => {
   const navigate = useNavigate()
   const [isApplyOpen, setIsApplyOpen] = useState(false)
   const [coverLetter, setCoverLetter] = useState('')
@@ -128,6 +128,7 @@ const JobCard = ({ job, isSaved = false, onToggleSave }) => {
   const [currentProfile, setCurrentProfile] = useState(null)
 
   const openApplyModal = async () => {
+    if (alreadyApplied) return
     const jobId = job.id || job._id
     setIsApplyOpen(true)
     setLoadingQuestions(true)
@@ -392,6 +393,7 @@ const JobCard = ({ job, isSaved = false, onToggleSave }) => {
 
       setSuccess(true)
       setSubmitting(false)
+      if (onApplied) onApplied(job.id || job._id)
     } catch (err) {
       console.error('Error submitting application:', err)
       setError('Network error — make sure the backend is running.')
@@ -501,12 +503,15 @@ const JobCard = ({ job, isSaved = false, onToggleSave }) => {
           >
             See client profile
           </button>
-          <button
-            className="job-apply-button gooey-button"
-            onClick={openApplyModal}
-          >
-            Apply now
-          </button>
+          {alreadyApplied ? (
+            <button className="job-apply-button job-apply-button--applied" disabled>
+              Applied
+            </button>
+          ) : (
+            <button className="job-apply-button gooey-button" onClick={openApplyModal}>
+              Apply now
+            </button>
+          )}
           <button
             className={`job-icon-button ${isSaved ? 'job-icon-button--saved' : ''}`}
             aria-label={isSaved ? 'Unsave job' : 'Save job'}

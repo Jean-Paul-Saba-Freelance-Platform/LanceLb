@@ -59,12 +59,34 @@ const FreelancerFindWorkPage = () => {
   const [jobs, setJobs] = useState([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
+  const [appliedJobIds, setAppliedJobIds] = useState(new Set())
 
   const getUserName = () => {
     try {
       const u = JSON.parse(localStorage.getItem('user') || '{}')
       return u.name?.split(' ')[0] || u.firstName || 'Freelancer'
     } catch { return 'Freelancer' }
+  }
+
+  // Fetch the IDs of jobs this freelancer has already applied to
+  useEffect(() => {
+    const token = localStorage.getItem('token')
+    if (!token) return
+    fetch(`${API_BASE}/api/applications/mine`, {
+      headers: { Authorization: `Bearer ${token}` },
+      credentials: 'include',
+    })
+      .then(r => r.json())
+      .then(data => {
+        if (data.success && Array.isArray(data.applications)) {
+          setAppliedJobIds(new Set(data.applications.map(a => a.jobId?._id || a.jobId)))
+        }
+      })
+      .catch(() => {})
+  }, [])
+
+  const handleApplied = (jobId) => {
+    setAppliedJobIds(prev => new Set([...prev, jobId]))
   }
 
   // Fetch whenever category or search changes
@@ -241,7 +263,11 @@ const FreelancerFindWorkPage = () => {
             )
             : jobs.map((job, i) => (
               <motion.div key={job._id} variants={fadeUp} initial="hidden" animate="visible" custom={i * 0.3 + 4}>
-                <JobCard job={formatJob(job)} />
+                <JobCard
+                  job={formatJob(job)}
+                  alreadyApplied={appliedJobIds.has(job._id)}
+                  onApplied={handleApplied}
+                />
               </motion.div>
             ))
           }

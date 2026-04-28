@@ -198,6 +198,18 @@
   cursor: pointer;
 }
 
+.job-apply-button--applied {
+  background: transparent;
+  border: 1.5px solid #2a3942;
+  color: #8696a0;
+  cursor: default;
+}
+
+[data-theme="light"] .job-apply-button--applied {
+  border-color: #c8d8d3;
+  color: #7a9e95;
+}
+
 .gooey-button {
   border-radius: 999px;
   padding: 0.55rem 1.1rem;
@@ -811,7 +823,7 @@
    ========================================================================= */
 [data-theme="light"] .job-card {
   background: #ffffff;
-  border-color: #e0e3e7;
+  border-color: #dde4e1;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
 }
 
@@ -837,7 +849,7 @@
 }
 
 [data-theme="light"] .job-description-toggle {
-  color: #017561;
+  color: #00a884;
 }
 
 [data-theme="light"] .job-description-toggle:hover {
@@ -846,23 +858,23 @@
 
 [data-theme="light"] .job-tag {
   background: #eef9f5;
-  color: #017561;
+  color: #00a884;
   border-color: rgba(0, 168, 132, 0.2);
 }
 
 [data-theme="light"] .job-apply-banner {
-  color: #017561;
+  color: #00a884;
   background: #eef9f5;
   border-color: rgba(0, 168, 132, 0.4);
 }
 
 [data-theme="light"] .job-card-footer {
-  border-top-color: #e0e3e7;
+  border-top-color: #dde4e1;
 }
 
 [data-theme="light"] .payment-verified {
   background: #eef9f5;
-  color: #017561;
+  color: #00a884;
   border-color: rgba(0, 168, 132, 0.4);
 }
 
@@ -875,8 +887,8 @@
 
 [data-theme="light"] .job-profile-button {
   background: #eef9f5;
-  border-color: #017561;
-  color: #017561;
+  border-color: #00a884;
+  color: #00a884;
 }
 
 [data-theme="light"] .job-profile-button:hover:not(:disabled) {
@@ -888,22 +900,22 @@
 }
 
 [data-theme="light"] .job-icon-button:hover {
-  background: #f0f2f5;
+  background: #f3f4f3;
   color: #111b21;
 }
 
 [data-theme="light"] .fit-score-panel {
-  background: #f5f7f8;
-  border-color: #d8dde1;
+  background: #f0f7f4;
+  border-color: #dde3df;
 }
 
 [data-theme="light"] .fit-tip-item {
-  background: #f0f2f5;
-  border-color: #d8dde1;
+  background: #f3f4f3;
+  border-color: #dde3df;
 }
 
 [data-theme="light"] .fit-tip-item h5 {
-  color: #017561;
+  color: #00a884;
 }
 
 [data-theme="light"] .fit-tip-item p {
@@ -932,8 +944,8 @@
 [data-theme="light"] .apply-field input,
 [data-theme="light"] .apply-field textarea,
 [data-theme="light"] .wizard-input {
-  background: #f5f7f8;
-  border-color: #d8dde1;
+  background: #f0f7f4;
+  border-color: #dde3df;
   color: #111b21;
 }
 
@@ -950,8 +962,8 @@
 }
 
 [data-theme="light"] .wizard-yesno-btn {
-  background: #f5f7f8;
-  border-color: #d8dde1;
+  background: #f0f7f4;
+  border-color: #dde3df;
   color: #41525d;
 }
 
@@ -966,7 +978,7 @@
 }
 
 [data-theme="light"] .wizard-file-label {
-  border-color: #d8dde1;
+  border-color: #dde3df;
   color: #667781;
 }
 
@@ -976,7 +988,7 @@
 }
 
 [data-theme="light"] .fit-tips-panel {
-  border-top-color: #d8dde1;
+  border-top-color: #dde3df;
 }
 
 [data-theme="light"] .fit-tips-summary {
@@ -994,7 +1006,7 @@
 
 /* Wizard step connector on white background */
 [data-theme="light"] .apply-modal--wizard .step-connector {
-  background-color: #d8dde1;
+  background-color: #dde3df;
 }
 
 /* Fit score loading text */
@@ -1026,7 +1038,7 @@
 /* Fit tags */
 [data-theme="light"] .fit-tag--strength {
   background: #eef9f5;
-  color: #017561;
+  color: #00a884;
   border-color: rgba(0, 168, 132, 0.4);
 }
 
@@ -1039,7 +1051,7 @@
 /* Get detailed AI tips button */
 [data-theme="light"] .fit-tips-button {
   background: #eef9f5;
-  color: #017561;
+  color: #00a884;
   border-color: #00a884;
 }
 
@@ -1054,11 +1066,11 @@
 
 [data-theme="light"] .apply-success-icon {
   background: #eef9f5;
-  color: #017561;
+  color: #00a884;
 }
 
 [data-theme="light"] .apply-success p {
-  color: #017561;
+  color: #00a884;
 }
 
 /* Error / warning messages */
@@ -1076,7 +1088,7 @@
 
 /* Fit tip example line */
 [data-theme="light"] .fit-tip-example {
-  color: #017561 !important;
+  color: #00a884 !important;
 }
 
 /* ── ATS Resume Scoring ── */
@@ -1248,13 +1260,13 @@
 }
 
 [data-theme="light"] .ats-result {
-  background: #f5f7f8;
-  border-color: #d8dde1;
+  background: #f0f7f4;
+  border-color: #dde3df;
 }
 
 [data-theme="light"] .ats-tag--category {
   background: #e6f7f3;
-  color: #017561;
+  color: #00a884;
   border-color: rgba(0,117,97,0.3);
 }
 
@@ -1515,14 +1527,14 @@
   border-color: rgba(0, 168, 132, 0.25);
 }
 
-[data-theme="light"] .suggestions-panel-title { color: #017561; }
+[data-theme="light"] .suggestions-panel-title { color: #00a884; }
 [data-theme="light"] .suggestions-count { color: #667781; }
 [data-theme="light"] .suggestions-loading { color: #667781; }
-[data-theme="light"] .suggestions-empty { color: #017561; }
+[data-theme="light"] .suggestions-empty { color: #00a884; }
 
 [data-theme="light"] .suggestion-card {
   background: #fff;
-  border-color: #e0e3e7;
+  border-color: #dde4e1;
 }
 
 [data-theme="light"] .suggestion-label { color: #111b21; }
@@ -1536,7 +1548,7 @@
 
 [data-theme="light"] .suggestion-diff-text--after {
   background: #eef9f5;
-  color: #017561;
+  color: #00a884;
   border-color: rgba(0, 168, 132, 0.25);
 }
 
@@ -1545,11 +1557,11 @@
 
 [data-theme="light"] .suggestion-reject {
   color: #667781;
-  border-color: #d8dde1;
+  border-color: #dde3df;
 }
 
 [data-theme="light"] .fit-suggest-button {
-  color: #017561;
+  color: #00a884;
   border-color: #00a884;
 }
 

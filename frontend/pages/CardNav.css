@@ -270,8 +270,8 @@
 
 [data-theme="light"] .card-nav-theme-toggle:hover {
   background: rgba(0, 0, 0, 0.05);
-  color: #017561;
-  border-color: rgba(1, 117, 97, 0.35);
+  color: #00a884;
+  border-color: rgba(0, 168, 132, 0.35);
 }
 
 [data-theme="light"] .card-nav-brand {
@@ -283,11 +283,11 @@
 }
 
 [data-theme="light"] .card-nav-login:hover {
-  color: #017561;
+  color: #00a884;
 }
 
 [data-theme="light"] .card-nav-cta {
-  background: #017561;
+  background: #00a884;
 }
 
 [data-theme="light"] .card-nav-cta:hover {
@@ -316,7 +316,7 @@
 }
 
 [data-theme="light"] .card-nav-link:hover {
-  color: #017561;
+  color: #00a884;
 }
 
 /* ── Mobile ───────────────────────────────────────────── */

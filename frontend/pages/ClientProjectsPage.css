@@ -320,20 +320,20 @@
 /* ─── Light mode ─── */
 
 [data-theme="light"] .cp-title { color: #111b21; }
-[data-theme="light"] .cp-form { background: rgba(255,255,255,0.85); border-color: #e0e3e7; box-shadow: 0 4px 16px rgba(0,0,0,0.06); }
+[data-theme="light"] .cp-form { background: rgba(255,255,255,0.85); border-color: #dde4e1; box-shadow: 0 4px 16px rgba(0,0,0,0.06); }
 [data-theme="light"] .cp-form-title { color: #111b21; }
 [data-theme="light"] .cp-label { color: #667781; }
-[data-theme="light"] .cp-input { background: #f5f7f8; border-color: #d8dde1; color: #111b21; }
+[data-theme="light"] .cp-input { background: #f0f7f4; border-color: #dde3df; color: #111b21; }
 [data-theme="light"] .cp-input::placeholder { color: #8696a0; }
-[data-theme="light"] .cp-jobs-list { background: rgba(0,0,0,0.02); border-color: #e0e3e7; }
+[data-theme="light"] .cp-jobs-list { background: rgba(0,0,0,0.02); border-color: #dde4e1; }
 [data-theme="light"] .cp-job-check { color: #111b21; border-color: transparent; }
-[data-theme="light"] .cp-card { background: rgba(255,255,255,0.85); border-color: #e0e3e7; }
-[data-theme="light"] .cp-card:hover { border-color: rgba(1,117,97,0.3); }
+[data-theme="light"] .cp-card { background: rgba(255,255,255,0.85); border-color: #dde4e1; }
+[data-theme="light"] .cp-card:hover { border-color: rgba(0, 168, 132,0.3); }
 [data-theme="light"] .cp-card-title { color: #111b21; }
 [data-theme="light"] .cp-card-desc { color: #667781; }
 [data-theme="light"] .cp-card-meta { color: #667781; }
-[data-theme="light"] .cp-empty { background: rgba(255,255,255,0.85); border-color: #e0e3e7; color: #667781; }
+[data-theme="light"] .cp-empty { background: rgba(255,255,255,0.85); border-color: #dde4e1; color: #667781; }
 [data-theme="light"] .cp-progress-track { background: rgba(0,0,0,0.07); }
 [data-theme="light"] .cp-progress-label { color: rgba(0,0,0,0.35); }
-[data-theme="light"] .cp-new-btn { color: #017561; border-color: rgba(1,117,97,0.3); }
-[data-theme="light"] .cp-submit-btn { background: #017561; }
+[data-theme="light"] .cp-new-btn { color: #00a884; border-color: rgba(0, 168, 132,0.3); }
+[data-theme="light"] .cp-submit-btn { background: #00a884; }

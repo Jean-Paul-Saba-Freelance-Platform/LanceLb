@@ -261,11 +261,11 @@
 /* Light mode */
 [data-theme="light"] .fcp-page { background: transparent; }
 [data-theme="light"] .fcp-back { color: #667781; }
-[data-theme="light"] .fcp-back:hover { color: #017561; }
+[data-theme="light"] .fcp-back:hover { color: #00a884; }
 
 [data-theme="light"] .fcp-card {
   background: rgba(255, 255, 255, 0.85);
-  border-color: #e0e3e7;
+  border-color: #dde4e1;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
@@ -273,12 +273,12 @@
 
 [data-theme="light"] .fcp-skeleton {
   background: rgba(255, 255, 255, 0.85);
-  border-color: #e0e3e7;
+  border-color: #dde4e1;
   backdrop-filter: none;
 }
 
-[data-theme="light"] .fcp-skeleton-avatar { background: #e0e3e7; }
-[data-theme="light"] .fcp-skeleton-line { background: #e0e3e7; }
+[data-theme="light"] .fcp-skeleton-avatar { background: #dde4e1; }
+[data-theme="light"] .fcp-skeleton-line { background: #dde4e1; }
 
 [data-theme="light"] .fcp-name { color: #111b21; }
 [data-theme="light"] .fcp-title { color: #667781; }
@@ -288,12 +288,12 @@
 [data-theme="light"] .fcp-bio { color: #374151; }
 
 [data-theme="light"] .fcp-skill-pill {
-  background: rgba(1, 117, 97, 0.08);
-  color: #017561;
-  border-color: rgba(1, 117, 97, 0.2);
+  background: rgba(0, 168, 132, 0.08);
+  color: #00a884;
+  border-color: rgba(0, 168, 132, 0.2);
 }
 
-[data-theme="light"] .fcp-footer { border-top-color: #e0e3e7; }
+[data-theme="light"] .fcp-footer { border-top-color: #dde4e1; }
 [data-theme="light"] .fcp-member-since { color: #667781; }
 
 [data-theme="light"] .fcp-error {

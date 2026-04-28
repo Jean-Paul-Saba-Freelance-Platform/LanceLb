@@ -32,7 +32,7 @@
 .admin-login-container::after {
   width: 460px;
   height: 460px;
-  background: rgba(1, 117, 97, 0.22);
+  background: rgba(0, 168, 132, 0.22);
   bottom: -240px;
   right: -200px;
 }
@@ -180,7 +180,7 @@
   font-size: 1rem;
   font-weight: 600;
   font-family: inherit;
-  background: linear-gradient(135deg, #00a884 0%, #017561 100%);
+  background: linear-gradient(135deg, #00a884 0%, #00a884 100%);
   color: white;
   border: none;
   border-radius: 8px;

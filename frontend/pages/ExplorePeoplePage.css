@@ -465,7 +465,7 @@
 
 [data-theme="light"] .ep-search-input {
   background: #fff;
-  border-color: #d8dde1;
+  border-color: #dde3df;
   color: #111b21;
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
@@ -475,34 +475,34 @@
 
 [data-theme="light"] .ep-filter-chip {
   background: #fff;
-  border-color: #d8dde1;
+  border-color: #dde3df;
   color: #667781;
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
 }
-[data-theme="light"] .ep-filter-chip:hover { background: #f0f2f5; color: #111b21; }
+[data-theme="light"] .ep-filter-chip:hover { background: #f3f4f3; color: #111b21; }
 [data-theme="light"] .ep-filter-chip.active {
-  background: rgba(1, 117, 97, 0.08);
-  color: #017561;
-  border-color: rgba(1, 117, 97, 0.3);
+  background: rgba(0, 168, 132, 0.08);
+  color: #00a884;
+  border-color: rgba(0, 168, 132, 0.3);
 }
 
 [data-theme="light"] .ep-skeleton-card {
-  background: #f0f2f5;
-  border-color: #e0e3e7;
+  background: #f3f4f3;
+  border-color: #dde4e1;
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
 }
 
 [data-theme="light"] .ep-card {
   background: rgba(255, 255, 255, 0.85);
-  border-color: #e0e3e7;
+  border-color: #dde4e1;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
 }
 [data-theme="light"] .ep-card:hover {
-  border-color: rgba(1, 117, 97, 0.3);
+  border-color: rgba(0, 168, 132, 0.3);
   box-shadow: 0 8px 28px rgba(0, 0, 0, 0.1);
 }
 
@@ -511,50 +511,50 @@
 [data-theme="light"] .ep-bio { color: #41525d; }
 
 [data-theme="light"] .ep-skill-chip {
-  background: rgba(1, 117, 97, 0.07);
-  border-color: rgba(1, 117, 97, 0.18);
-  color: #017561;
+  background: rgba(0, 168, 132, 0.07);
+  border-color: rgba(0, 168, 132, 0.18);
+  color: #00a884;
 }
 
 [data-theme="light"] .ep-type-freelancer {
-  background: rgba(1, 117, 97, 0.1);
-  color: #017561;
-  border-color: rgba(1, 117, 97, 0.25);
+  background: rgba(0, 168, 132, 0.1);
+  color: #00a884;
+  border-color: rgba(0, 168, 132, 0.25);
 }
 
-[data-theme="light"] .ep-btn-ghost { background: #f0f2f5; color: #41525d; }
+[data-theme="light"] .ep-btn-ghost { background: #f3f4f3; color: #41525d; }
 
-[data-theme="light"] .ep-btn-follow--default { background: #017561; }
+[data-theme="light"] .ep-btn-follow--default { background: #00a884; }
 
 [data-theme="light"] .ep-btn-follow--requested {
-  background: #f0f2f5;
-  border-color: #e0e3e7;
+  background: #f3f4f3;
+  border-color: #dde4e1;
   color: #41525d;
 }
 
 [data-theme="light"] .ep-btn-follow--following {
-  background: rgba(1, 117, 97, 0.1);
-  color: #017561;
-  border-color: rgba(1, 117, 97, 0.3);
+  background: rgba(0, 168, 132, 0.1);
+  color: #00a884;
+  border-color: rgba(0, 168, 132, 0.3);
 }
 
 [data-theme="light"] .ep-btn-msg {
-  background: #f0f2f5;
-  border-color: #d8dde1;
+  background: #f3f4f3;
+  border-color: #dde3df;
   color: #111b21;
 }
 
 [data-theme="light"] .ep-page-btn {
   background: #fff;
-  border-color: #d8dde1;
+  border-color: #dde3df;
   color: #667781;
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
 }
-[data-theme="light"] .ep-page-btn:hover:not(:disabled) { background: #f0f2f5; color: #111b21; }
+[data-theme="light"] .ep-page-btn:hover:not(:disabled) { background: #f3f4f3; color: #111b21; }
 [data-theme="light"] .ep-page-btn.active {
-  background: #017561;
-  border-color: #017561;
+  background: #00a884;
+  border-color: #00a884;
 }
 
 /* ── Mobile ─────────────────────────────────────────────── */

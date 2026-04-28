@@ -1162,7 +1162,7 @@
    Light Mode Overrides
    ========================================================================= */
 [data-theme="light"] .landing-container {
-  background: linear-gradient(135deg, #f0f4f8 0%, #eef9f5 50%, #f0f2f5 100%);
+  background: linear-gradient(135deg, #f0f4f8 0%, #eef9f5 50%, #f3f4f3 100%);
 }
 
 
@@ -1176,14 +1176,14 @@
 }
 
 [data-theme="light"] .hero-badge {
-  background: rgba(1, 117, 97, 0.1);
-  border-color: rgba(1, 117, 97, 0.3);
-  color: #017561;
+  background: rgba(0, 168, 132, 0.1);
+  border-color: rgba(0, 168, 132, 0.3);
+  color: #00a884;
 }
 
 [data-theme="light"] .hero-search-inner {
   background: #ffffff;
-  border-color: #d8dde1;
+  border-color: #dde3df;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
 }
 
@@ -1198,25 +1198,25 @@
 [data-theme="light"] .hero-secondary-button {
   background: #ffffff;
   color: #111b21;
-  border-color: #d8dde1;
+  border-color: #dde3df;
 }
 
 [data-theme="light"] .hero-secondary-button:hover {
-  background: #f0f2f5;
+  background: #f3f4f3;
 }
 
 [data-theme="light"] .glass {
   background: #ffffff;
-  border-color: #e0e3e7;
+  border-color: #dde4e1;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
 }
 
 [data-theme="light"] .kpi-eyebrow {
-  color: #017561;
+  color: #00a884;
 }
 
 [data-theme="light"] .kpi-value {
-  color: #017561;
+  color: #00a884;
 }
 
 [data-theme="light"] .kpi-label {
@@ -1232,13 +1232,13 @@
 }
 
 [data-theme="light"] .category-card:hover {
-  border-color: rgba(1, 117, 97, 0.4);
+  border-color: rgba(0, 168, 132, 0.4);
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
 }
 
 [data-theme="light"] .how-tabs {
   background: rgba(240, 244, 248, 0.8);
-  border-color: #d8dde1;
+  border-color: #dde3df;
 }
 
 [data-theme="light"] .how-tab {
@@ -1246,12 +1246,12 @@
 }
 
 [data-theme="light"] .how-tab.active {
-  background: #017561;
+  background: #00a884;
   color: white;
 }
 
 [data-theme="light"] .how-step-num {
-  color: #017561;
+  color: #00a884;
 }
 
 [data-theme="light"] .how-step-title {
@@ -1276,20 +1276,20 @@
 
 [data-theme="light"] .cta-secondary-button {
   background: #ffffff;
-  border-color: #d8dde1;
+  border-color: #dde3df;
   color: #111b21;
 }
 
 [data-theme="light"] .cta-secondary-button:hover {
-  background: #f0f2f5;
+  background: #f3f4f3;
 }
 
 [data-theme="light"] .landing-footer {
-  border-top-color: #e0e3e7;
+  border-top-color: #dde4e1;
 }
 
 [data-theme="light"] .footer-bottom {
-  border-top-color: #e0e3e7;
+  border-top-color: #dde4e1;
 }
 
 [data-theme="light"] .footer-brand-name {
@@ -1309,7 +1309,7 @@
 }
 
 [data-theme="light"] .footer-link:hover {
-  color: #017561;
+  color: #00a884;
 }
 
 [data-theme="light"] .footer-bottom p {
@@ -1318,7 +1318,7 @@
 
 [data-theme="light"] .glass-sidebar {
   background: rgba(255, 255, 255, 0.95);
-  border-right-color: #e0e3e7;
+  border-right-color: #dde4e1;
 }
 
 [data-theme="light"] .sidebar-link {
@@ -1326,13 +1326,13 @@
 }
 
 [data-theme="light"] .sidebar-link:hover {
-  background: #f0f2f5;
-  color: #017561;
+  background: #f3f4f3;
+  color: #00a884;
 }
 
 [data-theme="light"] .sidebar-button:first-child {
   color: #111b21;
-  border-color: #d8dde1;
+  border-color: #dde3df;
 }
 
 [data-theme="light"] .brand-name {
@@ -1352,7 +1352,7 @@
 }
 
 [data-theme="light"] .nav-cta-button {
-  background: #017561;
+  background: #00a884;
 }
 
 [data-theme="light"] .menu-line {
@@ -1369,17 +1369,17 @@
 
 /* Category icons — teal in light mode */
 [data-theme="light"] .category-icon svg {
-  color: #017561;
-  stroke: #017561;
+  color: #00a884;
+  stroke: #00a884;
 }
 
 /* Mobile sidebar header */
 [data-theme="light"] .sidebar-header {
-  border-bottom-color: #e0e3e7;
+  border-bottom-color: #dde4e1;
 }
 
 [data-theme="light"] .sidebar-divider {
-  background: #e0e3e7;
+  background: #dde4e1;
 }
 
 [data-theme="light"] .glass-card {
@@ -1595,12 +1595,12 @@
 /* Light mode overrides */
 [data-theme="light"] .featured-card {
   background: rgba(255, 255, 255, 0.96);
-  border-color: #e0e3e7;
+  border-color: #dde4e1;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
 }
 
 [data-theme="light"] .featured-card:hover {
-  border-color: rgba(1, 117, 97, 0.4);
+  border-color: rgba(0, 168, 132, 0.4);
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
 }
 
@@ -1614,7 +1614,7 @@
 
 [data-theme="light"] .featured-skill-tag {
   background: rgba(0, 0, 0, 0.04);
-  border-color: #d8dde1;
+  border-color: #dde3df;
   color: #41525d;
 }
 

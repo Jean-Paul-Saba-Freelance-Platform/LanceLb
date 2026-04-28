@@ -640,33 +640,43 @@
    Light Mode Overrides
    ========================================================================= */
 [data-theme="light"] .client-layout {
-  background: #f0f2f5;
+  background: #f3f4f3;
   color: #111b21;
 }
 
 [data-theme="light"] .client-layout .greeting-card,
 [data-theme="light"] .client-layout .client-search-input,
 [data-theme="light"] .client-layout .main-section-card,
-[data-theme="light"] .client-layout .sidebar-card,
 [data-theme="light"] .client-layout .next-steps-card,
 [data-theme="light"] .client-layout .category-card,
 [data-theme="light"] .client-layout .resource-card,
 [data-theme="light"] .client-layout .overview-card {
   background: #ffffff !important;
-  border-color: #e0e3e7 !important;
+  border-color: #d6e2dd !important;
   color: #111b21 !important;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06) !important;
+  box-shadow: 0 2px 8px rgba(0, 168, 132, 0.06) !important;
+}
+
+[data-theme="light"] .client-layout .sidebar-card {
+  background: #edf7f2 !important;
+  border-color: #c8e0d8 !important;
+  color: #111b21 !important;
+  box-shadow: 0 2px 8px rgba(0, 168, 132, 0.08) !important;
 }
 
 [data-theme="light"] .client-layout .greeting-card:hover,
 [data-theme="light"] .client-layout .main-section-card:hover,
-[data-theme="light"] .client-layout .sidebar-card:hover,
 [data-theme="light"] .client-layout .next-steps-card:hover,
 [data-theme="light"] .client-layout .category-card:hover,
 [data-theme="light"] .client-layout .resource-card:hover,
 [data-theme="light"] .client-layout .overview-card:hover {
-  border-color: #c5cdd4 !important;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1) !important;
+  border-color: rgba(0, 168, 132, 0.35) !important;
+  box-shadow: 0 4px 16px rgba(0, 168, 132, 0.12) !important;
+}
+
+[data-theme="light"] .client-layout .sidebar-card:hover {
+  border-color: rgba(0, 168, 132, 0.45) !important;
+  box-shadow: 0 4px 16px rgba(0, 168, 132, 0.15) !important;
 }
 
 [data-theme="light"] .client-layout h1,
@@ -702,7 +712,7 @@
 }
 
 [data-theme="light"] .client-layout .top-nav-link:hover {
-  color: #017561 !important;
+  color: #00a884 !important;
 }
 
 [data-theme="light"] .client-layout .top-nav-icon-button {
@@ -710,13 +720,13 @@
 }
 
 [data-theme="light"] .client-layout .top-nav-icon-button:hover {
-  background: rgba(1, 117, 97, 0.1) !important;
-  color: #017561 !important;
+  background: rgba(0, 168, 132, 0.1) !important;
+  color: #00a884 !important;
 }
 
 [data-theme="light"] .client-layout .top-nav-search {
-  background: #f0f2f5 !important;
-  border-color: #d8dde1 !important;
+  background: #f3f4f3 !important;
+  border-color: #dde3df !important;
 }
 
 [data-theme="light"] .client-layout .top-nav-search-input {
@@ -724,15 +734,15 @@
 }
 
 [data-theme="light"] .client-layout .top-nav-search-dropdown {
-  background: #f0f2f5 !important;
-  border-left-color: #d8dde1 !important;
+  background: #f3f4f3 !important;
+  border-left-color: #dde3df !important;
   color: #111b21 !important;
 }
 
 /* Light mode job cards */
 [data-theme="light"] .client-layout .overview-job-card {
   background: #ffffff !important;
-  border-color: #e0e3e7 !important;
+  border-color: #dde4e1 !important;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06) !important;
 }
 
@@ -751,7 +761,7 @@
 [data-theme="light"] .client-layout .manage-job-card,
 [data-theme="light"] .client-layout .manage-empty {
   background: #ffffff !important;
-  border-color: #e0e3e7 !important;
+  border-color: #dde4e1 !important;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06) !important;
 }
 
@@ -771,8 +781,8 @@
 }
 
 [data-theme="light"] .client-layout .manage-search-input {
-  background: #f5f7f8 !important;
-  border-color: #d8dde1 !important;
+  background: #f0f7f4 !important;
+  border-color: #dde3df !important;
   color: #111b21 !important;
 }
 
@@ -781,8 +791,8 @@
 }
 
 [data-theme="light"] .client-layout .manage-status-filter {
-  background: #f0f2f5 !important;
-  border-color: #d8dde1 !important;
+  background: #f3f4f3 !important;
+  border-color: #dde3df !important;
 }
 
 [data-theme="light"] .client-layout .manage-status-btn {
@@ -795,7 +805,7 @@
 
 [data-theme="light"] .client-layout .edit-form {
   background: #ffffff !important;
-  border-color: #e0e3e7 !important;
+  border-color: #dde4e1 !important;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06) !important;
 }
 
@@ -805,8 +815,8 @@
 
 [data-theme="light"] .client-layout .edit-input,
 [data-theme="light"] .client-layout .edit-textarea {
-  background: #f5f7f8 !important;
-  border-color: #d8dde1 !important;
+  background: #f0f7f4 !important;
+  border-color: #dde3df !important;
   color: #111b21 !important;
 }
 
@@ -816,13 +826,13 @@
 }
 
 [data-theme="light"] .client-layout .segmented-control {
-  background: #f0f2f5 !important;
-  border-color: #d8dde1 !important;
+  background: #f3f4f3 !important;
+  border-color: #dde3df !important;
 }
 
 [data-theme="light"] .client-layout .empty-state-button.secondary {
   background: transparent !important;
-  color: #017561 !important;
+  color: #00a884 !important;
   border: 1px solid rgba(0, 168, 132, 0.4) !important;
 }
 

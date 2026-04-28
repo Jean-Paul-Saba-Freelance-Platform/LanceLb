@@ -476,7 +476,7 @@
   border-radius: 999px;
   font-size: 0.75rem;
   font-weight: 500;
-  color: #017561;
+  color: #00a884;
 }
 
 .overview-skill-chip.more {
@@ -1104,7 +1104,7 @@
 
 /* Light Mode */
 [data-theme="light"] .client-home {
-  background: linear-gradient(135deg, #f0f4f8 0%, #eef9f5 50%, #f0f2f5 100%);
+  background: linear-gradient(135deg, #f0f4f8 0%, #eef9f5 50%, #f3f4f3 100%);
 }
 
 [data-theme="light"] .greeting-card,
@@ -1114,7 +1114,7 @@
 [data-theme="light"] .resource-card,
 [data-theme="light"] .person-card {
   background: rgba(255, 255, 255, 0.85);
-  border-color: #e0e3e7;
+  border-color: #dde4e1;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
 }
 
@@ -1138,7 +1138,7 @@
 
 [data-theme="light"] .segmented-control {
   background: rgba(240, 244, 248, 0.8);
-  border-color: #d8dde1;
+  border-color: #dde3df;
 }
 
 [data-theme="light"] .segmented-control-button {
@@ -1146,31 +1146,31 @@
 }
 
 [data-theme="light"] .segmented-control-button.active {
-  background: #017561;
+  background: #00a884;
 }
 
 [data-theme="light"] .next-steps-action {
-  color: #017561;
-  border-color: #017561;
+  color: #00a884;
+  border-color: #00a884;
 }
 
 [data-theme="light"] .people-see-all-btn {
-  color: #017561;
+  color: #00a884;
 }
 
 [data-theme="light"] .person-view-btn {
-  color: #017561;
-  border-color: #017561;
+  color: #00a884;
+  border-color: #00a884;
 }
 
 [data-theme="light"] .resource-action {
-  color: #017561;
+  color: #00a884;
 }
 
 [data-theme="light"] .overview-job-apps-btn {
-  color: #017561;
-  border-color: rgba(1, 117, 97, 0.4);
-  background: rgba(1, 117, 97, 0.08);
+  color: #00a884;
+  border-color: rgba(0, 168, 132, 0.4);
+  background: rgba(0, 168, 132, 0.08);
 }
 
 [data-theme="light"] .empty-state-title {

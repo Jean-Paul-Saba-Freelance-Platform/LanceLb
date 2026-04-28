@@ -223,7 +223,7 @@
 /* Light mode */
 [data-theme="light"] .aichat-panel {
   background: rgba(255, 255, 255, 0.95);
-  border-color: #d8dde1;
+  border-color: #dde3df;
 }
 
 [data-theme="light"] .aichat-title {
@@ -231,14 +231,14 @@
 }
 
 [data-theme="light"] .aichat-bubble.assistant {
-  background: #f0f2f5;
-  border-color: #d8dde1;
+  background: #f3f4f3;
+  border-color: #dde3df;
   color: #111b21;
 }
 
 [data-theme="light"] .aichat-input {
-  background: #f0f2f5;
-  border-color: #d8dde1;
+  background: #f3f4f3;
+  border-color: #dde3df;
   color: #111b21;
 }
 

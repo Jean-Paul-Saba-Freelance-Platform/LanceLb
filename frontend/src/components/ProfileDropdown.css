@@ -38,7 +38,7 @@
 .dropdown-avatar-placeholder {
   width: 100%;
   height: 100%;
-  background: linear-gradient(135deg, #00a884, #017561);
+  background: linear-gradient(135deg, #00a884, #00a884);
   color: white;
   display: flex;
   align-items: center;
@@ -174,7 +174,7 @@
 
 [data-theme="light"] .profile-dropdown {
   background: #ffffff;
-  border-color: #d8dde1;
+  border-color: #dde3df;
 }
 
 [data-theme="light"] .dropdown-user-name {
@@ -187,7 +187,7 @@
 }
 
 [data-theme="light"] .dropdown-menu-item:hover {
-  background: #f0f2f5;
+  background: #f3f4f3;
 }
 
 [data-theme="light"] .dropdown-divider,

@@ -806,7 +806,7 @@
 }
 
 [data-theme="light"] .client-apps-back:hover {
-  color: #017561;
+  color: #00a884;
 }
 
 [data-theme="light"] .client-apps-title {
@@ -824,20 +824,20 @@
 [data-theme="light"] .client-apps-empty {
   color: #667781;
   background: rgba(255, 255, 255, 0.85);
-  border-color: #e0e3e7;
+  border-color: #dde4e1;
 }
 
 [data-theme="light"] .app-card {
   background: rgba(255, 255, 255, 0.85);
-  border-color: #e0e3e7;
+  border-color: #dde4e1;
 }
 
 [data-theme="light"] .app-card:hover {
-  border-color: rgba(1, 117, 97, 0.3);
+  border-color: rgba(0, 168, 132, 0.3);
 }
 
 [data-theme="light"] .app-card-body {
-  border-top-color: #e0e3e7;
+  border-top-color: #dde4e1;
 }
 
 [data-theme="light"] .app-name {
@@ -866,7 +866,7 @@
 
 [data-theme="light"] .app-answer {
   background: rgba(0, 0, 0, 0.02);
-  border-color: #e0e3e7;
+  border-color: #dde4e1;
 }
 
 [data-theme="light"] .app-answer-q {
@@ -896,8 +896,8 @@
 }
 
 [data-theme="light"] .ai-analysis-section {
-  background: rgba(1, 117, 97, 0.05);
-  border-color: rgba(1, 117, 97, 0.18);
+  background: rgba(0, 168, 132, 0.05);
+  border-color: rgba(0, 168, 132, 0.18);
 }
 
 [data-theme="light"] .ai-analysis-item {
@@ -909,8 +909,8 @@
 }
 
 [data-theme="light"] .app-ats-section {
-  background: rgba(1, 117, 97, 0.05);
-  border-color: rgba(1, 117, 97, 0.18);
+  background: rgba(0, 168, 132, 0.05);
+  border-color: rgba(0, 168, 132, 0.18);
 }
 
 [data-theme="light"] .app-ats-category {
@@ -937,7 +937,7 @@
 
 [data-theme="light"] .status-modal {
   background: rgba(255, 255, 255, 0.97);
-  border-color: #e0e3e7;
+  border-color: #dde4e1;
 }
 
 [data-theme="light"] .status-modal-title {
@@ -949,15 +949,15 @@
 }
 
 [data-theme="light"] .status-modal-textarea {
-  background: #f5f7f8;
-  border-color: #d8dde1;
+  background: #f0f7f4;
+  border-color: #dde3df;
   color: #111b21;
 }
 
 [data-theme="light"] .status-modal-cancel {
-  background: #f0f2f5;
+  background: #f3f4f3;
   color: #41525d;
-  border-color: #d8dde1;
+  border-color: #dde3df;
 }
 
 [data-theme="light"] .status-modal-cancel:hover {
