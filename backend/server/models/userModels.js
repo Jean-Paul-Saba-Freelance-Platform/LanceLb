@@ -67,7 +67,11 @@ const userSchema = new mongoose.Schema({
     profilePicture:{
         type:String,
         default: '',
-        
+
+    },
+    videoIntro: {
+        type: String,
+        default: '',
     },
     isAdmin: {
         type: Boolean,
@@ -124,6 +128,19 @@ const userSchema = new mongoose.Schema({
     onboardingDismissed: {
       phone:   { type: Boolean, default: false },
       billing: { type: Boolean, default: false },
+    },
+    status: {
+      type: String,
+      enum: ['active', 'banned', 'timeout'],
+      default: 'active',
+    },
+    banReason: {
+      type: String,
+      default: '',
+    },
+    timeoutUntil: {
+      type: Date,
+      default: null,
     },
 }, { timestamps: true })
 

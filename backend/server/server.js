@@ -23,6 +23,7 @@ import publicStatsRouter from "./routes/publicStatsRoutes.js";
 import followRouter from "./routes/followRoutes.js";
 import reviewRouter from "./routes/reviewRoutes.js";
 import userRouter from "./routes/userRoutes.js";
+import uploadRouter from "./routes/uploadRoutes.js";
 
 
 
@@ -87,6 +88,7 @@ app.use("/api/public", publicStatsRouter);
 app.use("/api/follow", followRouter);
 app.use("/api/reviews", reviewRouter);
 app.use("/api/user", userRouter);
+app.use("/api/upload", uploadRouter);
 
 // Start
 connectDB();

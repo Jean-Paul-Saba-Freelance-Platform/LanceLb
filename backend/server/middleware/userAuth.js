@@ -42,6 +42,35 @@ export const userAuth = async (req, res, next) => {
         // Attach the authenticated user's ID to the request so downstream
         // handlers can use it without re-decoding the token
         req.userId = decodedToken.userId;
+
+        // Enforce account status restrictions before allowing access
+        const user = await User.findById(req.userId).select('status banReason timeoutUntil').lean()
+        if (!user) {
+            return res.status(401).json({ success: false, message: 'User not found' })
+        }
+
+        if (user.status === 'banned') {
+            return res.status(403).json({
+                success: false,
+                message: 'Your account has been banned.',
+                reason: user.banReason,
+                statusType: 'banned',
+            })
+        }
+
+        if (user.status === 'timeout') {
+            if (user.timeoutUntil && user.timeoutUntil > new Date()) {
+                return res.status(403).json({
+                    success: false,
+                    message: 'Your account is temporarily suspended.',
+                    timeoutUntil: user.timeoutUntil,
+                    statusType: 'timeout',
+                })
+            }
+            // Timeout has expired — silently restore active status
+            await User.findByIdAndUpdate(req.userId, { status: 'active', timeoutUntil: null })
+        }
+
         next();
 
     } catch (error) {

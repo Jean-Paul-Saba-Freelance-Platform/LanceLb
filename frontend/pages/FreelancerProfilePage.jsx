@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { useLocation, Link } from 'react-router-dom'
 import TopNav from '../src/components/TopNav'
 import {
@@ -30,7 +30,11 @@ const ProfileContent = ({
   education, editingEducation, setEditingEducation, eduDraft, setEduDraft, savingEdu, handleSaveEducation,
   languages, editingLanguages, setEditingLanguages, langDraft, setLangDraft, savingLang, handleSaveLanguages,
   hoursPerWeek, editingHours, setEditingHours, hoursDraft, setHoursDraft, savingHours, handleSaveHours,
+  avatarUploading, avatarError, onAvatarChange,
+  videoIntroUploading, videoIntroError, videoIntroUrl, onVideoIntroChange, onVideoIntroRemove,
 }) => {
+  const avatarInputRef = useRef(null)
+  const videoInputRef = useRef(null)
   const [localTitle, setLocalTitle] = useState('')
   const [localBio, setLocalBio] = useState('')
   const [localExperience, setLocalExperience] = useState('entry')
@@ -67,10 +71,22 @@ const ProfileContent = ({
       {/* Top Profile Header */}
       <div className="profile-header fh-glass-card">
         <div className="profile-header-left">
-          <div className="profile-header-avatar-wrapper">
-            <div className="profile-header-avatar">
-              {user?.avatar ? (
-                <img src={user.avatar} alt={userName} />
+          <div className="profile-header-avatar-wrapper" style={{ position: 'relative' }}>
+            <input
+              ref={avatarInputRef}
+              type="file"
+              accept="image/jpeg,image/png,image/webp"
+              style={{ display: 'none' }}
+              onChange={onAvatarChange}
+            />
+            <div
+              className="profile-header-avatar"
+              style={{ cursor: 'pointer', opacity: avatarUploading ? 0.5 : 1, transition: 'opacity 0.2s' }}
+              onClick={() => !avatarUploading && avatarInputRef.current?.click()}
+              title="Click to change profile picture"
+            >
+              {user?.profilePicture || user?.avatar ? (
+                <img src={user.profilePicture || user.avatar} alt={userName} />
               ) : (
                 <div className="profile-header-avatar-placeholder">
                   {userInitial}
@@ -78,6 +94,11 @@ const ProfileContent = ({
               )}
             </div>
             <div className="online-indicator"></div>
+            {avatarError && (
+              <p style={{ color: 'var(--color-danger)', fontSize: '0.78rem', marginTop: 4, position: 'absolute', bottom: -22, left: 0, whiteSpace: 'nowrap' }}>
+                {avatarError}
+              </p>
+            )}
           </div>
           <div className="profile-header-info">
             <div className="profile-header-name-row">
@@ -173,23 +194,52 @@ const ProfileContent = ({
           <div className="sidebar-card fh-glass-card">
             <h3 className="sidebar-card-title">Credits</h3>
             <div className="credits-display">Credits: 0</div>
-            <div className="sidebar-card-links">
-              <a href="#" className="sidebar-card-link">View details</a>
-              <a href="#" className="sidebar-card-link">Get credits</a>
-            </div>
           </div>
 
           {/* Video Introduction */}
-          <div className="sidebar-card sidebar-card-collapsed fh-glass-card">
+          <div className="sidebar-card fh-glass-card">
+            <input
+              ref={videoInputRef}
+              type="file"
+              accept="video/mp4,video/quicktime,video/webm"
+              style={{ display: 'none' }}
+              onChange={onVideoIntroChange}
+            />
             <div className="sidebar-card-header-row">
               <div className="sidebar-card-title-with-icon">
                 <Video size={18} />
                 <span>Video introduction</span>
               </div>
-              <button className="sidebar-edit-icon fh-icon-button" aria-label="Add video introduction">
-                <Plus size={16} />
-              </button>
+              {videoIntroUploading ? (
+                <span style={{ fontSize: '0.78rem', color: 'var(--color-text-muted)' }}>Uploading…</span>
+              ) : !videoIntroUrl ? (
+                <button
+                  className="sidebar-edit-icon fh-icon-button"
+                  aria-label="Add video introduction"
+                  onClick={() => videoInputRef.current?.click()}
+                >
+                  <Plus size={16} />
+                </button>
+              ) : (
+                <button
+                  className="sidebar-edit-icon fh-icon-button"
+                  aria-label="Remove video introduction"
+                  onClick={onVideoIntroRemove}
+                >
+                  <X size={16} />
+                </button>
+              )}
             </div>
+            {videoIntroError && (
+              <p style={{ color: 'var(--color-danger)', fontSize: '0.78rem', marginTop: 6 }}>{videoIntroError}</p>
+            )}
+            {videoIntroUrl && (
+              <video
+                src={videoIntroUrl}
+                controls
+                style={{ width: '100%', marginTop: 10, borderRadius: 8, maxHeight: 200 }}
+              />
+            )}
           </div>
 
           {/* Hours per Week */}
@@ -307,7 +357,7 @@ const ProfileContent = ({
                 <span>ID</span>
                 <span className="verification-badge unverified">Unverified</span>
               </div>
-              <a href="#" className="verification-link">Verify your identity</a>
+              <span className="verification-link">Verify your identity</span>
             </div>
           </div>
 
@@ -661,6 +711,13 @@ const FreelancerProfilePage = () => {
   const [hoursDraft, setHoursDraft] = useState('')
   const [savingHours, setSavingHours] = useState(false)
 
+  const [avatarUploading, setAvatarUploading] = useState(false)
+  const [avatarError, setAvatarError] = useState('')
+
+  const [videoIntroUploading, setVideoIntroUploading] = useState(false)
+  const [videoIntroError, setVideoIntroError] = useState('')
+  const [videoIntroUrl, setVideoIntroUrl] = useState('')
+
   const [followersCount, setFollowersCount] = useState(0)
   const [followingCount, setFollowingCount] = useState(0)
   const [showFollowModal, setShowFollowModal] = useState(null) // null | 'followers' | 'following'
@@ -686,6 +743,7 @@ const FreelancerProfilePage = () => {
           setEducation(data.user.education || [])
           setLanguages(data.user.languages || [])
           setHoursPerWeek(data.user.hoursPerWeek ?? null)
+          setVideoIntroUrl(data.user.videoIntro || '')
 
           const [followersRes, followingRes] = await Promise.all([
             fetch(`${API_BASE}/api/follow/followers`, {
@@ -819,6 +877,81 @@ const FreelancerProfilePage = () => {
     }
   }
 
+  const handleAvatarChange = async (e) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+    if (file.size > 5 * 1024 * 1024) {
+      setAvatarError('Image must be under 5MB')
+      return
+    }
+    setAvatarError('')
+    setAvatarUploading(true)
+    try {
+      const token = localStorage.getItem('token')
+      const formData = new FormData()
+      formData.append('profilePicture', file)
+      const res = await fetch(`${API_BASE}/api/upload/profile-picture`, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}` },
+        credentials: 'include',
+        body: formData,
+      })
+      const data = await res.json()
+      if (data.success) {
+        setUser(prev => ({ ...prev, profilePicture: data.url }))
+        const stored = JSON.parse(localStorage.getItem('user') || '{}')
+        localStorage.setItem('user', JSON.stringify({ ...stored, profilePicture: data.url }))
+      } else {
+        setAvatarError(data.message || 'Upload failed')
+      }
+    } catch {
+      setAvatarError('Upload failed')
+    } finally {
+      setAvatarUploading(false)
+    }
+  }
+
+  const handleVideoIntroChange = async (e) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+    if (file.size > 50 * 1024 * 1024) {
+      setVideoIntroError('Video must be under 50MB')
+      return
+    }
+    setVideoIntroError('')
+    setVideoIntroUploading(true)
+    try {
+      const token = localStorage.getItem('token')
+      const formData = new FormData()
+      formData.append('videoIntro', file)
+      const res = await fetch(`${API_BASE}/api/upload/video-intro`, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}` },
+        credentials: 'include',
+        body: formData,
+      })
+      const data = await res.json()
+      if (data.success) {
+        setVideoIntroUrl(data.url)
+        const stored = JSON.parse(localStorage.getItem('user') || '{}')
+        localStorage.setItem('user', JSON.stringify({ ...stored, videoIntro: data.url }))
+      } else {
+        setVideoIntroError(data.message || 'Upload failed')
+      }
+    } catch {
+      setVideoIntroError('Upload failed')
+    } finally {
+      setVideoIntroUploading(false)
+    }
+  }
+
+  const handleVideoIntroRemove = () => {
+    setVideoIntroUrl('')
+    setVideoIntroError('')
+    const stored = JSON.parse(localStorage.getItem('user') || '{}')
+    localStorage.setItem('user', JSON.stringify({ ...stored, videoIntro: '' }))
+  }
+
   // Unfollow a person directly from the modal list
   const unfollowFromModal = async (personId) => {
     try {
@@ -897,6 +1030,10 @@ const FreelancerProfilePage = () => {
     education, editingEducation, setEditingEducation, eduDraft, setEduDraft, savingEdu, handleSaveEducation,
     languages, editingLanguages, setEditingLanguages, langDraft, setLangDraft, savingLang, handleSaveLanguages,
     hoursPerWeek, editingHours, setEditingHours, hoursDraft, setHoursDraft, savingHours, handleSaveHours,
+    avatarUploading, avatarError, onAvatarChange: handleAvatarChange,
+    videoIntroUploading, videoIntroError, videoIntroUrl,
+    onVideoIntroChange: handleVideoIntroChange,
+    onVideoIntroRemove: handleVideoIntroRemove,
   }
 
   return (

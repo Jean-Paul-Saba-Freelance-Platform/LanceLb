@@ -1,44 +1,55 @@
+import { useState, useEffect } from 'react'
 import { Navigate } from 'react-router-dom'
+import AccountBlockedScreen from './AccountBlockedScreen'
 
-/**
- * Route guard component that protects client-only routes
- * Checks localStorage for user data and validates userType
- * 
- * Redirects:
- * - If not logged in -> /login
- * - If userType is 'freelancer' -> /freelancer/home
- * - If userType is 'client' -> allows access
- */
 const ClientRoute = ({ children }) => {
-  // Get user from localStorage
+  const [statusCheck, setStatusCheck] = useState({ loading: true, blockData: null })
+
   const getUserFromStorage = () => {
     try {
       const userStr = localStorage.getItem('user')
-      if (userStr) {
-        return JSON.parse(userStr)
-      }
-    } catch (error) {
-      console.error('Error parsing user from localStorage:', error)
+      return userStr ? JSON.parse(userStr) : null
+    } catch {
+      return null
     }
-    return null
   }
 
   const user = getUserFromStorage()
 
-  // If no user found, redirect to login
-  if (!user) {
-    return <Navigate to="/login" replace />
-  }
+  useEffect(() => {
+    if (!user || user.userType !== 'client' || !user.isAccountVerified) {
+      setStatusCheck({ loading: false, blockData: null })
+      return
+    }
 
-  // Block unverified accounts from accessing protected routes
+    const token = localStorage.getItem('token')
+    fetch('/api/client/dashboard/summary', {
+      headers: token ? { Authorization: `Bearer ${token}` } : {},
+    })
+      .then(async (res) => {
+        if (res.status === 403) {
+          const data = await res.json()
+          if (data.statusType === 'banned' || data.statusType === 'timeout') {
+            setStatusCheck({ loading: false, blockData: data })
+            return
+          }
+        }
+        setStatusCheck({ loading: false, blockData: null })
+      })
+      .catch(() => setStatusCheck({ loading: false, blockData: null }))
+  }, [])
+
+  if (!user) return <Navigate to="/login" replace />
   if (!user.isAccountVerified) return <Navigate to="/verify-otp" replace />
+  if (user.userType !== 'client') return <Navigate to="/freelancer/home" replace />
 
-  // If user is not a client, redirect to freelancer home
-  if (user.userType !== 'client') {
-    return <Navigate to="/freelancer/home" replace />
+  if (statusCheck.loading) return null
+
+  if (statusCheck.blockData) {
+    const { statusType, reason, timeoutUntil } = statusCheck.blockData
+    return <AccountBlockedScreen statusType={statusType} reason={reason} timeoutUntil={timeoutUntil} />
   }
 
-  // User is a client, render the protected content
   return children
 }
 

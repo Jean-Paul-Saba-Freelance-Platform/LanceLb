@@ -205,7 +205,7 @@ const CardNav = ({ ease = 'power3.out' }) => {
           </div>
 
           <Link to={brandLink} className="card-nav-brand">
-            Open Hand
+            Lance
           </Link>
 
           <div className="card-nav-auth">

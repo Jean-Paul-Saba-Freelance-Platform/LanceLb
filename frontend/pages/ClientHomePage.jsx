@@ -296,24 +296,12 @@ const ClientHomePage = () => {
                   <h3 className="next-steps-title">{step.title}</h3>
                   <p className="next-steps-description">{step.description}</p>
                   {!step.completed && (
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '0' }}>
-                      <button
-                        className="next-steps-action"
-                        onClick={() => handleNextStepAction(step.actionRoute)}
-                      >
-                        {step.actionText}
-                      </button>
-                      {(step.id === 1 || step.id === 2) && (
-                        <button
-                          className="onboarding-dismiss-btn"
-                          onClick={() => handleDismissStep(step.id === 1 ? 'phone' : 'billing')}
-                          aria-label="Dismiss"
-                          title="Mark as done"
-                        >
-                          ✓ Done
-                        </button>
-                      )}
-                    </div>
+                    <button
+                      className="next-steps-action"
+                      onClick={() => handleNextStepAction(step.actionRoute)}
+                    >
+                      {step.actionText}
+                    </button>
                   )}
                   {step.completed && (
                     <span className="completed-badge">✓ Done</span>
@@ -402,24 +390,6 @@ const ClientHomePage = () => {
             </div>
           </motion.div>
 
-          {/* D) Explore Categories */}
-          <div className="categories-section">
-            <h2 className="section-title">Find experts by category</h2>
-            <div className="categories-grid">
-              {categoriesData.map((category, index) => (
-                <motion.div
-                  key={category.id}
-                  className="category-card"
-                  onClick={() => handleCategoryClick(category.route)}
-                  variants={fadeUp} initial="hidden" animate="visible" custom={index * 0.5 + 6}
-                  whileHover={{ y: -4, scale: 1.02, transition: { duration: 0.2 } }}>
-                  <div className="category-icon">{CATEGORY_ICONS[category.title] || <Code2 size={28} color="#00a884" />}</div>
-                  <h3 className="category-title">{category.title}</h3>
-                </motion.div>
-              ))}
-            </div>
-          </div>
-
           {/* People You May Know */}
           {peopleToFollow.length > 0 && (
             <div className="categories-section">
@@ -459,26 +429,6 @@ const ClientHomePage = () => {
             </div>
           )}
 
-          {/* E) Help & Resources */}
-          <div className="resources-section">
-            <h2 className="section-title">Help & resources</h2>
-            <div className="resources-grid">
-              {resourcesData.map((resource, index) => (
-                <motion.div key={resource.id} className="resource-card"
-                  variants={fadeUp} initial="hidden" animate="visible" custom={index + 10}
-                  whileHover={{ y: -3, transition: { duration: 0.2 } }}>
-                  <h3 className="resource-title">{resource.title}</h3>
-                  <p className="resource-description">{resource.description}</p>
-                  <button 
-                    className="resource-action"
-                    onClick={() => navigate(resource.route)}
-                  >
-                    {resource.actionText} →
-                  </button>
-                </motion.div>
-              ))}
-            </div>
-          </div>
         </div>
       </div>
 

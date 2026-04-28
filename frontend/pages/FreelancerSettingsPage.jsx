@@ -31,6 +31,11 @@ const FreelancerSettingsPage = () => {
     phone: ''
   })
 
+  // Password section
+  const [pwData, setPwData] = useState({ current: '', next: '', confirm: '' })
+  const [pwMsg, setPwMsg] = useState('')
+  const [savingPw, setSavingPw] = useState(false)
+
   useEffect(() => {
     try {
       const userStr = localStorage.getItem('user')
@@ -121,6 +126,46 @@ const FreelancerSettingsPage = () => {
     }
     setIsEditingLocation(false)
     setLocationSaveMsg('')
+  }
+
+  const handleChangePassword = async () => {
+    if (!pwData.current || !pwData.next || !pwData.confirm) {
+      setPwMsg('All fields are required.')
+      return
+    }
+    if (pwData.next !== pwData.confirm) {
+      setPwMsg('New passwords do not match.')
+      return
+    }
+    setSavingPw(true)
+    setPwMsg('')
+    try {
+      const token = localStorage.getItem('token')
+      const res = await fetch(`${API_BASE}/api/auth/change-password`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        credentials: 'include',
+        body: JSON.stringify({ currentPassword: pwData.current, newPassword: pwData.next }),
+      })
+      if (res.status === 404) {
+        setPwMsg('Coming soon.')
+        return
+      }
+      const data = await res.json()
+      if (data.success || res.ok) {
+        setPwData({ current: '', next: '', confirm: '' })
+        setPwMsg('Password changed successfully.')
+      } else {
+        setPwMsg(data.message || 'Failed to change password.')
+      }
+    } catch {
+      setPwMsg('Coming soon.')
+    } finally {
+      setSavingPw(false)
+    }
   }
 
   const handleCreateClientAccount = () => {
@@ -457,9 +502,48 @@ const FreelancerSettingsPage = () => {
 
             {activeSection === 'password' && (
               <div className="settings-card">
-                <h2 className="settings-card-title">Password & Security</h2>
+                <h2 className="settings-card-title" style={{ marginBottom: '1.25rem' }}>Password & Security</h2>
                 <div className="settings-card-content">
-                  <p className="settings-placeholder">Password and security settings coming soon.</p>
+                  {pwMsg && (
+                    <p className="settings-field-hint" style={{ color: pwMsg.includes('success') ? '#34d399' : '#fca5a5', fontSize: '0.875rem' }}>
+                      {pwMsg}
+                    </p>
+                  )}
+                  <div className="settings-field">
+                    <label className="settings-field-label">Current Password</label>
+                    <input
+                      type="password"
+                      className="settings-input"
+                      value={pwData.current}
+                      onChange={(e) => setPwData({ ...pwData, current: e.target.value })}
+                      autoComplete="current-password"
+                    />
+                  </div>
+                  <div className="settings-field">
+                    <label className="settings-field-label">New Password</label>
+                    <input
+                      type="password"
+                      className="settings-input"
+                      value={pwData.next}
+                      onChange={(e) => setPwData({ ...pwData, next: e.target.value })}
+                      autoComplete="new-password"
+                    />
+                  </div>
+                  <div className="settings-field">
+                    <label className="settings-field-label">Confirm New Password</label>
+                    <input
+                      type="password"
+                      className="settings-input"
+                      value={pwData.confirm}
+                      onChange={(e) => setPwData({ ...pwData, confirm: e.target.value })}
+                      autoComplete="new-password"
+                    />
+                  </div>
+                  <div className="settings-card-actions">
+                    <button className="settings-button-primary" onClick={handleChangePassword} disabled={savingPw}>
+                      <Save size={16} /> {savingPw ? 'Saving...' : 'Change Password'}
+                    </button>
+                  </div>
                 </div>
               </div>
             )}

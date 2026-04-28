@@ -19,6 +19,10 @@ export default function AIChatPanel({ isOpen, onClose }) {
 
   useEffect(() => {
     if (isOpen) {
+      const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth
+      document.body.style.overflow = 'hidden'
+      document.body.style.paddingRight = `${scrollbarWidth}px`
+
       // Blur any focused page element before focusing the textarea
       if (document.activeElement) {
         document.activeElement.blur()
@@ -26,6 +30,14 @@ export default function AIChatPanel({ isOpen, onClose }) {
       setTimeout(() => {
         textareaRef.current?.focus()
       }, 300)
+    } else {
+      document.body.style.overflow = ''
+      document.body.style.paddingRight = ''
+    }
+
+    return () => {
+      document.body.style.overflow = ''
+      document.body.style.paddingRight = ''
     }
   }, [isOpen])
 
@@ -74,6 +86,7 @@ export default function AIChatPanel({ isOpen, onClose }) {
   const handleKey = (e) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault()
+      e.stopPropagation()
       sendMessage()
     }
   }
