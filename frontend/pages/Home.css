@@ -898,13 +898,12 @@
   align-items: start;
 }
 
-.footer-brand-name {
+.footer-logo-img {
   display: block;
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: var(--text-primary);
+  height: 36px;
+  width: auto;
+  object-fit: contain;
   margin-bottom: 0.75rem;
-  letter-spacing: -0.01em;
 }
 
 .footer-tagline {

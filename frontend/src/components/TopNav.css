@@ -20,16 +20,26 @@
 }
 
 .top-nav-brand {
-  font-size: 1.25rem;
-  font-weight: 700;
-  color: #f8f8ff;
   text-decoration: none;
   flex-shrink: 0;
   transition: opacity 0.2s ease;
+  display: flex;
+  align-items: center;
 }
 
 .top-nav-brand:hover {
   opacity: 0.8;
+}
+
+.top-nav-logo-img {
+  height: 28px;
+  width: auto;
+  display: block;
+  object-fit: contain;
+}
+
+[data-theme="light"] .top-nav-logo-img {
+  filter: brightness(0) saturate(100%) invert(12%) sepia(37%) saturate(500%) hue-rotate(162deg) brightness(90%) contrast(95%);
 }
 
 .top-nav-menu {

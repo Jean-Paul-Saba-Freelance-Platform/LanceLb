@@ -14,11 +14,12 @@ import aiRouter from "./routes/aiRoutes.js";
 import messageRouter from './routes/messageRoutes.js'
 import crewRouter from "./routes/crewRoutes.js";
 import { app, server } from "./lib/realtime.js";
-import atsRouter from "./routes/atsRoutes.js";
+
 import notificationRouter from "./routes/notificationRoutes.js";
 import projectRouter from "./routes/projectRoutes.js";
 import freelancerRouter from "./routes/freelancerRoutes.js";
 import adminRouter from "./routes/adminRoutes.js";
+import atsRouter from "./routes/atsRoutes.js";
 import publicStatsRouter from "./routes/publicStatsRoutes.js";
 import followRouter from "./routes/followRoutes.js";
 import reviewRouter from "./routes/reviewRoutes.js";

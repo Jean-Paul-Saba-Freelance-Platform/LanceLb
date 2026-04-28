@@ -13,8 +13,9 @@ import {
 } from 'lucide-react'
 import './AdminDashboard.css'
 import AdminAIAssistant from '../src/components/AdminAIAssistant'
+import whiteLogo from '../Assets/white logo.png'
 
-const API_BASE = 'http://127.0.0.1:4000'
+const API_BASE = import.meta.env.VITE_API_BASE || 'http://127.0.0.1:4000'
 const MONTH_NAMES = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 
 // Returns the bar color based on percentage value thresholds
@@ -46,9 +47,24 @@ const AdminDashboard = () => {
   }, [])
 
   useEffect(() => {
+    const token = localStorage.getItem('adminToken')
+    if (!token) {
+      navigate('/admin/login')
+      return
+    }
+
+    const safeJson = async (res) => {
+      const text = await res.text()
+      if (!text) throw new Error(`Empty response from ${res.url} (status ${res.status})`)
+      try {
+        return JSON.parse(text)
+      } catch {
+        throw new Error(`Server returned non-JSON (status ${res.status})`)
+      }
+    }
+
     const fetchAll = async () => {
       try {
-        const token = localStorage.getItem('adminToken')
         const headers = {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`,
@@ -61,11 +77,18 @@ const AdminDashboard = () => {
           fetch(`${API_BASE}/api/admin/top-freelancers`, { headers, credentials: 'include' }),
         ])
 
+        // If any request returns 401, the token is invalid — redirect to login
+        if (statsRes.status === 401) {
+          localStorage.removeItem('adminToken')
+          navigate('/admin/login')
+          return
+        }
+
         const [statsData, growthData, categoriesData, freelancersData] = await Promise.all([
-          statsRes.json(),
-          growthRes.json(),
-          categoriesRes.json(),
-          freelancersRes.json(),
+          safeJson(statsRes),
+          safeJson(growthRes),
+          safeJson(categoriesRes),
+          safeJson(freelancersRes),
         ])
 
         if (!statsData.success) throw new Error(statsData.message || 'Failed to load stats')
@@ -78,19 +101,12 @@ const AdminDashboard = () => {
         setError(err.message)
       } finally {
         setLoading(false)
-        // Delay to let DOM paint before triggering CSS transitions
         requestAnimationFrame(() => setTimeout(() => setLoaded(true), 50))
       }
     }
 
     fetchAll()
-  }, [])
-
-  const adminToken = localStorage.getItem('adminToken')
-  if (!adminToken) {
-    navigate('/admin/login')
-    return null
-  }
+  }, [navigate])
 
   if (loading) {
     return (
@@ -344,7 +360,7 @@ const AdminDashboard = () => {
 const Sidebar = ({ navigate }) => (
   <aside className="adm-sidebar">
     <div className="adm-sidebar-logo">
-      <span className="adm-sidebar-brand">LanceLB</span>
+      <img src={whiteLogo} alt="LanceLB" className="adm-sidebar-logo-img" />
       <span className="adm-sidebar-sub">Admin Panel</span>
     </div>
 

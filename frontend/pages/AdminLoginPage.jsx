@@ -1,6 +1,9 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import whiteLogo from '../Assets/white logo.png'
 import './AdminLoginPage.css'
+
+const API_BASE = import.meta.env.VITE_API_BASE || 'http://127.0.0.1:4000'
 
 export default function AdminLoginPage() {
   const navigate = useNavigate()
@@ -14,7 +17,7 @@ export default function AdminLoginPage() {
     setError('')
     setLoading(true)
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_BASE}/api/admin/login`, {
+      const res = await fetch(`${API_BASE}/api/admin/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, password }),
@@ -38,7 +41,7 @@ export default function AdminLoginPage() {
       <div className="admin-login-card">
 
         <div className="admin-login-header">
-          <p className="admin-login-brand">LanceLB</p>
+          <img src={whiteLogo} alt="LanceLB" className="admin-login-logo" />
           <p className="admin-login-title">Admin Portal</p>
           <p className="admin-login-subtitle">Restricted access</p>
         </div>

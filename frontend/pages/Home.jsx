@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { Code2, Palette, TrendingUp, Headphones, PenTool, DollarSign, Wrench, Scale, Users, BarChart2, Globe, Camera } from 'lucide-react'
 import { motion } from 'motion/react'
 import Grainient from '../src/components/Grainient'
+import whiteLogo from '../Assets/white logo.png'
 import CountUp from './CountUp'
 import GradientText from './GradientText'
 import BorderGlow from './BorderGlow'
@@ -342,7 +343,7 @@ const Home = () => {
       <footer className="landing-footer">
         <div className="footer-main">
           <div className="footer-brand">
-            <span className="footer-brand-name">LanceLB</span>
+            <img src={whiteLogo} alt="LanceLB" className="footer-logo-img" />
             <p className="footer-tagline">
               Lebanon's dedicated freelance marketplace.<br />Built for talent, built for growth.
             </p>

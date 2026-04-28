@@ -17,15 +17,21 @@
 }
 
 .header-brand-small {
-  font-size: 1.25rem;
-  font-weight: 600;
-  color: #f3f4f6;
   text-decoration: none;
   transition: opacity 0.2s ease;
+  display: flex;
+  align-items: center;
 }
 
 .header-brand-small:hover {
   opacity: 0.8;
+}
+
+.header-brand-logo {
+  height: 26px;
+  width: auto;
+  object-fit: contain;
+  display: block;
 }
 
 .header-login-link {

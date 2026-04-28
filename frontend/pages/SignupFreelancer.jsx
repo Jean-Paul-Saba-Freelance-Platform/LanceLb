@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import whiteLogo from '../Assets/white logo.png'
 import './SignupFreelancer.css'
 
 const API_BASE = import.meta.env.VITE_API_BASE || 'http://127.0.0.1:4000'
@@ -144,7 +145,7 @@ const SignupFreelancer = () => {
     <div className="signup-freelancer-container">
       <div className="signup-freelancer-header">
         <Link to="/" className="header-brand-small">
-          FreelanceHub
+          <img src={whiteLogo} alt="LanceLB" className="header-brand-logo" />
         </Link>
         <Link to="/login" className="header-login-link">
           Already have an account? Log In
@@ -297,7 +298,7 @@ const SignupFreelancer = () => {
                   onChange={handleChange}
                   required
                 />
-                <span>I agree to the FreelanceHub <a href="#" onClick={(e) => e.preventDefault()}>Terms of Service</a> and <a href="#" onClick={(e) => e.preventDefault()}>Privacy Policy</a></span>
+                <span>I agree to the LanceLB <a href="#" onClick={(e) => e.preventDefault()}>Terms of Service</a> and <a href="#" onClick={(e) => e.preventDefault()}>Privacy Policy</a></span>
               </label>
               {errors.termsAgreed && <span className="error-message">{errors.termsAgreed}</span>}
             </div>

@@ -33,12 +33,12 @@
   border-bottom: 1px solid #2a3942;
 }
 
-.adm-sidebar-brand {
+.adm-sidebar-logo-img {
   display: block;
-  font-size: 1.2rem;
-  font-weight: 700;
-  color: #3eb591;
-  letter-spacing: -0.01em;
+  height: 26px;
+  width: auto;
+  object-fit: contain;
+  margin-bottom: 0.1rem;
 }
 
 .adm-sidebar-sub {

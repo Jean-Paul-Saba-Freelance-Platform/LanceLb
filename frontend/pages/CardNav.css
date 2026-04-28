@@ -110,11 +110,21 @@
   top: 50%;
   transform: translate(-50%, -50%);
   text-decoration: none;
-  font-size: 1.15rem;
-  font-weight: 700;
-  letter-spacing: -0.01em;
-  color: #e9edef;
   white-space: nowrap;
+  display: flex;
+  align-items: center;
+}
+
+.card-nav-logo-img {
+  height: 26px;
+  width: auto;
+  object-fit: contain;
+  display: block;
+  transition: opacity 0.2s ease;
+}
+
+.card-nav-brand:hover .card-nav-logo-img {
+  opacity: 0.8;
 }
 
 /* ── Auth buttons ─────────────────────────────────────── */

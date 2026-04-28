@@ -3,6 +3,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { Bot, Bell, Search, X } from 'lucide-react'
 import ProfileDropdown from './ProfileDropdown'
 import AIChatPanel from './AIChatPanel'
+import whiteLogo from '../../Assets/white logo.png'
 import './TopNav.css'
 
 const API_BASE = import.meta.env.VITE_API_BASE || 'http://127.0.0.1:4000'
@@ -312,7 +313,7 @@ const TopNav = ({ userName, userAvatar }) => {
       <div className="top-nav-container">
         {/* Left: Brand */}
         <Link to={brandLink} className="top-nav-brand">
-          Open Hand
+          <img src={whiteLogo} alt="LanceLB" className="top-nav-logo-img" />
         </Link>
 
         {/* Center: Menu Links */}
