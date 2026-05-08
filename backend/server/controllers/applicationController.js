@@ -24,6 +24,7 @@ export const createApplication = async (req, res) => {
             atsConfidence,
             atsBreakdown,
             atsFeedback,
+            cvUrl,
         } = req.body;
 
         // Validate that a job ID was provided
@@ -80,6 +81,7 @@ export const createApplication = async (req, res) => {
             status: 'pending',
             viewedByClient: false,
             // ATS fields — only stored if the freelancer uploaded a CV
+            ...(cvUrl && { cvUrl }),
             ...(atsScore != null && {
                 atsScore:      Number(atsScore),
                 atsGrade:      atsGrade || undefined,

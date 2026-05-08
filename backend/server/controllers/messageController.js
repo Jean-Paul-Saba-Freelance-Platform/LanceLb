@@ -2,6 +2,7 @@ import User from "../models/userModels.js";
 import Message from "../models/messageModel.js";
 import Follow from "../models/followModel.js";
 import { getReceiverSocketId, io } from "../lib/realtime.js";
+import { encrypt, decrypt } from "../lib/messageCrypto.js";
 
 // ---------------------------------------------------------------------------
 // GET /api/message/user — List all users available to chat with
@@ -69,12 +70,22 @@ export const getMessages = async (req, res) => {
         const senderId = req.userId;
 
         // Return messages where this user is either the sender OR the receiver
-        const messages = await Message.find({
+        const raw = await Message.find({
             $or: [
                 { senderId: senderId, recieverId: userToChatId },
                 { senderId: userToChatId, recieverId: senderId },
             ],
-        });
+        }).lean();
+
+        // Decrypt text for each message; fall back to raw text for legacy unencrypted messages
+        const messages = raw.map((msg) => {
+            if (!msg.text) return msg
+            try {
+                return { ...msg, text: decrypt(msg.text) }
+            } catch {
+                return msg
+            }
+        })
 
         res.status(200).json(messages);
     } catch (error) {
@@ -118,22 +129,28 @@ export const sendMessage = async (req, res) => {
             imageUrl = image;
         }
 
+        // Encrypt text before persisting; leave undefined if no text was sent
+        const encryptedText = text ? encrypt(text) : undefined
+
         // Create and save the message document
         const newMessage = new Message({
             senderId,
             recieverId,
-            text,
+            text: encryptedText,
             image: imageUrl,
         });
         await newMessage.save();
 
+        // Send plaintext to sockets and HTTP response — never expose ciphertext to the client
+        const outgoing = { ...newMessage.toObject(), text }
+
         // Attempt real-time delivery to the recipient's active socket
         const receiverSocketId = getReceiverSocketId(recieverId);
         if (receiverSocketId) {
-            io.to(receiverSocketId).emit("newMessage", newMessage);
+            io.to(receiverSocketId).emit("newMessage", outgoing);
         }
 
-        res.status(201).json(newMessage);
+        res.status(201).json(outgoing);
     } catch (error) {
         console.error("Error in sendMessage controller", error.message);
         res.status(500).json({ error: "Internal server error" });

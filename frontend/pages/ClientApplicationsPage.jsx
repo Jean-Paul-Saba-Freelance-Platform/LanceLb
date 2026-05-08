@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { FileText } from 'lucide-react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { motion } from 'motion/react'
 import TopNav from '../src/components/TopNav.jsx'
@@ -27,6 +28,7 @@ const ClientApplicationsPage = () => {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const [expandedId, setExpandedId] = useState(null)
+  const [cvViewerId, setCvViewerId] = useState(null)
   const [updatingId, setUpdatingId] = useState(null)
 
   // Message modal state
@@ -370,6 +372,28 @@ const ClientApplicationsPage = () => {
                                   <span>{w}</span>
                                 </div>
                               ))}
+                            </div>
+                          )}
+                        </div>
+                      )}
+
+                      {/* Inline CV Viewer */}
+                      {app.cvUrl && (
+                        <div className="app-section">
+                          <button
+                            className="app-view-cv-btn"
+                            onClick={() => setCvViewerId(cvViewerId === app._id ? null : app._id)}
+                          >
+                            <FileText size={15} style={{ flexShrink: 0 }} />
+                            {cvViewerId === app._id ? 'Hide CV' : 'View CV'}
+                          </button>
+                          {cvViewerId === app._id && (
+                            <div className="app-cv-viewer">
+                              <iframe
+                                src={`https://docs.google.com/viewer?url=${encodeURIComponent(app.cvUrl)}&embedded=true`}
+                                className="app-cv-iframe"
+                                title="CV Preview"
+                              />
                             </div>
                           )}
                         </div>

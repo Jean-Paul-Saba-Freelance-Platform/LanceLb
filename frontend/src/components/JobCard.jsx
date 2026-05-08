@@ -70,6 +70,7 @@ const JobCard = ({ job, isSaved = false, onToggleSave, alreadyApplied = false, o
   const [proposedTimeline, setProposedTimeline] = useState('')
   const [cvFile, setCvFile] = useState(null)
   const [atsResult, setAtsResult] = useState(null)
+  const [cvUrl, setCvUrl] = useState(null)
   const [atsLoading, setAtsLoading] = useState(false)
   const [atsError, setAtsError] = useState('')
   const [jobMatchScore, setJobMatchScore] = useState(null)
@@ -305,20 +306,23 @@ const JobCard = ({ job, isSaved = false, onToggleSave, alreadyApplied = false, o
       setAtsError('Only PDF files are supported for ATS scoring.')
       return
     }
+    if (file.size > 5 * 1024 * 1024) {
+      setAtsError('CV must be under 5MB.')
+      return
+    }
     setCvFile(file)
     setAtsResult(null)
+    setCvUrl(null)
     setAtsError('')
     setAtsLoading(true)
 
     const token = localStorage.getItem('token')
     const formData = new FormData()
     formData.append('resume', file)
-    if (job.description) {
-      formData.append('job_description', job.description)
-    }
 
     try {
-      const res = await fetch(`${API_BASE}/api/ats/evaluate`, {
+      // evaluate-and-upload: uploads to Cloudinary AND scores via Flask in one call
+      const res = await fetch(`${API_BASE}/api/ats/evaluate-and-upload`, {
         method: 'POST',
         headers: token ? { Authorization: `Bearer ${token}` } : {},
         credentials: 'include',
@@ -327,6 +331,7 @@ const JobCard = ({ job, isSaved = false, onToggleSave, alreadyApplied = false, o
       const data = await res.json()
       if (res.ok && data.success) {
         setAtsResult(data)
+        setCvUrl(data.cvUrl || null)
         setJobMatchScore(data.job_match_score ?? null)
         setMatchedKeywords(data.matched_keywords || [])
         setMissingKeywords(data.missing_keywords || [])
@@ -363,6 +368,7 @@ const JobCard = ({ job, isSaved = false, onToggleSave, alreadyApplied = false, o
       proposedBudget: proposedBudget ? Number(proposedBudget) : undefined,
       proposedTimelineDays: proposedTimeline ? Number(proposedTimeline) : undefined,
       answers: formattedAnswers,
+      ...(cvUrl && { cvUrl }),
       ...(atsResult && {
         atsScore:      atsResult.total_score,
         atsGrade:      atsResult.grade,
@@ -409,6 +415,7 @@ const JobCard = ({ job, isSaved = false, onToggleSave, alreadyApplied = false, o
     setProposedTimeline('')
     setCvFile(null)
     setAtsResult(null)
+    setCvUrl(null)
     setAtsLoading(false)
     setAtsError('')
     setJobMatchScore(null)

@@ -30,6 +30,17 @@ const videoIntroStorage = new CloudinaryStorage({
   },
 })
 
+// Storage for CV/resume uploads — raw resource type for PDF files
+const cvStorage = new CloudinaryStorage({
+  cloudinary,
+  params: {
+    folder: 'lance/cvs',
+    allowed_formats: ['pdf'],
+    resource_type: 'raw',
+  },
+})
+
+export const cvUpload = multer({ storage: cvStorage })
 export const profilePictureUpload = multer({ storage: profilePictureStorage })
 export const videoIntroUpload = multer({ storage: videoIntroStorage })
 export { cloudinary }
