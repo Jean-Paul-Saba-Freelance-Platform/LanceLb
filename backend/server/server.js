@@ -90,7 +90,9 @@ app.use("/api/follow", followRouter);
 app.use("/api/reviews", reviewRouter);
 app.use("/api/user", userRouter);
 app.use("/api/upload", uploadRouter);
+app.use("/api/ats", atsRouter);
 
-// Start
-connectDB();
-server.listen(PORT, () => console.log(`Server is running on port ${PORT}`));
+// Start — wait for DB before accepting requests
+connectDB().then(() => {
+  server.listen(PORT, () => console.log(`Server is running on port ${PORT}`));
+});
