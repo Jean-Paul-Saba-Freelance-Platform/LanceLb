@@ -90,6 +90,7 @@ app.use("/api/follow", followRouter);
 app.use("/api/reviews", reviewRouter);
 app.use("/api/user", userRouter);
 app.use("/api/upload", uploadRouter);
+app.use("/api/ats", atsRouter);
 
 // Start
 connectDB();

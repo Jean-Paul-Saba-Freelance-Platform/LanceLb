@@ -99,6 +99,7 @@ const applicationSchema = new Schema(
     },
 
     // ATS resume evaluation — populated when freelancer uploads CV during apply
+    cvUrl:         { type: String },           // Cloudinary PDF URL
     atsScore:      { type: Number, min: 0, max: 100 },
     atsGrade:      { type: String },
     atsCategory:   { type: String },

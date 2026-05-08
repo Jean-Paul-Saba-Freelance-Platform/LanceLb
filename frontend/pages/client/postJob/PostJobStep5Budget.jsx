@@ -22,6 +22,7 @@
 
 import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { Clock, DollarSign } from 'lucide-react'
 import PostJobLayout from './PostJobLayout'
 
 /* ── Constants ─────────────────────────────────────────────────────────── */
@@ -144,7 +145,7 @@ const PostJobStep5Budget = () => {
               onClick={() => setPaymentType('hourly')}
             >
               <span className="budget-card-radio" />
-              <span className="budget-card-icon">⏱</span>
+              <span className="budget-card-icon"><Clock size={28} /></span>
               <span className="budget-card-title">Hourly rate</span>
               <span className="budget-card-desc">
                 Pay by the hour — great for ongoing or evolving work.
@@ -158,7 +159,7 @@ const PostJobStep5Budget = () => {
               onClick={() => setPaymentType('fixed')}
             >
               <span className="budget-card-radio" />
-              <span className="budget-card-icon">💰</span>
+              <span className="budget-card-icon"><DollarSign size={28} /></span>
               <span className="budget-card-title">Project budget</span>
               <span className="budget-card-desc">
                 Set a total price — ideal for well-defined deliverables.
