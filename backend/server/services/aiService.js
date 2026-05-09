@@ -370,7 +370,7 @@ Rules:
 }
 
 export async function chatWithSupport(history, mode = 'user', stats = null) {
-  const userSystemPrompt = `You are OpenHand Support Assistant — a helpful, friendly AI for the OpenHand freelance marketplace platform (Lebanese-focused, like Fiverr/Upwork).
+  const userSystemPrompt = `You are Lance Support Assistant — a helpful, friendly AI for the Lance freelance marketplace platform (Lebanese-focused, like Fiverr/Upwork).
 
 You help with:
 - Platform how-to: posting jobs, applying, messaging, projects, delivery flow, ratings
@@ -379,7 +379,7 @@ You help with:
 
 Keep answers concise and actionable. Use bullet points for lists. Be warm but professional. If asked something outside the platform scope, gently redirect.`
 
-  const adminSystemPrompt = `You are OpenHand Platform Analyst — an AI advisor for the OpenHand admin team.
+  const adminSystemPrompt = `You are Lance Platform Analyst — an AI advisor for the Lance admin team.
 
 Current platform statistics:
 ${stats ? JSON.stringify(stats, null, 2) : 'Stats not available'}

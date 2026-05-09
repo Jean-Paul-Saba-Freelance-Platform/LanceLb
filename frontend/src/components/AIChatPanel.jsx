@@ -18,34 +18,18 @@ export default function AIChatPanel({ isOpen, onClose }) {
   const textareaRef = useRef(null)
 
   useEffect(() => {
-    if (isOpen) {
-      const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth
-      document.body.style.overflow = 'hidden'
-      document.body.style.paddingRight = `${scrollbarWidth}px`
+    document.body.style.overflow = isOpen ? 'hidden' : ''
+    return () => { document.body.style.overflow = '' }
+  }, [isOpen])
 
-      // Blur any focused page element before focusing the textarea
-      if (document.activeElement) {
-        document.activeElement.blur()
-      }
-      setTimeout(() => {
-        textareaRef.current?.focus()
-      }, 300)
-    } else {
-      document.body.style.overflow = ''
-      document.body.style.paddingRight = ''
-    }
-
-    return () => {
-      document.body.style.overflow = ''
-      document.body.style.paddingRight = ''
+  useEffect(() => {
+    if (!isOpen && textareaRef.current) {
+      textareaRef.current.style.height = 'auto'
     }
   }, [isOpen])
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      bottomRef.current?.scrollIntoView({ behavior: 'instant' })
-    }, 50)
-    return () => clearTimeout(timer)
+    bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [messages, loading])
 
   const sendMessage = async () => {
@@ -71,11 +55,11 @@ export default function AIChatPanel({ isOpen, onClose }) {
         body: JSON.stringify({ message: text, history: history.slice(0, -1), mode: 'user' }),
       })
       const data = await res.json()
-      if (data.success) {
-        setMessages(prev => [...prev, { role: 'assistant', content: data.reply }])
-      } else {
-        setMessages(prev => [...prev, { role: 'assistant', content: 'Sorry, I ran into an issue. Please try again.' }])
+      if (!res.ok || !data.success) {
+        setMessages(prev => [...prev, { role: 'assistant', content: data.message || 'Sorry, I ran into an issue. Please try again.' }])
+        return
       }
+      setMessages(prev => [...prev, { role: 'assistant', content: data.reply }])
     } catch {
       setMessages(prev => [...prev, { role: 'assistant', content: 'Connection error. Please check your network and try again.' }])
     } finally {
@@ -92,7 +76,7 @@ export default function AIChatPanel({ isOpen, onClose }) {
   }
 
   return (
-    <AnimatePresence>
+    <AnimatePresence mode="wait">
       {isOpen && (
         <>
           {/* Backdrop */}
@@ -142,7 +126,7 @@ export default function AIChatPanel({ isOpen, onClose }) {
                   <div className={`aichat-bubble ${msg.role}`}>
                     {msg.role === 'assistant' && <Bot size={14} className="aichat-bubble-icon" />}
                     {msg.role === 'user' && <User size={14} className="aichat-bubble-icon" />}
-                    <p className="aichat-bubble-text" dangerouslySetInnerHTML={{ __html: msg.content
+                    <p className="aichat-bubble-text" dangerouslySetInnerHTML={{ __html: (msg.content || '')
                       .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
                       .replace(/^\* (.+)$/gm, '<span class="ai-bullet">$1</span>')
                       .replace(/\n/g, '<br/>')

@@ -309,6 +309,7 @@ const TopNav = ({ userName, userAvatar }) => {
   const handleCloseDropdown = () => setIsDropdownOpen(false)
 
   return (
+    <>
     <nav className="top-nav">
       <div className="top-nav-container">
         {/* Left: Brand — favicon shown by default, full logo crossfades in on hover */}
@@ -599,8 +600,9 @@ const TopNav = ({ userName, userAvatar }) => {
           </div>
         </div>
       </div>
-      <AIChatPanel isOpen={aiChatOpen} onClose={() => setAiChatOpen(false)} />
     </nav>
+    <AIChatPanel isOpen={aiChatOpen} onClose={() => setAiChatOpen(false)} />
+    </>
   )
 }
 
