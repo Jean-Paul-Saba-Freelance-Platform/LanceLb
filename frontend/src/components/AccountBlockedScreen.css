@@ -1,0 +1,105 @@
+.blocked-screen {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-bg, #111B21);
+  padding: 2rem;
+}
+
+.blocked-card {
+  background: rgba(14, 12, 20, 0.6);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(248, 113, 113, 0.25);
+  border-radius: 16px;
+  padding: 3rem 2.5rem;
+  max-width: 480px;
+  width: 100%;
+  text-align: center;
+  box-shadow:
+    0 0 0 1px rgba(248, 113, 113, 0.08),
+    0 24px 60px rgba(0, 0, 0, 0.5),
+    0 0 80px rgba(248, 113, 113, 0.06);
+}
+
+.blocked-icon-wrap {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: rgba(248, 113, 113, 0.12);
+  border: 1px solid rgba(248, 113, 113, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1.5rem;
+}
+
+.blocked-icon-wrap svg {
+  color: #f87171;
+}
+
+.blocked-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #f87171;
+  letter-spacing: -0.02em;
+  margin: 0 0 0.75rem;
+}
+
+.blocked-subtitle {
+  font-size: 0.9rem;
+  color: var(--color-text-muted, #8696a0);
+  line-height: 1.6;
+  margin: 0 0 0.5rem;
+}
+
+.blocked-reason {
+  font-size: 0.875rem;
+  color: var(--color-text, #e9edef);
+  background: rgba(248, 113, 113, 0.08);
+  border: 1px solid rgba(248, 113, 113, 0.15);
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  margin: 1rem 0 0;
+  line-height: 1.5;
+}
+
+.blocked-until {
+  font-size: 0.875rem;
+  color: var(--color-text, #e9edef);
+  background: rgba(251, 191, 36, 0.08);
+  border: 1px solid rgba(251, 191, 36, 0.2);
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  margin: 1rem 0 0;
+  line-height: 1.5;
+}
+
+.blocked-until strong {
+  color: #fbbf24;
+}
+
+.blocked-divider {
+  border: none;
+  border-top: 1px solid rgba(42, 57, 66, 0.6);
+  margin: 2rem 0;
+}
+
+.blocked-logout-btn {
+  width: 100%;
+  padding: 0.75rem 1.5rem;
+  background: rgba(248, 113, 113, 0.15);
+  border: 1px solid rgba(248, 113, 113, 0.35);
+  border-radius: 8px;
+  color: #f87171;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.blocked-logout-btn:hover {
+  background: rgba(248, 113, 113, 0.25);
+  border-color: rgba(248, 113, 113, 0.55);
+}

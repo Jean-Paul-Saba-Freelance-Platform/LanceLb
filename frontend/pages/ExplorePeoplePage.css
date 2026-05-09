@@ -1,0 +1,584 @@
+/* ============================================================
+   ExplorePeoplePage — Lance People Directory
+   Dark default, light mode via [data-theme="light"]
+   ============================================================ */
+
+/* ── Design tokens + page base ─────────────────────────── */
+.ep-page {
+  --ep-accent:        #3eb591;
+  --ep-glass-bg:      rgba(14, 12, 20, 0.6);
+  --ep-glass-border:  rgba(255, 255, 255, 0.12);
+  --ep-glass-shadow:  0 18px 40px rgba(4, 4, 10, 0.6);
+  --ep-glass-radius:  22px;
+  --ep-blur:          18px;
+  --ep-text-primary:  #f3f4f6;
+  --ep-text-secondary:#cbd5f5;
+  --ep-text-muted:    #94a3b8;
+
+  min-height: 100vh;
+  background: transparent;
+  color: var(--ep-text-primary);
+}
+
+/* ── Content container ─────────────────────────────────── */
+.ep-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 4rem;
+}
+
+/* ── Header ────────────────────────────────────────────── */
+.ep-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1.5rem;
+  margin-bottom: 1.75rem;
+  flex-wrap: wrap;
+}
+
+.ep-heading {
+  font-size: 1.75rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--ep-text-primary);
+  margin: 0 0 0.25rem;
+}
+
+.ep-subheading {
+  font-size: 0.875rem;
+  color: var(--ep-text-muted);
+  margin: 0;
+}
+
+/* ── Search ────────────────────────────────────────────── */
+.ep-search-wrap {
+  position: relative;
+  flex: 0 1 340px;
+}
+
+.ep-search-icon {
+  position: absolute;
+  left: 0.85rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--ep-text-muted);
+  pointer-events: none;
+}
+
+.ep-search-input {
+  width: 100%;
+  background: var(--ep-glass-bg);
+  backdrop-filter: blur(var(--ep-blur));
+  -webkit-backdrop-filter: blur(var(--ep-blur));
+  border: 1px solid var(--ep-glass-border);
+  border-radius: 12px;
+  padding: 0.65rem 1rem 0.65rem 2.5rem;
+  font-size: 0.875rem;
+  color: var(--ep-text-primary);
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  box-sizing: border-box;
+}
+
+.ep-search-input::placeholder { color: var(--ep-text-muted); }
+
+.ep-search-input:focus {
+  border-color: var(--ep-accent);
+  box-shadow: 0 0 0 3px rgba(62, 181, 145, 0.15);
+}
+
+/* ── Filters ───────────────────────────────────────────── */
+.ep-filters {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  margin-bottom: 2rem;
+}
+
+.ep-filter-group {
+  display: flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.ep-filter-chip {
+  padding: 0.35rem 0.9rem;
+  border-radius: 999px;
+  font-size: 0.82rem;
+  font-weight: 500;
+  background: var(--ep-glass-bg);
+  backdrop-filter: blur(var(--ep-blur));
+  border: 1px solid var(--ep-glass-border);
+  color: var(--ep-text-muted);
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+  white-space: nowrap;
+}
+
+.ep-filter-chip:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--ep-text-primary);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.ep-filter-chip.active {
+  background: rgba(62, 181, 145, 0.15);
+  border-color: rgba(62, 181, 145, 0.4);
+  color: var(--ep-accent);
+  font-weight: 600;
+}
+
+/* ── Card Grid ─────────────────────────────────────────── */
+.ep-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 1.25rem;
+}
+
+/* ── Skeleton ──────────────────────────────────────────── */
+.ep-skeleton-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 1.25rem;
+}
+
+.ep-skeleton-card {
+  height: 280px;
+  background: var(--ep-glass-bg);
+  border: 1px solid var(--ep-glass-border);
+  border-radius: var(--ep-glass-radius);
+  animation: ep-pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes ep-pulse {
+  0%, 100% { opacity: 0.6; }
+  50%       { opacity: 0.3; }
+}
+
+/* ── Card ──────────────────────────────────────────────── */
+.ep-card {
+  background: var(--ep-glass-bg);
+  backdrop-filter: blur(var(--ep-blur));
+  -webkit-backdrop-filter: blur(var(--ep-blur));
+  border: 1px solid var(--ep-glass-border);
+  border-radius: var(--ep-glass-radius);
+  box-shadow: var(--ep-glass-shadow);
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+  cursor: default;
+}
+
+.ep-card:hover {
+  border-color: rgba(62, 181, 145, 0.4);
+  transform: translateY(-3px);
+  box-shadow: 0 12px 36px rgba(4, 4, 10, 0.5);
+}
+
+/* ── Card top row ──────────────────────────────────────── */
+.ep-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* ── Avatar ────────────────────────────────────────────── */
+.ep-avatar {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: linear-gradient(135deg, var(--ep-accent), #2d9b7a);
+  border: 2px solid rgba(62, 181, 145, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+
+.ep-avatar:hover { opacity: 0.85; }
+
+.ep-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.ep-avatar-initial {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #fff;
+  line-height: 1;
+}
+
+/* ── User type badge ───────────────────────────────────── */
+.ep-type-badge {
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.ep-type-freelancer {
+  background: rgba(62, 181, 145, 0.12);
+  color: var(--ep-accent);
+  border: 1px solid rgba(62, 181, 145, 0.3);
+}
+
+.ep-type-client {
+  background: rgba(251, 191, 36, 0.1);
+  color: #fbbf24;
+  border: 1px solid rgba(251, 191, 36, 0.25);
+}
+
+/* ── Card body ─────────────────────────────────────────── */
+.ep-card-body {
+  cursor: pointer;
+}
+
+.ep-card-body:hover .ep-name { color: var(--ep-accent); }
+
+.ep-name {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--ep-text-primary);
+  margin: 0 0 0.2rem;
+  transition: color 0.15s;
+}
+
+.ep-title {
+  font-size: 0.82rem;
+  color: var(--ep-text-muted);
+  margin: 0 0 0.35rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ep-bio {
+  font-size: 0.82rem;
+  color: var(--ep-text-secondary);
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  line-height: 1.55;
+}
+
+/* ── Skills ────────────────────────────────────────────── */
+.ep-skills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.ep-skill-chip {
+  font-size: 0.72rem;
+  padding: 0.18rem 0.6rem;
+  border-radius: 6px;
+  background: rgba(62, 181, 145, 0.08);
+  border: 1px solid rgba(62, 181, 145, 0.2);
+  color: var(--ep-accent);
+}
+
+.ep-skill-more {
+  background: transparent;
+  border-color: transparent;
+  color: var(--ep-text-muted);
+  font-style: italic;
+}
+
+/* ── Experience ────────────────────────────────────────── */
+.ep-exp {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.ep-exp-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.ep-exp-label {
+  font-size: 0.78rem;
+  color: var(--ep-text-muted);
+}
+
+/* ── Actions ───────────────────────────────────────────── */
+.ep-card-actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: auto;
+  padding-top: 0.25rem;
+}
+
+.ep-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  padding: 0.5rem 0.9rem;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  transition: background 0.15s, box-shadow 0.15s, transform 0.1s, color 0.15s;
+  white-space: nowrap;
+  flex: 1;
+  justify-content: center;
+}
+
+.ep-btn-ghost {
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--ep-text-muted);
+}
+
+/* Follow states */
+.ep-btn-follow--default {
+  background: var(--ep-accent);
+  color: #fff;
+  border: none;
+}
+.ep-btn-follow--default:hover {
+  background: #2d9b7a;
+  box-shadow: 0 0 10px rgba(62, 181, 145, 0.3);
+}
+
+.ep-btn-follow--requested {
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--ep-text-muted);
+  border: 1px solid var(--ep-glass-border);
+}
+.ep-btn-follow--requested:hover {
+  background: rgba(248, 113, 113, 0.1);
+  color: #fca5a5;
+  border-color: rgba(248, 113, 113, 0.3);
+}
+
+.ep-btn-follow--following {
+  background: rgba(62, 181, 145, 0.12);
+  color: var(--ep-accent);
+  border: 1px solid rgba(62, 181, 145, 0.3);
+}
+.ep-btn-follow--following:hover {
+  background: rgba(248, 113, 113, 0.1);
+  color: #fca5a5;
+  border-color: rgba(248, 113, 113, 0.3);
+}
+
+/* Message button */
+.ep-btn-msg {
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--ep-text-secondary);
+  border: 1px solid var(--ep-glass-border);
+}
+.ep-btn-msg:hover:not(.ep-btn-msg--disabled) {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--ep-text-primary);
+}
+
+.ep-btn-msg--disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+/* ── Empty state ───────────────────────────────────────── */
+.ep-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  padding: 5rem 1rem;
+  color: var(--ep-text-muted);
+}
+
+.ep-empty-icon {
+  color: var(--ep-accent);
+  opacity: 0.3;
+}
+
+.ep-empty-msg {
+  font-size: 0.95rem;
+  color: var(--ep-text-muted);
+  text-align: center;
+}
+
+/* ── Pagination ─────────────────────────────────────────── */
+.ep-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  margin-top: 2.5rem;
+  flex-wrap: wrap;
+}
+
+.ep-page-btn {
+  padding: 0.45rem 0.9rem;
+  border-radius: 10px;
+  background: var(--ep-glass-bg);
+  backdrop-filter: blur(var(--ep-blur));
+  border: 1px solid var(--ep-glass-border);
+  color: var(--ep-text-muted);
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+
+.ep-page-btn:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--ep-text-primary);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.ep-page-btn.active {
+  background: var(--ep-accent);
+  border-color: var(--ep-accent);
+  color: #fff;
+  font-weight: 700;
+}
+
+.ep-page-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+/* ── Light mode ─────────────────────────────────────────── */
+[data-theme="light"] .ep-page { color: #111b21; }
+
+[data-theme="light"] .ep-heading { color: #111b21; }
+
+[data-theme="light"] .ep-subheading { color: #667781; }
+
+[data-theme="light"] .ep-search-input {
+  background: #fff;
+  border-color: #dde3df;
+  color: #111b21;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+[data-theme="light"] .ep-search-input::placeholder { color: #8696a0; }
+[data-theme="light"] .ep-search-input:focus { border-color: #00a884; }
+
+[data-theme="light"] .ep-filter-chip {
+  background: #fff;
+  border-color: #dde3df;
+  color: #667781;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+[data-theme="light"] .ep-filter-chip:hover { background: #f3f4f3; color: #111b21; }
+[data-theme="light"] .ep-filter-chip.active {
+  background: rgba(0, 168, 132, 0.08);
+  color: #00a884;
+  border-color: rgba(0, 168, 132, 0.3);
+}
+
+[data-theme="light"] .ep-skeleton-card {
+  background: #f3f4f3;
+  border-color: #dde4e1;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+[data-theme="light"] .ep-card {
+  background: rgba(255, 255, 255, 0.85);
+  border-color: #dde4e1;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+[data-theme="light"] .ep-card:hover {
+  border-color: rgba(0, 168, 132, 0.3);
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="light"] .ep-name { color: #111b21; }
+[data-theme="light"] .ep-title { color: #667781; }
+[data-theme="light"] .ep-bio { color: #41525d; }
+
+[data-theme="light"] .ep-skill-chip {
+  background: rgba(0, 168, 132, 0.07);
+  border-color: rgba(0, 168, 132, 0.18);
+  color: #00a884;
+}
+
+[data-theme="light"] .ep-type-freelancer {
+  background: rgba(0, 168, 132, 0.1);
+  color: #00a884;
+  border-color: rgba(0, 168, 132, 0.25);
+}
+
+[data-theme="light"] .ep-btn-ghost { background: #f3f4f3; color: #41525d; }
+
+[data-theme="light"] .ep-btn-follow--default { background: #00a884; }
+
+[data-theme="light"] .ep-btn-follow--requested {
+  background: #f3f4f3;
+  border-color: #dde4e1;
+  color: #41525d;
+}
+
+[data-theme="light"] .ep-btn-follow--following {
+  background: rgba(0, 168, 132, 0.1);
+  color: #00a884;
+  border-color: rgba(0, 168, 132, 0.3);
+}
+
+[data-theme="light"] .ep-btn-msg {
+  background: #f3f4f3;
+  border-color: #dde3df;
+  color: #111b21;
+}
+
+[data-theme="light"] .ep-page-btn {
+  background: #fff;
+  border-color: #dde3df;
+  color: #667781;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+[data-theme="light"] .ep-page-btn:hover:not(:disabled) { background: #f3f4f3; color: #111b21; }
+[data-theme="light"] .ep-page-btn.active {
+  background: #00a884;
+  border-color: #00a884;
+}
+
+/* ── Mobile ─────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .ep-content { padding: 1.25rem 1rem 3rem; }
+
+  .ep-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .ep-search-wrap { flex: none; width: 100%; }
+
+  .ep-grid {
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  }
+}
+
+@media (max-width: 480px) {
+  .ep-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .ep-card {
+    padding: 1.1rem;
+  }
+}

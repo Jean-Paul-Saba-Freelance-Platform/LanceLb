@@ -4,6 +4,10 @@ const connectDB = async () => {
     try {
         // Check if MONGO_URI is defined
         const mongoUri = process.env.MONGO_URI;
+
+        // Disable command buffering so queries throw immediately
+        // instead of waiting forever if the DB is unreachable.
+        mongoose.set('bufferCommands', false);
         
         if (!mongoUri) {
             throw new Error('MONGO_URI is not defined in environment variables');
@@ -29,7 +33,7 @@ const connectDB = async () => {
         // A typical URI is mongodb+srv://<user>:<pass>@<cluster>/<database>?<options>
         // We look for the part between the last / and the first ?
         const dbNameMatch = mongoUri.match(/\/([^\/\?]+)(\?|$)/);
-        if (!dbNameMatch || dbNameMatch[1] === 'test') {
+        if (!dbNameMatch) {
             const baseUrl = mongoUri.split('?')[0].replace(/\/$/, '');
             const options = mongoUri.includes('?') ? '?' + mongoUri.split('?')[1] : '';
             connectionString = `${baseUrl}/freelance-project${options}`;
@@ -38,7 +42,9 @@ const connectDB = async () => {
             console.log(`Connecting to database: ${dbNameMatch[1]}`);
         }
 
-        await mongoose.connect(connectionString);
+        await mongoose.connect(connectionString, {
+            serverSelectionTimeoutMS: 10000, // fail in 10s if no server found
+        });
         console.log(`MongoDB connected to: ${mongoose.connection.name}`);
         
     } catch (error) {

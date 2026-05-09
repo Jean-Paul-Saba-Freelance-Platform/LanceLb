@@ -27,7 +27,15 @@ backend/node_modules/
 backend/.env
 
 # Frontend specific
-frontend/node_modules/
+frontend/node_modules/*
 frontend/dist/
 frontend/.vite/
 
+# Screenshots for claude
+screenshots/
+.screenshot-auth.json
+
+# Hugging Face space — managed as a separate git repo, not tracked here
+hf-ats-space/
+**/__pycache__/
+*.pyc

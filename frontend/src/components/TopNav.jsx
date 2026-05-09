@@ -1,74 +1,575 @@
-import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
-import { HelpCircle, Bell } from 'lucide-react'
+import { useState, useEffect, useRef, useCallback } from 'react'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
+import { Bot, Bell, Search, X } from 'lucide-react'
 import ProfileDropdown from './ProfileDropdown'
+import AIChatPanel from './AIChatPanel'
+import ThemeLogo, { ThemeNavBrand } from './ThemeLogo'
 import './TopNav.css'
+
+const API_BASE = import.meta.env.VITE_API_BASE || 'http://127.0.0.1:4000'
 
 const TopNav = ({ userName, userAvatar }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
-  
-  // Get user from localStorage to determine the brand link
+  const [aiChatOpen, setAiChatOpen] = useState(false)
+  const [showNotifications, setShowNotifications] = useState(false)
+  const [notifications, setNotifications] = useState([])
+  const [unreadCount, setUnreadCount] = useState(0)
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [respondingTo, setRespondingTo] = useState(null)
+  const [followBackStates, setFollowBackStates] = useState({})
+  const [searchQuery, setSearchQuery] = useState('')
+  const [searchType, setSearchType] = useState('Jobs')
+  const [searchResults, setSearchResults] = useState([])
+  const [searchLoading, setSearchLoading] = useState(false)
+  const [showSearchResults, setShowSearchResults] = useState(false)
+  const searchRef = useRef(null)
+  const searchTimeoutRef = useRef(null)
+  const notifRef = useRef(null)
+  const mobileMenuRef = useRef(null)
+  const location = useLocation()
+  const navigate = useNavigate()
+
   const userStr = localStorage.getItem('user')
   const user = userStr ? JSON.parse(userStr) : null
-  const brandLink = user?.userType === 'freelancer' ? '/freelancer/home' : '/'
+  const brandLink = user?.userType === 'freelancer'
+    ? '/freelancer/home'
+    : user?.userType === 'client'
+      ? '/client/home'
+      : '/'
+  const menuLinks = user?.userType === 'freelancer'
+    ? [
+      { label: 'Find Work', to: '/freelancer/find-work' },
+      { label: 'Explore', to: '/freelancer/explore' },
+      { label: 'Messages', to: '/freelancer/messages' },
+      { label: 'My Proposals', to: '/freelancer/proposals' },
+      { label: 'Projects', to: '/freelancer/projects' },
+    ]
+    : [
+      { label: 'Home', to: '/client/home' },
+      { label: 'Explore', to: '/client/explore' },
+      { label: 'Messages', to: '/client/messages' },
+      { label: 'Manage Jobs', to: '/client/jobs' },
+      { label: 'Projects', to: '/client/projects' },
+      { label: 'Post Job', to: '/client/post-job' },
+    ]
 
-  const handleAvatarClick = () => {
-    setIsDropdownOpen(!isDropdownOpen)
+  const authHeaders = () => {
+    const token = localStorage.getItem('token')
+    return token ? { Authorization: `Bearer ${token}` } : {}
   }
 
-  const handleCloseDropdown = () => {
-    setIsDropdownOpen(false)
+  const performSearch = async (query, type) => {
+    if (!query.trim() || query.trim().length < 2) {
+      setSearchResults([])
+      setShowSearchResults(false)
+      return
+    }
+    setSearchLoading(true)
+    setShowSearchResults(true)
+    try {
+      const token = localStorage.getItem('token')
+      const headers = token ? { Authorization: `Bearer ${token}` } : {}
+
+      if (type === 'Jobs') {
+        const res = await fetch(
+          `${API_BASE}/api/client/jobs/open?search=${encodeURIComponent(query.trim())}`,
+          { credentials: 'include', headers }
+        )
+        const data = await res.json()
+        if (data.success) {
+          setSearchResults((data.jobs || []).slice(0, 6).map(job => ({
+            id: job._id,
+            title: job.title,
+            subtitle: `${job.paymentType === 'hourly' ? 'Hourly' : 'Fixed'} · ${job.experienceLevel || ''}`,
+            type: 'job',
+            path: user?.userType === 'client'
+              ? `/client/jobs/${job._id}/applications`
+              : `/freelancer/home`,
+          })))
+        }
+      } else {
+        // Talents search — /search returns all users regardless of follow status
+        const res = await fetch(
+          `${API_BASE}/api/follow/search?search=${encodeURIComponent(query.trim())}&limit=6`,
+          { credentials: 'include', headers }
+        )
+        const data = await res.json()
+        if (data.success) {
+          setSearchResults((data.users || []).slice(0, 6).map(u => ({
+            id: u._id,
+            title: u.name || 'Freelancer',
+            subtitle: u.title || u.userType || 'Freelancer',
+            type: 'talent',
+            path: user?.userType === 'client'
+              ? `/client/freelancer-profile/${u._id}`
+              : `/freelancer/freelancer-profile/${u._id}`,
+          })))
+        }
+      }
+    } catch {
+      setSearchResults([])
+    } finally {
+      setSearchLoading(false)
+    }
   }
+
+  const fetchNotifications = useCallback(async () => {
+    if (!user) return
+    try {
+      const res = await fetch(`${API_BASE}/api/notifications`, {
+        credentials: 'include',
+        headers: authHeaders(),
+      })
+      const data = await res.json()
+      if (data.success) {
+        setNotifications(data.notifications)
+        setUnreadCount(data.unreadCount)
+      }
+    } catch {}
+  }, [])
+
+  useEffect(() => {
+    fetchNotifications()
+    const interval = setInterval(fetchNotifications, 30000)
+    return () => clearInterval(interval)
+  }, [fetchNotifications])
+
+  // Listen for real-time notifications forwarded from Socket.io
+  useEffect(() => {
+    const handler = (e) => {
+      const notif = e.detail
+      setNotifications(prev => [notif, ...prev])
+      setUnreadCount(c => c + 1)
+    }
+    window.addEventListener('lancelb:notification', handler)
+    return () => window.removeEventListener('lancelb:notification', handler)
+  }, [])
+
+  // Close notification panel on outside click
+  useEffect(() => {
+    const handler = (e) => {
+      if (notifRef.current && !notifRef.current.contains(e.target)) {
+        setShowNotifications(false)
+      }
+    }
+    document.addEventListener('mousedown', handler)
+    return () => document.removeEventListener('mousedown', handler)
+  }, [])
+
+  // Debounced search
+  useEffect(() => {
+    if (searchTimeoutRef.current) clearTimeout(searchTimeoutRef.current)
+    if (!searchQuery.trim() || searchQuery.trim().length < 2) {
+      setSearchResults([])
+      setShowSearchResults(false)
+      return
+    }
+    searchTimeoutRef.current = setTimeout(() => {
+      performSearch(searchQuery, searchType)
+    }, 350)
+    return () => clearTimeout(searchTimeoutRef.current)
+  }, [searchQuery, searchType])
+
+  // Close search results on outside click
+  useEffect(() => {
+    const handler = (e) => {
+      if (searchRef.current && !searchRef.current.contains(e.target)) {
+        setShowSearchResults(false)
+      }
+    }
+    document.addEventListener('mousedown', handler)
+    return () => document.removeEventListener('mousedown', handler)
+  }, [])
+
+  // Close mobile menu on outside click
+  useEffect(() => {
+    if (!mobileMenuOpen) return
+    const handler = (e) => {
+      if (mobileMenuRef.current && !mobileMenuRef.current.contains(e.target)) {
+        setMobileMenuOpen(false)
+      }
+    }
+    document.addEventListener('mousedown', handler)
+    return () => document.removeEventListener('mousedown', handler)
+  }, [mobileMenuOpen])
+
+  const openNotifications = async () => {
+    const opening = !showNotifications
+    setShowNotifications(opening)
+    if (opening && unreadCount > 0) {
+      try {
+        await fetch(`${API_BASE}/api/notifications/read-all`, {
+          method: 'PATCH',
+          credentials: 'include',
+          headers: authHeaders(),
+        })
+        setUnreadCount(0)
+        setNotifications(prev => prev.map(n => ({ ...n, read: true })))
+      } catch {}
+    }
+  }
+
+  const handleFollowResponse = async (followId, notifId, action) => {
+    setRespondingTo(notifId)
+    try {
+      const res = await fetch(`${API_BASE}/api/follow/${followId}/respond`, {
+        method: 'PATCH',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json', ...authHeaders() },
+        body: JSON.stringify({ action }),
+      })
+      const data = await res.json()
+      if (data.success) {
+        // Remove from React state immediately
+        setNotifications(prev => prev.filter(n => n._id !== notifId))
+        // Also delete from DB so it doesn't come back on re-fetch
+        await fetch(`${API_BASE}/api/notifications/${notifId}`, {
+          method: 'DELETE',
+          credentials: 'include',
+          headers: authHeaders(),
+        })
+      }
+    } catch {}
+    setRespondingTo(null)
+  }
+
+  const handleFollowBack = async (targetUserId, notifId) => {
+    setFollowBackStates(prev => ({ ...prev, [notifId]: 'loading' }))
+    try {
+      const res = await fetch(`${API_BASE}/api/follow/${targetUserId}`, {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json', ...authHeaders() },
+      })
+      const data = await res.json()
+
+      if (res.ok && data.success) {
+        setFollowBackStates(prev => ({ ...prev, [notifId]: 'requested' }))
+        await fetch(`${API_BASE}/api/notifications/${notifId}`, {
+          method: 'DELETE',
+          credentials: 'include',
+          headers: authHeaders(),
+        })
+        setTimeout(() => {
+          setNotifications(prev => prev.filter(n => n._id !== notifId))
+        }, 1500)
+      } else if (res.status === 409) {
+        const existingStatus = data.status || 'requested'
+        setFollowBackStates(prev => ({ ...prev, [notifId]: existingStatus }))
+        await fetch(`${API_BASE}/api/notifications/${notifId}`, {
+          method: 'DELETE',
+          credentials: 'include',
+          headers: authHeaders(),
+        })
+        setTimeout(() => {
+          setNotifications(prev => prev.filter(n => n._id !== notifId))
+        }, 1500)
+      } else {
+        setFollowBackStates(prev => ({ ...prev, [notifId]: null }))
+      }
+    } catch {
+      setFollowBackStates(prev => ({ ...prev, [notifId]: null }))
+    }
+  }
+
+  const notifIcon = (type) => {
+    if (type === 'application_accepted') return '✓'
+    if (type === 'application_rejected') return '✕'
+    if (type === 'task_validated') return '★'
+    if (type === 'task_completed') return '◎'
+    if (type === 'project_started') return '▶'
+    if (type === 'follow_request') return '👤'
+    if (type === 'follow_accepted') return '✓'
+    if (type === 'follow_back_suggestion') return '👥'
+    return '•'
+  }
+
+  const notifColor = (type) => {
+    if (type === 'application_accepted') return '#10b981'
+    if (type === 'application_rejected') return '#f87171'
+    if (type === 'task_validated') return '#fbbf24'
+    if (type === 'project_started') return '#4be2be'
+    if (type === 'follow_request') return '#4be2be'
+    if (type === 'follow_accepted') return '#10b981'
+    if (type === 'follow_back_suggestion') return '#4be2be'
+    return '#38bdf8'
+  }
+
+  const formatRelative = (dateStr) => {
+    const diff = Date.now() - new Date(dateStr).getTime()
+    const mins = Math.floor(diff / 60000)
+    if (mins < 1) return 'just now'
+    if (mins < 60) return `${mins}m ago`
+    const hrs = Math.floor(mins / 60)
+    if (hrs < 24) return `${hrs}h ago`
+    return `${Math.floor(hrs / 24)}d ago`
+  }
+
+  const handleAvatarClick = () => setIsDropdownOpen(!isDropdownOpen)
+  const handleCloseDropdown = () => setIsDropdownOpen(false)
 
   return (
+    <>
     <nav className="top-nav">
       <div className="top-nav-container">
-        {/* Left: Brand */}
+        {/* Left: Brand — favicon shown by default, full logo crossfades in on hover */}
         <Link to={brandLink} className="top-nav-brand">
-          FreelanceHub
+          <ThemeNavBrand />
         </Link>
 
         {/* Center: Menu Links */}
         <div className="top-nav-menu">
-          <a href="#" className="top-nav-link">Find work</a>
-          <a href="#" className="top-nav-link">Deliver work</a>
-          <a href="#" className="top-nav-link">Manage finances</a>
-          <a href="#" className="top-nav-link">Messages</a>
+          {menuLinks.map((item) => (
+            <Link
+              key={item.to}
+              to={item.to}
+              className={`top-nav-link${
+                location.pathname === item.to ||
+                location.pathname.startsWith(item.to + '/')
+                  ? ' active' : ''
+              }`}
+            >
+              {item.label}
+            </Link>
+          ))}
         </div>
 
         {/* Right: Search, Icons, Avatar */}
         <div className="top-nav-right">
-          {/* Search with Dropdown */}
-          <div className="top-nav-search">
-            <input
-              type="text"
-              placeholder="Search jobs"
-              className="top-nav-search-input"
-            />
-            <select className="top-nav-search-dropdown">
-              <option>Jobs</option>
-            </select>
+          {/* Mobile hamburger — inside right so dropdown anchors to right edge */}
+          <div className="top-nav-mobile-wrap" ref={mobileMenuRef}>
+            <button
+              className="top-nav-hamburger"
+              onClick={() => setMobileMenuOpen((p) => !p)}
+              aria-label={mobileMenuOpen ? 'Close menu' : 'Open menu'}
+              aria-expanded={mobileMenuOpen}
+            >
+              <span className="hamburger-line" />
+              <span className="hamburger-line" />
+              <span className="hamburger-line" />
+            </button>
+            {mobileMenuOpen && (
+              <nav className="top-nav-mobile-dropdown">
+                {menuLinks.map((item) => (
+                  <Link
+                    key={item.to}
+                    to={item.to}
+                    className={`top-nav-mobile-link${
+                      location.pathname === item.to ||
+                      location.pathname.startsWith(item.to + '/')
+                        ? ' active' : ''
+                    }`}
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    {item.label}
+                  </Link>
+                ))}
+              </nav>
+            )}
           </div>
 
-          {/* Icons */}
+          <div className="top-nav-search-wrap" ref={searchRef}>
+            <div className="top-nav-search">
+              <Search size={14} className="top-nav-search-icon" />
+              <input
+                type="text"
+                placeholder={searchType === 'Jobs' ? 'Search jobs...' : 'Search talents...'}
+                className="top-nav-search-input"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                onFocus={() => {
+                  if (searchQuery.trim().length >= 2) setShowSearchResults(true)
+                }}
+              />
+              {searchQuery && (
+                <button
+                  className="top-nav-search-clear"
+                  onClick={() => {
+                    setSearchQuery('')
+                    setSearchResults([])
+                    setShowSearchResults(false)
+                  }}
+                  aria-label="Clear search"
+                >
+                  <X size={12} />
+                </button>
+              )}
+              <select
+                className="top-nav-search-dropdown"
+                value={searchType}
+                onChange={(e) => setSearchType(e.target.value)}
+              >
+                <option value="Jobs">Jobs</option>
+                <option value="Talents">Talents</option>
+              </select>
+            </div>
+
+            {showSearchResults && (
+              <div className="top-nav-search-results">
+                {searchLoading ? (
+                  <div className="top-nav-search-state">Searching...</div>
+                ) : searchResults.length === 0 ? (
+                  <div className="top-nav-search-state">
+                    No {searchType.toLowerCase()} found for &ldquo;{searchQuery}&rdquo;
+                  </div>
+                ) : (
+                  <>
+                    <div className="top-nav-search-results-header">
+                      {searchType} · {searchResults.length} result{searchResults.length !== 1 ? 's' : ''}
+                    </div>
+                    {searchResults.map((result) => (
+                      <button
+                        key={result.id}
+                        className="top-nav-search-result-item"
+                        onClick={() => {
+                          setShowSearchResults(false)
+                          setSearchQuery('')
+                          navigate(result.path, {
+                            state: { backRoute: location.pathname }
+                          })
+                        }}
+                      >
+                        <div className="top-nav-search-result-icon">
+                          {result.type === 'job' ? '💼' : '👤'}
+                        </div>
+                        <div className="top-nav-search-result-info">
+                          <span className="top-nav-search-result-title">{result.title}</span>
+                          <span className="top-nav-search-result-sub">{result.subtitle}</span>
+                        </div>
+                      </button>
+                    ))}
+                  </>
+                )}
+              </div>
+            )}
+          </div>
+
           <div className="top-nav-icons">
             <button
               className="top-nav-icon-button"
               aria-label="Help & Support"
               title="Help & Support"
-              onClick={() => console.log('Help clicked')}
+              onClick={() => setAiChatOpen(true)}
             >
-              <HelpCircle size={20} />
+              <Bot size={20} />
             </button>
 
-            <button
-              className="top-nav-icon-button"
-              aria-label="Notifications"
-              title="Notifications"
-              onClick={() => console.log('Notifications clicked')}
-            >
-              <Bell size={20} />
-            </button>
+            {/* Notification bell with badge + panel */}
+            <div className="notif-wrapper" ref={notifRef}>
+              <button
+                className="top-nav-icon-button notif-bell-btn"
+                aria-label="Notifications"
+                title="Notifications"
+                onClick={openNotifications}
+              >
+                <Bell size={20} />
+                {unreadCount > 0 && (
+                  <span className="notif-badge">{unreadCount > 9 ? '9+' : unreadCount}</span>
+                )}
+              </button>
+
+              {showNotifications && (
+                <div className="notif-panel">
+                  <div className="notif-panel-header">
+                    <span className="notif-panel-title">Notifications</span>
+                    {notifications.some(n => !n.read) && (
+                      <button
+                        className="notif-clear-btn"
+                        onClick={async () => {
+                          try {
+                            await fetch(`${API_BASE}/api/notifications/read-all`, {
+                              method: 'PATCH', credentials: 'include', headers: authHeaders(),
+                            })
+                            setUnreadCount(0)
+                            setNotifications(prev => prev.map(n => ({ ...n, read: true })))
+                          } catch {}
+                        }}
+                      >
+                        Mark all read
+                      </button>
+                    )}
+                  </div>
+
+                  {notifications.length === 0 ? (
+                    <p className="notif-empty">No notifications yet.</p>
+                  ) : (
+                    <div className="notif-list">
+                      {notifications.map(n => (
+                        <div key={n._id} className={`notif-item ${n.read ? '' : 'notif-unread'}`}>
+                          <span
+                            className="notif-type-icon"
+                            style={{
+                              color: notifColor(n.type),
+                              background: `${notifColor(n.type)}20`,
+                              cursor: n.type === 'follow_request' ? 'pointer' : 'default'
+                            }}
+                            onClick={() => {
+                              if (n.type === 'follow_request' && n.relatedId) {
+                                const profilePath = user?.userType === 'client'
+                                  ? `/client/freelancer-profile/${n.relatedId}`
+                                  : `/freelancer/freelancer-profile/${n.relatedId}`
+                                setShowNotifications(false)
+                                navigate(profilePath, { state: { backRoute: user?.userType === 'client' ? '/client/home' : '/freelancer/home' } })
+                              }
+                            }}
+                            title={n.type === 'follow_request' ? 'View profile' : undefined}
+                          >
+                            {notifIcon(n.type)}
+                          </span>
+                          <div className="notif-content">
+                            <span className="notif-title">{n.title}</span>
+                            {n.message && <span className="notif-msg">{n.message}</span>}
+                            <span className="notif-time">{formatRelative(n.createdAt)}</span>
+                            {n.type === 'follow_request' && (
+                              <div style={{ display: 'flex', gap: '6px', marginTop: '6px' }}>
+                                <button
+                                  disabled={respondingTo === n._id}
+                                  onClick={() => handleFollowResponse(n.relatedId, n._id, 'accept')}
+                                  style={{ fontSize: '0.75rem', padding: '3px 10px', background: '#10b981', color: 'white', borderRadius: '6px', border: 'none', cursor: 'pointer' }}
+                                >
+                                  {respondingTo === n._id ? '...' : 'Accept'}
+                                </button>
+                                <button
+                                  disabled={respondingTo === n._id}
+                                  onClick={() => handleFollowResponse(n.relatedId, n._id, 'reject')}
+                                  style={{ fontSize: '0.75rem', padding: '3px 10px', background: 'transparent', color: '#94a3b8', borderRadius: '6px', border: '1px solid rgba(255,255,255,0.15)', cursor: 'pointer' }}
+                                >
+                                  {respondingTo === n._id ? '...' : 'Decline'}
+                                </button>
+                              </div>
+                            )}
+                            {n.type === 'follow_back_suggestion' &&
+                             followBackStates[n._id] !== 'requested' &&
+                             followBackStates[n._id] !== 'accepted' &&
+                             followBackStates[n._id] !== 'loading' && (
+                              <div style={{ marginTop: '6px' }}>
+                                <button
+                                  onClick={() => handleFollowBack(n.senderId, n._id)}
+                                  style={{
+                                    fontSize: '0.75rem', padding: '3px 10px',
+                                    background: '#00a884', color: 'white',
+                                    borderRadius: '6px', border: 'none', cursor: 'pointer'
+                                  }}
+                                >
+                                  Follow Back
+                                </button>
+                              </div>
+                            )}
+                            {n.type === 'follow_back_suggestion' && followBackStates[n._id] === 'requested' && (
+                              <div style={{ marginTop: '6px' }}>
+                                <span style={{ fontSize: '0.75rem', color: '#94a3b8' }}>
+                                  Request sent ✓
+                                </span>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
           </div>
 
           {/* Avatar with Dropdown */}
@@ -100,6 +601,8 @@ const TopNav = ({ userName, userAvatar }) => {
         </div>
       </div>
     </nav>
+    <AIChatPanel isOpen={aiChatOpen} onClose={() => setAiChatOpen(false)} />
+    </>
   )
 }
 

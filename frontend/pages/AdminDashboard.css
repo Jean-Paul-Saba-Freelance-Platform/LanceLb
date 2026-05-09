@@ -1,0 +1,886 @@
+/* ============================================
+   AdminDashboard — Lance redesign
+   Dark teal aesthetic — sidebar layout
+   ============================================ */
+
+/* ---- Shell ---- */
+.adm-shell {
+  display: flex;
+  min-height: 100vh;
+  background-color: #0e0c14;
+  color: #e9edef;
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
+/* ---- Sidebar ---- */
+.adm-sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 220px;
+  height: 100vh;
+  background: rgba(14, 12, 20, 0.85);
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  display: flex;
+  flex-direction: column;
+  z-index: 100;
+}
+
+.adm-sidebar-logo {
+  padding: 1.5rem 1.25rem 1.25rem;
+  border-bottom: 1px solid #2a3942;
+}
+
+.adm-sidebar-logo-img {
+  display: block;
+  height: 26px;
+  width: auto;
+  object-fit: contain;
+  margin-bottom: 0.1rem;
+}
+
+.adm-sidebar-sub {
+  display: block;
+  font-size: 0.75rem;
+  color: #00a884;
+  margin-top: 0.15rem;
+  font-weight: 500;
+}
+
+.adm-nav {
+  flex: 1;
+  padding: 0.75rem 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.adm-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.65rem 1.25rem;
+  font-size: 0.88rem;
+  color: #8696a0;
+  cursor: pointer;
+  border-left: 3px solid transparent;
+  transition: color 0.15s, background 0.15s;
+}
+
+.adm-nav-item:hover {
+  color: #00a884;
+  background-color: rgba(0, 168, 132, 0.06);
+}
+
+.adm-nav-active {
+  color: #00a884 !important;
+  border-left-color: #00a884;
+  background-color: rgba(0, 168, 132, 0.1);
+  font-weight: 600;
+}
+
+.adm-sidebar-spacer {
+  flex: 1;
+}
+
+.adm-back-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0 0.75rem 1rem;
+  padding: 0.6rem 1rem;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  color: #8696a0;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s, background 0.15s;
+  text-align: left;
+}
+
+.adm-back-btn:hover {
+  color: #e9edef;
+  border-color: rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+/* ---- Body ---- */
+.adm-body {
+  margin-left: 220px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  background-color: #0e0c14;
+}
+
+/* ---- Top navbar ---- */
+.adm-topbar {
+  height: 56px;
+  background: rgba(14, 12, 20, 0.7);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 2rem;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+
+.adm-topbar-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #e9edef;
+}
+
+.adm-topbar-user {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.adm-topbar-name {
+  font-size: 0.875rem;
+  color: #8696a0;
+}
+
+.adm-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background-color: #00a884;
+  color: #fff;
+  font-size: 0.8rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.adm-logout-btn {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #f87171;
+  background: rgba(248, 113, 113, 0.1);
+  border: 1px solid rgba(248, 113, 113, 0.25);
+  border-radius: 6px;
+  padding: 0.3rem 0.75rem;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+.adm-logout-btn:hover {
+  background: rgba(248, 113, 113, 0.2);
+  border-color: rgba(248, 113, 113, 0.5);
+}
+
+/* ---- Main content ---- */
+.adm-main {
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  max-width: 1100px;
+  width: 100%;
+}
+
+/* ---- Section ---- */
+.adm-section-title {
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #8696a0;
+  margin: 0 0 1rem 0;
+}
+
+/* ---- Base card ---- */
+.adm-card {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 16px;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  padding: 1.5rem;
+}
+
+.adm-card-flush {
+  padding: 0;
+  overflow: hidden;
+}
+
+.adm-card-title {
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: #e9edef;
+  margin: 0 0 1.25rem 0;
+}
+
+/* ---- Loading / error ---- */
+.adm-fullscreen-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: calc(100vh - 56px);
+  gap: 1rem;
+}
+
+.adm-spinner {
+  width: 36px;
+  height: 36px;
+  border: 3px solid #2a3942;
+  border-top-color: #00a884;
+  border-radius: 50%;
+  animation: adm-spin 0.7s linear infinite;
+}
+
+@keyframes adm-spin {
+  to { transform: rotate(360deg); }
+}
+
+.adm-spinner-label {
+  color: #8696a0;
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+.adm-error-icon {
+  font-size: 2.5rem;
+}
+
+.adm-error-msg {
+  color: #f87171;
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+/* ---- KPI Grid ---- */
+.adm-kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+}
+
+@media (min-width: 768px) {
+  .adm-kpi-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.adm-kpi-card {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 16px;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.adm-kpi-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+.adm-kpi-top {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 0.4rem;
+}
+
+.adm-kpi-icon-wrap {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.adm-kpi-value {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #e9edef;
+  line-height: 1;
+}
+
+.adm-kpi-label {
+  font-size: 0.82rem;
+  color: #8696a0;
+  margin-bottom: 0.75rem;
+}
+
+.adm-kpi-bottom-bar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+}
+
+/* ---- Platform Health ---- */
+.adm-health-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+}
+
+.adm-health-row {
+  display: grid;
+  grid-template-columns: 140px 1fr 44px;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.adm-health-label {
+  font-size: 0.84rem;
+  color: #e9edef;
+}
+
+.adm-health-track {
+  height: 10px;
+  background-color: #2a3942;
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.adm-health-fill {
+  height: 100%;
+  border-radius: 999px;
+  transition: width 0.7s ease;
+}
+
+.adm-health-pct {
+  font-size: 0.82rem;
+  font-weight: 600;
+  text-align: right;
+}
+
+/* ---- Top Skills ---- */
+.adm-skills-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+
+.adm-skill-row {
+  display: grid;
+  grid-template-columns: 140px 1fr 36px;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.adm-skill-name {
+  font-size: 0.87rem;
+  color: #e9edef;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.adm-skill-track {
+  height: 12px;
+  background-color: #2a3942;
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.adm-skill-fill {
+  height: 100%;
+  background-color: #00a884;
+  border-radius: 999px;
+  box-shadow: 0 0 8px rgba(0, 168, 132, 0.4);
+  transition: width 0.6s ease;
+}
+
+.adm-skill-count {
+  font-size: 0.82rem;
+  color: #8696a0;
+  text-align: right;
+}
+
+/* ---- Top Freelancers Table ---- */
+.adm-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+}
+
+.adm-table thead tr {
+  background-color: #111B21;
+}
+
+.adm-table th {
+  padding: 0.8rem 1.25rem;
+  text-align: left;
+  font-size: 0.73rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #8696a0;
+  border-bottom: 1px solid #2a3942;
+}
+
+.adm-row-even { background-color: #1b2730; }
+.adm-row-odd  { background-color: #1e2c35; }
+
+.adm-table td {
+  padding: 0.8rem 1.25rem;
+  border-bottom: 1px solid #2a3942;
+  vertical-align: middle;
+}
+
+.adm-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.adm-table tbody tr:hover {
+  background-color: #243440;
+}
+
+.adm-rank {
+  font-weight: 700;
+  color: #00a884;
+  font-size: 0.875rem;
+}
+
+.adm-fl-name-cell {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.adm-fl-avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background-color: #00a884;
+  color: #fff;
+  font-size: 0.72rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.adm-fl-name {
+  font-weight: 600;
+  color: #e9edef;
+}
+
+.adm-email {
+  color: #8696a0;
+  font-size: 0.83rem;
+}
+
+.adm-title-cell {
+  color: #e9edef;
+}
+
+.adm-muted {
+  color: #8696a0;
+  font-style: italic;
+}
+
+.adm-hired {
+  text-align: center;
+}
+
+.adm-hired-badge {
+  display: inline-block;
+  background-color: rgba(0, 168, 132, 0.15);
+  color: #00a884;
+  font-weight: 700;
+  font-size: 0.82rem;
+  padding: 0.2rem 0.65rem;
+  border-radius: 999px;
+  border: 1px solid rgba(0, 168, 132, 0.3);
+}
+
+/* ---- User Growth Chart ---- */
+.adm-growth-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 1rem 0;
+}
+
+.adm-growth-empty p {
+  color: #8696a0;
+  font-size: 0.875rem;
+  text-align: center;
+  margin: 0;
+  max-width: 380px;
+}
+
+.adm-growth-chart {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.75rem;
+  height: 180px;
+  padding-top: 1.5rem;
+}
+
+.adm-growth-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+  height: 100%;
+  justify-content: flex-end;
+}
+
+.adm-growth-count {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #e9edef;
+}
+
+.adm-growth-track {
+  width: 100%;
+  max-width: 48px;
+  flex: 1;
+  background-color: #2a3942;
+  border-radius: 6px 6px 0 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+.adm-growth-fill {
+  width: 100%;
+  background-color: #00a884;
+  border-radius: 6px 6px 0 0;
+  transition: height 0.6s ease;
+}
+
+.adm-growth-label {
+  font-size: 0.78rem;
+  color: #8696a0;
+}
+
+/* ---- Empty state ---- */
+.adm-empty {
+  color: #8696a0;
+  font-size: 0.875rem;
+  text-align: center;
+  padding: 1rem 0;
+  margin: 0;
+}
+
+/* ---- Mobile ---- */
+@media (max-width: 768px) {
+  .adm-sidebar {
+    display: none;
+  }
+
+  .adm-body {
+    margin-left: 0;
+  }
+
+  .adm-topbar {
+    padding: 0 1rem;
+  }
+
+  .adm-topbar-title::before {
+    content: 'Lance Admin';
+  }
+
+  .adm-topbar-title {
+    font-size: 0.95rem;
+  }
+
+  .adm-main {
+    padding: 1.25rem 1rem;
+  }
+
+  .adm-skill-row {
+    grid-template-columns: 100px 1fr 32px;
+  }
+
+  .adm-health-row {
+    grid-template-columns: 110px 1fr 40px;
+  }
+}
+
+/* ============================================
+   Users Management Section
+   ============================================ */
+
+.adm-users-section {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  width: 100%;
+}
+
+/* ---- Toolbar ---- */
+.adm-users-toolbar {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.adm-users-search {
+  flex: 1;
+  max-width: 380px;
+  padding: 0.55rem 0.9rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  color: #e9edef;
+  font-size: 0.875rem;
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+.adm-users-search::placeholder {
+  color: #8696a0;
+}
+
+.adm-users-search:focus {
+  border-color: #00a884;
+}
+
+.adm-users-role-filter {
+  padding: 0.55rem 0.9rem;
+  background-color: #1a1825;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 8px;
+  color: #e9edef;
+  font-size: 0.875rem;
+  outline: none;
+  cursor: pointer;
+  transition: border-color 0.15s;
+}
+
+.adm-users-role-filter:focus {
+  border-color: #00a884;
+}
+
+.adm-users-role-filter option {
+  background-color: #1a1825;
+  color: #e9edef;
+}
+
+/* ---- Table overrides for users ---- */
+.adm-users-table th:last-child,
+.adm-users-table td:last-child {
+  min-width: 200px;
+}
+
+/* ---- Status badges ---- */
+.adm-status-badge {
+  display: inline-block;
+  font-size: 0.73rem;
+  font-weight: 600;
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  text-transform: capitalize;
+  letter-spacing: 0.03em;
+}
+
+.adm-status-active {
+  background: rgba(16, 185, 129, 0.12);
+  color: #10b981;
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.adm-status-banned {
+  background: rgba(248, 113, 113, 0.12);
+  color: #f87171;
+  border: 1px solid rgba(248, 113, 113, 0.3);
+}
+
+.adm-status-timeout {
+  background: rgba(251, 191, 36, 0.12);
+  color: #fbbf24;
+  border: 1px solid rgba(251, 191, 36, 0.3);
+}
+
+/* ---- Role badges ---- */
+.adm-role-badge {
+  display: inline-block;
+  font-size: 0.73rem;
+  font-weight: 600;
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  text-transform: capitalize;
+  letter-spacing: 0.03em;
+}
+
+.adm-role-freelancer {
+  background: rgba(0, 168, 132, 0.12);
+  color: #00a884;
+  border: 1px solid rgba(0, 168, 132, 0.3);
+}
+
+.adm-role-client {
+  background: rgba(59, 130, 246, 0.12);
+  color: #60a5fa;
+  border: 1px solid rgba(59, 130, 246, 0.3);
+}
+
+/* ---- Row actions ---- */
+.adm-row-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.adm-action-btn {
+  font-size: 0.78rem;
+  font-weight: 600;
+  padding: 0.28rem 0.7rem;
+  border-radius: 6px;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: background 0.15s, border-color 0.15s;
+  white-space: nowrap;
+}
+
+.adm-action-ban {
+  background: rgba(248, 113, 113, 0.1);
+  border-color: rgba(248, 113, 113, 0.3);
+  color: #f87171;
+}
+
+.adm-action-ban:hover {
+  background: rgba(248, 113, 113, 0.2);
+  border-color: rgba(248, 113, 113, 0.55);
+}
+
+.adm-action-timeout {
+  background: rgba(251, 191, 36, 0.1);
+  border-color: rgba(251, 191, 36, 0.3);
+  color: #fbbf24;
+}
+
+.adm-action-timeout:hover {
+  background: rgba(251, 191, 36, 0.2);
+  border-color: rgba(251, 191, 36, 0.55);
+}
+
+.adm-action-unban {
+  background: rgba(16, 185, 129, 0.1);
+  border-color: rgba(16, 185, 129, 0.3);
+  color: #10b981;
+}
+
+.adm-action-unban:hover {
+  background: rgba(16, 185, 129, 0.2);
+  border-color: rgba(16, 185, 129, 0.55);
+}
+
+/* ---- Inline forms ---- */
+.adm-inline-form {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  flex-wrap: nowrap;
+}
+
+.adm-inline-input {
+  padding: 0.28rem 0.55rem;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 6px;
+  color: #e9edef;
+  font-size: 0.8rem;
+  outline: none;
+  width: 140px;
+  transition: border-color 0.15s;
+}
+
+.adm-inline-input:focus {
+  border-color: #00a884;
+}
+
+.adm-inline-number {
+  width: 56px;
+}
+
+.adm-inline-select {
+  padding: 0.28rem 0.5rem;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 6px;
+  color: #e9edef;
+  font-size: 0.8rem;
+  outline: none;
+  cursor: pointer;
+}
+
+.adm-inline-confirm {
+  font-size: 0.78rem;
+  font-weight: 600;
+  padding: 0.28rem 0.65rem;
+  border-radius: 6px;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: background 0.15s;
+  white-space: nowrap;
+}
+
+.adm-inline-confirm-ban {
+  background: rgba(248, 113, 113, 0.15);
+  border-color: rgba(248, 113, 113, 0.35);
+  color: #f87171;
+}
+
+.adm-inline-confirm-ban:hover {
+  background: rgba(248, 113, 113, 0.28);
+}
+
+.adm-inline-confirm-timeout {
+  background: rgba(251, 191, 36, 0.15);
+  border-color: rgba(251, 191, 36, 0.35);
+  color: #fbbf24;
+}
+
+.adm-inline-confirm-timeout:hover {
+  background: rgba(251, 191, 36, 0.28);
+}
+
+.adm-inline-cancel {
+  font-size: 0.78rem;
+  font-weight: 700;
+  padding: 0.28rem 0.5rem;
+  border-radius: 6px;
+  cursor: pointer;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #8696a0;
+  transition: color 0.15s, background 0.15s;
+  line-height: 1;
+}
+
+.adm-inline-cancel:hover {
+  color: #e9edef;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+/* ---- Avatar image variant ---- */
+.adm-fl-avatar-img {
+  object-fit: cover;
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+}

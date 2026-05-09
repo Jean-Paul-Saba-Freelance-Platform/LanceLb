@@ -1,0 +1,13 @@
+flask
+flask-cors
+pdfplumber
+scikit-learn==1.6.1
+xgboost
+pandas
+numpy
+scipy
+spacy
+textstat
+joblib
+python-dotenv
+gunicorn

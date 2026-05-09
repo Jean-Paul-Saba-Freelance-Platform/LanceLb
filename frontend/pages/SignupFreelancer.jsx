@@ -1,6 +1,9 @@
 import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import ThemeLogo from '../src/components/ThemeLogo'
 import './SignupFreelancer.css'
+
+const API_BASE = import.meta.env.VITE_API_BASE || 'http://127.0.0.1:4000'
 
 const SignupFreelancer = () => {
   const navigate = useNavigate()
@@ -80,11 +83,12 @@ const SignupFreelancer = () => {
     setSubmitSuccess(false)
 
     try {
-      const response = await fetch('http://127.0.0.1:4000/api/auth/register', {
+      const response = await fetch(`${API_BASE}/api/auth/register`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
+        credentials: 'include',
         body: JSON.stringify({
           name: `${formData.firstName.trim()} ${formData.lastName.trim()}`,
           email: formData.email.trim(),
@@ -141,7 +145,7 @@ const SignupFreelancer = () => {
     <div className="signup-freelancer-container">
       <div className="signup-freelancer-header">
         <Link to="/" className="header-brand-small">
-          FreelanceHub
+          <ThemeLogo className="header-brand-logo" />
         </Link>
         <Link to="/login" className="header-login-link">
           Already have an account? Log In
@@ -294,7 +298,7 @@ const SignupFreelancer = () => {
                   onChange={handleChange}
                   required
                 />
-                <span>I agree to the FreelanceHub <a href="#" onClick={(e) => e.preventDefault()}>Terms of Service</a> and <a href="#" onClick={(e) => e.preventDefault()}>Privacy Policy</a></span>
+                <span>I agree to the Lance <a href="#" onClick={(e) => e.preventDefault()}>Terms of Service</a> and <a href="#" onClick={(e) => e.preventDefault()}>Privacy Policy</a></span>
               </label>
               {errors.termsAgreed && <span className="error-message">{errors.termsAgreed}</span>}
             </div>
